@@ -4,6 +4,16 @@ Install docker compose
 
     docker-compose up --build
 
-Development python setup: use pipenv (`pip install pipenv`). Change into subdirectories and execute `pipenv sync`.
+## Development setup: gameserver
 
-Run tests with `nosetests`.
+Use pipenv (`pip install pipenv`).
+
+    cd gameserver/
+    # install dependencies
+    pipenv sync
+    # run tests
+    pipenv run nosetests
+    # format code
+    pipenv run black
+    # check style
+    pipenv run flake8

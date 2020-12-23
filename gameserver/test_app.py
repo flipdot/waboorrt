@@ -1,8 +1,8 @@
 from app import tick, GameState, Action
 from unittest import TestCase
 
-class TestWalk(TestCase):
 
+class TestWalk(TestCase):
     def setUp(self):
         self.game_state = GameState.create()
         bots = self.game_state.bots
@@ -47,7 +47,6 @@ class TestWalk(TestCase):
             (Action.WALK_WEST, Action.WALK_NORTH),
         ]
 
-        
         game_state = self.game_state
         for actions in turns:
             game_state = tick(game_state, actions)

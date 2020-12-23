@@ -9,6 +9,8 @@ verify_ssl = true
 gunicorn = "*"
 flask = "*"
 nose = "*"
+flake8 = "*"
+black = "*"
 
 [requires]
 python_version = "3.8"
