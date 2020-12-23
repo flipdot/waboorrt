@@ -7,6 +7,8 @@ jobs:
   test:
 
     runs-on: ubuntu-20.04
+    env:
+      working-directory: ./gameserver
 
     steps:
     - uses: actions/checkout@v1
@@ -17,7 +19,6 @@ jobs:
         architecture: x64
     - name: Install pipenv
       run: pip install pipenv
-    - run: cd gameserver
     - name: Install dependencies
       run: pipenv sync
     - name: Run stylecheck
