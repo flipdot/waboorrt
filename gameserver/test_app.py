@@ -42,23 +42,15 @@ class TestWalk(TestCase):
             (Action.WALK_NORTH, Action.WALK_WEST),
             (Action.WALK_NORTH, Action.WALK_EAST),
             (Action.WALK_EAST, Action.WALK_SOUTH),
-            (Action.WALK_EAST, Action.WALK_SOUTH),
-            (Action.WALK_EAST, Action.WALK_SOUTH),
-            (Action.WALK_EAST, Action.WALK_SOUTH),
-            (Action.WALK_EAST, Action.WALK_SOUTH),
-            (Action.WALK_EAST, Action.WALK_SOUTH),
-            (Action.WALK_EAST, Action.WALK_SOUTH),
-            (Action.WALK_EAST, Action.WALK_SOUTH),
-            (Action.WALK_EAST, Action.WALK_SOUTH),
+            (Action.WALK_SOUTH, Action.WALK_WEST),
+            (Action.WALK_SOUTH, Action.WALK_WEST),
+            (Action.WALK_WEST, Action.WALK_NORTH),
         ]
 
         
         game_state = self.game_state
         for actions in turns:
             game_state = tick(game_state, actions)
-        b = game_state.bots
-        expected_b0 = 15, 10
-        expected_b1 = 25, 10
-        self.assertEqual((b[0].x, b[0].y), (15, 10))
-        self.assertEqual((b[1].x, b[1].y), (15, 10))
-
+        b0, b1 = game_state.bots
+        self.assertEqual((b0.x, b0.y), (6, 5))
+        self.assertEqual((b1.x, b1.y), (23, 26))
