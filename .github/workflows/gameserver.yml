@@ -17,6 +17,7 @@ jobs:
         architecture: x64
     - name: Install pipenv
       run: pip install pipenv
+    - run: cd gameserver
     - name: Install dependencies
       run: pipenv sync
     - name: Run stylecheck
