@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  redis:
+    image: redis
+  gameserver:
+    build: gameserver
+    ports: 
+      - 5000:5000
+    depends_on: 
+      - redis
+  webserver:
+    build: webserver
+    ports: 
+      - 80:80
+    depends_on: 
+      - redis
