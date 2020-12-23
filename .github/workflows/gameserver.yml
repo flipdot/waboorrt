@@ -3,12 +3,14 @@ name: Test gameserver
 on:
   push:
 
+defaults:
+  run:
+    working-directory: ./gameserver
+
 jobs:
   test:
 
     runs-on: ubuntu-20.04
-    env:
-      working-directory: ./gameserver
 
     steps:
     - uses: actions/checkout@v1
