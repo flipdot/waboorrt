@@ -29,8 +29,8 @@ class GameState:
     def create(*args, **kwargs) -> "GameState":
         game_state = GameState(*args, **kwargs)
 
-        bot0 = Bot(5, 5)
-        bot1 = Bot(game_state.map_w - 5, game_state.map_h - 5)
+        bot0 = Bot("0", 5, 5)
+        bot1 = Bot("1", game_state.map_w - 5, game_state.map_h - 5)
         game_state.bots = [bot0, bot1]
         return game_state
 
@@ -54,9 +54,10 @@ class Entity:
 
 
 class Bot(Entity):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, name: str, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.health = 100
+        self.name = name
 
 
 app = Flask(__name__)
@@ -73,12 +74,12 @@ def index():
         }
     ]
     while game_state.running:
-        actions: Tuple[Action, ...] = (Action.NOOP, Action.NOOP)
-        game_state = tick(game_state, actions)
+        actions: Tuple[Action, ...] = (Action.WALK_EAST, Action.WALK_EAST)
+        game_state, executed_actions = tick(game_state, actions)
         game_history.append(
             {
                 "game_state": game_state,
-                "actions": actions,
+                "actions": executed_actions,
             }
         )
 
@@ -120,32 +121,45 @@ def is_position_occupied(state: GameState, x: int, y: int) -> bool:
     return False
 
 
-def tick(game_state: GameState, actions: Tuple[Action, ...]) -> GameState:
+def tick(game_state: GameState, actions: Tuple[Action, ...]) -> (GameState, Tuple[dict, ...]):
     if len(game_state.bots) != len(actions):
         raise ValueError("number of actions does not match number of bots")
 
     game_state = copy.deepcopy(game_state)
     game_state.tick += 1
 
+    executed_actions = []
+
     # Randomly determine which bot goes first. This makes the game more fair.
     for bot, action in random.sample(list(zip(game_state.bots, actions)), len(actions)):
+        action_success = False
 
         if action == Action.NOOP:
-            continue
+            action_success = True
 
         elif action == Action.WALK_NORTH:
-            bot.y -= 1 if can_walk_north(game_state, bot) else 0
+            if can_walk_north(game_state, bot):
+                bot.y -= 1
+                action_success = True
 
         elif action == Action.WALK_EAST:
-            bot.x += 1 if can_walk_east(game_state, bot) else 0
+            if can_walk_east(game_state, bot):
+                bot.x += 1
+                action_success = True
 
         elif action == Action.WALK_SOUTH:
-            bot.y += 1 if can_walk_south(game_state, bot) else 0
+            if can_walk_south(game_state, bot):
+                bot.y += 1
+                action_success = True
 
         elif action == Action.WALK_WEST:
-            bot.x -= 1 if can_walk_west(game_state, bot) else 0
+            if can_walk_west(game_state, bot):
+                bot.x -= 1
+                action_success = True
+
+        executed_actions.append({"bot_name": bot.name, "intended_action": action, "success": action_success})
 
     if game_state.tick >= game_state.max_ticks:
         game_state.running = False
 
-    return game_state
+    return game_state, tuple(executed_actions)
