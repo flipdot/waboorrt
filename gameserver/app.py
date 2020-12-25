@@ -1,5 +1,5 @@
 from flask import Flask, jsonify
-from typing import List
+from typing import List, Tuple
 from enum import Enum, auto
 import random
 import copy
@@ -56,7 +56,7 @@ def index():
         }
     ]
     while game_state.running:
-        actions: List[Action] = []
+        actions: Tuple[Action, ...] = ()
         game_state = tick(game_state, actions)
         game_history.append(
             {
@@ -103,7 +103,7 @@ def is_position_occupied(state: GameState, x: int, y: int) -> bool:
     return False
 
 
-def tick(game_state: GameState, actions: List[any]) -> GameState:
+def tick(game_state: GameState, actions: Tuple[Action, ...]) -> GameState:
     if len(game_state.bots) != len(actions):
         raise ValueError("number of actions does not match number of bots")
 
