@@ -1,4 +1,4 @@
-from app import tick, GameState, Action
+from gamefunctions import tick, GameState, Action
 from unittest import TestCase
 
 
