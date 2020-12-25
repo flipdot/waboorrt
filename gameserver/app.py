@@ -1,5 +1,7 @@
+from flask.json import JSONEncoder
+
 from flask import Flask, jsonify
-from typing import List, Tuple
+from typing import List, Tuple, Any
 from enum import Enum, auto
 import random
 import copy
@@ -14,20 +16,35 @@ class Action(Enum):
 
 
 class GameState:
-    def __init__(self):
+    def __init__(self, max_ticks=100):
+        super().__init__()
+        self.tick = 0
+        self.max_ticks = max_ticks
         self.map_w: int = 50
         self.map_h: int = 50
         self.bots: List[Bot] = []
         self.running: bool = True
 
     @staticmethod
-    def create() -> "GameState":
-        game_state = GameState()
+    def create(*args, **kwargs) -> "GameState":
+        game_state = GameState(*args, **kwargs)
 
         bot0 = Bot(5, 5)
         bot1 = Bot(game_state.map_w - 5, game_state.map_h - 5)
         game_state.bots = [bot0, bot1]
         return game_state
+
+
+class GameStateEncoder(JSONEncoder):
+    def default(self, o: Any) -> Any:
+        if isinstance(o, GameState):
+            return o.__dict__
+        elif isinstance(o, Action):
+            return o.name
+        elif isinstance(o, Bot):
+            return o.__dict__
+        else:
+            super(GameStateEncoder, self).default(o)
 
 
 class Entity:
@@ -43,11 +60,11 @@ class Bot(Entity):
 
 
 app = Flask(__name__)
+app.json_encoder = GameStateEncoder
 
 
 @app.route("/")
 def index():
-
     game_state = GameState.create()
     game_history = [
         {
@@ -56,12 +73,12 @@ def index():
         }
     ]
     while game_state.running:
-        actions: Tuple[Action, ...] = ()
+        actions: Tuple[Action, ...] = (Action.NOOP, Action.NOOP)
         game_state = tick(game_state, actions)
         game_history.append(
             {
                 "game_state": game_state,
-                "actions": [],
+                "actions": actions,
             }
         )
 
@@ -108,6 +125,7 @@ def tick(game_state: GameState, actions: Tuple[Action, ...]) -> GameState:
         raise ValueError("number of actions does not match number of bots")
 
     game_state = copy.deepcopy(game_state)
+    game_state.tick += 1
 
     # Randomly determine which bot goes first. This makes the game more fair.
     for bot, action in random.sample(list(zip(game_state.bots, actions)), len(actions)):
@@ -115,7 +133,7 @@ def tick(game_state: GameState, actions: Tuple[Action, ...]) -> GameState:
         if action == Action.NOOP:
             continue
 
-        if action == Action.WALK_NORTH:
+        elif action == Action.WALK_NORTH:
             bot.y -= 1 if can_walk_north(game_state, bot) else 0
 
         elif action == Action.WALK_EAST:
@@ -126,5 +144,8 @@ def tick(game_state: GameState, actions: Tuple[Action, ...]) -> GameState:
 
         elif action == Action.WALK_WEST:
             bot.x -= 1 if can_walk_west(game_state, bot) else 0
+
+    if game_state.tick >= game_state.max_ticks:
+        game_state.running = False
 
     return game_state
