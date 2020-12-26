@@ -13,6 +13,7 @@ black = "*"
 docker = "*"
 werkzeug = "*"
 json-rpc = "*"
+jsonschema = "*"
 
 [requires]
 python_version = "3.8"

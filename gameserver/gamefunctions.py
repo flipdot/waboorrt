@@ -1,5 +1,6 @@
 import random
 import copy
+import math
 
 from gameobjects import GameState, Bot, Action
 from typing import Tuple
@@ -40,6 +41,16 @@ def is_position_occupied(state: GameState, x: int, y: int) -> bool:
     return False
 
 
+def dist(a: Tuple[int, int], b: Tuple[int, int]) -> float:
+    dx = a[0] - b[0]
+    dy = a[1] - b[1]
+    return math.sqrt(dx * dx + dy * dy)
+
+
+def compute_damage(dist: float) -> int:
+    return int(max(10 * math.pow(10, -(dist / 7)), 0))
+
+
 def tick(
     game_state: GameState, actions: Tuple[dict, ...]
 ) -> (GameState, Tuple[dict, ...]):
@@ -65,9 +76,15 @@ def tick(
     # THROW snowballs
     for bot, action in zip(game_state.bots, actions):
         if action.get("name") == Action.THROW:
-            # todo implement
+            for other in game_state.bots:
+                other.health -= compute_damage(
+                    dist(
+                        (other.x, other.y),
+                        (action.get("x", bot.x), action.get("y", bot.y)),
+                    )
+                )
             executed_actions.append(
-                {"bot_name": bot.name, "intended_action": action, "success": False}
+                {"bot_name": bot.name, "intended_action": action, "success": True}
             )
 
     # WALK: Randomly determine which bot goes first. This makes the game more fair.

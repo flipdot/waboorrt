@@ -11,6 +11,7 @@ from gameobjects import GameState, Action
 from time import sleep
 
 from network import GameStateEncoder
+from jsonschema import validate, ValidationError
 
 logger = logging.getLogger(__name__)
 
@@ -90,4 +91,18 @@ class BotCommunicator:
             )
             return Action.noaction
         logger.debug(f"Response from bot {container.image.tags}: {response}")
-        return response.get("result", Action.noaction)
+        result = response.get("result", Action.noaction)
+        schema = {
+            "type": "object",
+            "properties": {
+                "name": {"type": "string"},
+                "x": {"type": "integer"},
+                "y": {"type": "integer"},
+            },
+            "required": ["name"],
+        }
+        try:
+            validate(instance=result, schema=schema)
+            return result
+        except ValidationError:
+            return Action.noaction

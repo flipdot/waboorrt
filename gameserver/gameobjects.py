@@ -49,6 +49,6 @@ class Entity:
 class Bot(Entity):
     def __init__(self, name: str, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.type = EntityType.BOT
-        self.health = 100
-        self.name = name
+        self.type: EntityType = EntityType.BOT
+        self.health: int = 100
+        self.name: str = name

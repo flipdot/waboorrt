@@ -33,8 +33,8 @@ def run_game(bot0_name: str, bot1_name: str):
             game_state, executed_actions = tick(game_state, actions)
             game_history.append(
                 {
-                    "game_state": game_state,
                     "actions": executed_actions,
+                    "game_state": game_state,
                 }
             )
     return game_history
