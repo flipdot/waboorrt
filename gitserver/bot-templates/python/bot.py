@@ -19,15 +19,23 @@ class Action:
 @dispatcher.add_method
 def next_action(game_state):
     logging.info(game_state)
-    return {
-        "name": random.choice([
-            Action.NOOP,
-            Action.WALK_NORTH,
-            Action.WALK_EAST,
-            Action.WALK_SOUTH,
-            Action.WALK_WEST
-        ])
-    }
+    return random.choice([
+        {
+            "name": random.choice([
+                Action.NOOP,
+                Action.WALK_NORTH,
+                Action.WALK_EAST,
+                Action.WALK_SOUTH,
+                Action.WALK_WEST,
+            ])
+        },
+        {
+            "name": Action.THROW,
+            "x": random.randint(0, 50 - 1),
+            "y": random.randint(0, 50 - 1),
+        },
+    ])
+
 
 @dispatcher.add_method
 def health():
