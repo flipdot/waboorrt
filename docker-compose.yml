@@ -4,13 +4,22 @@ services:
     image: redis
   gameserver:
     build: gameserver
-    ports: 
+    ports:
       - 5000:5000
-    depends_on: 
+    depends_on:
       - redis
+    privileged: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - default
+      - gamenet
   webserver:
     build: webserver
-    ports: 
+    ports:
       - 80:80
-    depends_on: 
+    depends_on:
       - redis
+networks:
+  gamenet:
+    external: true

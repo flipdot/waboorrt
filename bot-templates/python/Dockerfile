@@ -10,6 +10,6 @@ RUN pipenv sync
 
 COPY ./ ./
 
-EXPOSE 80
+EXPOSE 4000
 ENTRYPOINT ["pipenv", "run"]
-CMD ["python", "app.py"]
+CMD ["python", "bot.py"]

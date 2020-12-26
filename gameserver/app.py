@@ -1,38 +1,23 @@
-from flask.json import JSONEncoder
+import json
 
-from flask import Flask, jsonify
-from typing import Tuple, Any
+from werkzeug.wrappers import Request, Response
+from werkzeug.serving import run_simple
+from jsonrpc import JSONRPCResponseManager, dispatcher
 
+from typing import Tuple
+
+from botcomms import BotCommunicator
 from gamefunctions import tick
-from gameobjects import GameState, Bot, Action, EntityType
+from gameobjects import GameState, Action
+import logging
+
+from network import GameStateEncoder
+
+logging.basicConfig(level=logging.INFO, format="[%(asctime)s] [%(levelname)s] %(name)s: %(message)s")
 
 
-class GameStateEncoder(JSONEncoder):
-    def default(self, o: Any) -> Any:
-        if isinstance(o, GameState):
-            return {
-                "tick": o.tick,
-                "max_ticks": o.max_ticks,
-                "map_w": o.map_w,
-                "map_h": o.map_h,
-                "entities": o.entities
-            }
-        elif isinstance(o, Bot):
-            return o.__dict__
-        elif isinstance(o, Action):
-            return o.name
-        elif isinstance(o, EntityType):
-            return o.name
-        else:
-            super(GameStateEncoder, self).default(o)
-
-
-app = Flask(__name__)
-app.json_encoder = GameStateEncoder
-
-
-@app.route("/")
-def index():
+@dispatcher.add_method
+def run_game(bot0_name: str, bot1_name: str):
     game_state = GameState.create()
     game_history = [
         {
@@ -40,14 +25,29 @@ def index():
             "actions": [],
         }
     ]
-    while game_state.running:
-        actions: Tuple[Action, ...] = (Action.WALK_EAST, Action.WALK_EAST)
-        game_state, executed_actions = tick(game_state, actions)
-        game_history.append(
-            {
-                "game_state": game_state,
-                "actions": executed_actions,
-            }
-        )
+    with BotCommunicator(bot0_name, bot1_name) as botcom:
+        while game_state.running:
+            actions: Tuple[Action, ...] = botcom.get_next_actions(game_state)
+            game_state, executed_actions = tick(game_state, actions)
+            game_history.append(
+                {
+                    "game_state": game_state,
+                    "actions": executed_actions,
+                }
+            )
+    return game_history
 
-    return jsonify(game_history)
+
+@Request.application
+def application(request):
+    if request.path == "/":
+        return Response(
+            '<html><pre>curl -s -X POST -H "Content-Type: application/json" '
+            '-d \'{"method": "run_game", "jsonrpc": "2.0", "id": 420, "params": ["pyrandom", "pyrandom"]}\' '
+            'http://localhost:5000/jsonrpc</pre><p>replace pyrandom by name of bot</p></html>', mimetype="text/html")
+    response = JSONRPCResponseManager.handle(request.data, dispatcher)
+    return Response(json.dumps(response.data, cls=GameStateEncoder), mimetype="application/json")
+
+
+if __name__ == "__main__":
+    run_simple("0.0.0.0", 5000, application, processes=8)

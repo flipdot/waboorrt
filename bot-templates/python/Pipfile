@@ -6,13 +6,8 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-gunicorn = "*"
-nose = "*"
-flake8 = "*"
-black = "*"
-docker = "*"
-werkzeug = "*"
 json-rpc = "*"
+werkzeug = "*"
 
 [requires]
 python_version = "3.8"
