@@ -8,7 +8,7 @@ from typing import Tuple
 
 from botcomms import BotCommunicator
 from gamefunctions import tick
-from gameobjects import GameState, Action
+from gameobjects import GameState
 import logging
 
 from network import GameStateEncoder

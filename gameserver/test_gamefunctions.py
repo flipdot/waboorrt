@@ -6,6 +6,7 @@ WALK_EAST = {"name": Action.WALK_EAST}
 WALK_SOUTH = {"name": Action.WALK_SOUTH}
 WALK_WEST = {"name": Action.WALK_WEST}
 
+
 class TestWalk(TestCase):
     def setUp(self):
         self.game_state = GameState.create()

@@ -45,7 +45,9 @@ def tick(
 ) -> (GameState, Tuple[dict, ...]):
     if len(game_state.bots) != len(actions):
         raise ValueError("number of actions does not match number of bots")
-    actions = tuple(map(lambda a: a if (type(a)==dict) else Action.noaction, actions)) # replace illegal actions by NOOP
+    actions = tuple(
+        map(lambda a: a if (type(a) == dict) else Action.noaction, actions)
+    )  # replace illegal actions by NOOP
 
     game_state = copy.deepcopy(game_state)
     game_state.tick += 1

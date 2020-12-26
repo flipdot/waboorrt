@@ -1,6 +1,7 @@
 from enum import Enum, auto
 from typing import List
 
+
 class Action:
     NOOP = "NOOP"
     WALK_NORTH = "WALK_NORTH"
@@ -9,6 +10,7 @@ class Action:
     WALK_WEST = "WALK_WEST"
     THROW = "THROW"
     noaction = {"name": NOOP}
+
 
 class EntityType(Enum):
     ENTITY = auto()
