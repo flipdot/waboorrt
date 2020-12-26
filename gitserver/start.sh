@@ -1,4 +1,26 @@
 #!/bin/sh
 
+mkdir -p /opt/etc
+
+if [ -f "/opt/etc/shadow" ]; then
+    cp -p /opt/etc/shadow /etc/shadow
+    echo "copied /etc/shadow from volume"
+fi
+
+if [ -f "/opt/etc/passwd" ]; then
+    cp -p /opt/etc/passwd /etc/passwd
+    echo "copied /etc/passwd from volume"
+fi
+
+if [ -f "/opt/etc/group" ]; then
+    cp -p /opt/etc/group /etc/group
+    echo "copied /etc/group from volume"
+fi
+
+if [ -f "/opt/etc/gshadow" ]; then
+    cp -p /opt/etc/gshadow /etc/gshadow
+    echo "copied /etc/gshadow from volume"
+fi
+
 echo "Starting sshd"
 /usr/sbin/sshd -D

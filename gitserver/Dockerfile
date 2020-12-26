@@ -12,7 +12,8 @@ WORKDIR /git
 COPY sshd_config /etc/ssh/sshd_config
 COPY start.sh /start.sh
 COPY newbot.sh /usr/local/bin/newbot
+RUN chmod +x /usr/local/bin/newbot
 
-VOLUME /git
+VOLUME /git /home /opt
 EXPOSE 22
 CMD ["sh", "/start.sh"]

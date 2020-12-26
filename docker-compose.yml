@@ -26,8 +26,12 @@ services:
       - "22:22"
     volumes:
       - botvolume:/git
+      - githome:/home/
+      - gitopt:/opt
 networks:
   gamenet:
     external: true
 volumes:
   botvolume:
+  githome:
+  gitopt:
