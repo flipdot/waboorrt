@@ -41,39 +41,53 @@ def is_position_occupied(state: GameState, x: int, y: int) -> bool:
 
 
 def tick(
-    game_state: GameState, actions: Tuple[Action, ...]
+    game_state: GameState, actions: Tuple[dict, ...]
 ) -> (GameState, Tuple[dict, ...]):
     if len(game_state.bots) != len(actions):
         raise ValueError("number of actions does not match number of bots")
+    actions = tuple(map(lambda a: a if (type(a)==dict) else Action.noaction, actions)) # replace illegal actions by NOOP
 
     game_state = copy.deepcopy(game_state)
     game_state.tick += 1
 
     executed_actions = []
 
-    # Randomly determine which bot goes first. This makes the game more fair.
+    # order: noop, throw, walk
+    # NOOP
+    for bot, action in zip(game_state.bots, actions):
+        if action.get("name") == Action.NOOP:
+            executed_actions.append(
+                {"bot_name": bot.name, "intended_action": action, "success": True}
+            )
+
+    # THROW snowballs
+    for bot, action in zip(game_state.bots, actions):
+        if action.get("name") == Action.THROW:
+            # todo implement
+            executed_actions.append(
+                {"bot_name": bot.name, "intended_action": action, "success": False}
+            )
+
+    # WALK: Randomly determine which bot goes first. This makes the game more fair.
     for bot, action in random.sample(list(zip(game_state.bots, actions)), len(actions)):
         action_success = False
 
-        if action == Action.NOOP:
-            action_success = True
-
-        elif action == Action.WALK_NORTH:
+        if action.get("name") == Action.WALK_NORTH:
             if can_walk_north(game_state, bot):
                 bot.y -= 1
                 action_success = True
 
-        elif action == Action.WALK_EAST:
+        elif action.get("name") == Action.WALK_EAST:
             if can_walk_east(game_state, bot):
                 bot.x += 1
                 action_success = True
 
-        elif action == Action.WALK_SOUTH:
+        elif action.get("name") == Action.WALK_SOUTH:
             if can_walk_south(game_state, bot):
                 bot.y += 1
                 action_success = True
 
-        elif action == Action.WALK_WEST:
+        elif action.get("name") == Action.WALK_WEST:
             if can_walk_west(game_state, bot):
                 bot.x -= 1
                 action_success = True

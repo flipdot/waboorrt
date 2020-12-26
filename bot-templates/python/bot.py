@@ -8,17 +8,26 @@ import logging
 
 logging.basicConfig(level=logging.INFO, format="[%(asctime)s] [%(levelname)s] %(name)s: %(message)s")
 
-class Action(Enum):
-    NOOP = auto()
-    WALK_NORTH = auto()
-    WALK_EAST = auto()
-    WALK_SOUTH = auto()
-    WALK_WEST = auto()
+class Action:
+    NOOP = "NOOP"
+    WALK_NORTH = "WALK_NORTH"
+    WALK_EAST = "WALK_EAST"
+    WALK_SOUTH = "WALK_SOUTH"
+    WALK_WEST = "WALK_WEST"
+    THROW = "THROW"
 
 @dispatcher.add_method
 def next_action(game_state):
     logging.info(game_state)
-    return random.choice(list(Action)).name
+    return {
+        "name": random.choice([
+            Action.NOOP,
+            Action.WALK_NORTH,
+            Action.WALK_EAST,
+            Action.WALK_SOUTH,
+            Action.WALK_WEST
+        ])
+    }
 
 @dispatcher.add_method
 def health():

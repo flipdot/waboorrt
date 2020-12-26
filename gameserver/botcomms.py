@@ -60,13 +60,13 @@ class BotCommunicator:
             c.kill()
         self.containers = []
 
-    def get_next_actions(self, game_state: GameState) -> Tuple[Action, ...]:
+    def get_next_actions(self, game_state: GameState) -> Tuple[dict, ...]:
         actions = []
         for container in self.containers:
             actions.append(self.get_next_action(game_state, container))
         return tuple(actions)
 
-    def get_next_action(self, game_state: GameState, container: Container) -> Action:
+    def get_next_action(self, game_state: GameState, container: Container) -> dict:
         url = f"http://{container.id[:12]}:4000/jsonrpc"
         payload = {
             "method": "next_action",
@@ -83,11 +83,11 @@ class BotCommunicator:
             ).json()
         except requests.exceptions.Timeout:
             logger.info(f"Bot {container.image.tags} took to long to respond")
-            return Action.NOOP
+            return Action.noaction
         except requests.exceptions.RequestException:
             logger.warning(
                 f"Something went very wrong while talking to bot {container.image.tags}"
             )
-            return Action.NOOP
+            return Action.noaction
         logger.debug(f"Response from bot {container.image.tags}: {response}")
-        return Action[response.get("result", "NOOP")]
+        return response.get("result", Action.noaction)

@@ -29,7 +29,7 @@ def run_game(bot0_name: str, bot1_name: str):
     ]
     with BotCommunicator(bot0_name, bot1_name) as botcom:
         while game_state.running:
-            actions: Tuple[Action, ...] = botcom.get_next_actions(game_state)
+            actions: Tuple[dict, ...] = botcom.get_next_actions(game_state)
             game_state, executed_actions = tick(game_state, actions)
             game_history.append(
                 {

@@ -1,14 +1,14 @@
 from enum import Enum, auto
 from typing import List
 
-
-class Action(Enum):
-    NOOP = auto()
-    WALK_NORTH = auto()
-    WALK_EAST = auto()
-    WALK_SOUTH = auto()
-    WALK_WEST = auto()
-
+class Action:
+    NOOP = "NOOP"
+    WALK_NORTH = "WALK_NORTH"
+    WALK_EAST = "WALK_EAST"
+    WALK_SOUTH = "WALK_SOUTH"
+    WALK_WEST = "WALK_WEST"
+    THROW = "THROW"
+    noaction = {"name": NOOP}
 
 class EntityType(Enum):
     ENTITY = auto()
