@@ -94,9 +94,37 @@ def tick(
                 bot.x -= 1
                 action_success = True
 
-        executed_actions.append(
-            {"bot_name": bot.name, "intended_action": action, "success": action_success}
-        )
+        if action.get("name") in [
+            Action.WALK_NORTH,
+            Action.WALK_EAST,
+            Action.WALK_SOUTH,
+            Action.WALK_WEST,
+        ]:
+            executed_actions.append(
+                {
+                    "bot_name": bot.name,
+                    "intended_action": action,
+                    "success": action_success,
+                }
+            )
+
+    # list unknown actions
+    for bot, action in random.sample(list(zip(game_state.bots, actions)), len(actions)):
+        if action.get("name") not in [
+            Action.NOOP,
+            Action.THROW,
+            Action.WALK_NORTH,
+            Action.WALK_EAST,
+            Action.WALK_SOUTH,
+            Action.WALK_WEST,
+        ]:
+            executed_actions.append(
+                {
+                    "bot_name": bot.name,
+                    "intended_action": action,
+                    "success": False,
+                }
+            )
 
     if game_state.tick >= game_state.max_ticks:
         game_state.running = False
