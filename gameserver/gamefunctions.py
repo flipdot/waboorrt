@@ -40,7 +40,9 @@ def is_position_occupied(state: GameState, x: int, y: int) -> bool:
     return False
 
 
-def tick(game_state: GameState, actions: Tuple[Action, ...]) -> (GameState, Tuple[dict, ...]):
+def tick(
+    game_state: GameState, actions: Tuple[Action, ...]
+) -> (GameState, Tuple[dict, ...]):
     if len(game_state.bots) != len(actions):
         raise ValueError("number of actions does not match number of bots")
 
@@ -76,7 +78,9 @@ def tick(game_state: GameState, actions: Tuple[Action, ...]) -> (GameState, Tupl
                 bot.x -= 1
                 action_success = True
 
-        executed_actions.append({"bot_name": bot.name, "intended_action": action, "success": action_success})
+        executed_actions.append(
+            {"bot_name": bot.name, "intended_action": action, "success": action_success}
+        )
 
     if game_state.tick >= game_state.max_ticks:
         game_state.running = False

@@ -17,7 +17,8 @@ logger = logging.getLogger(__name__)
 
 class BotCommunicator:
     """
-    Starts up docker containers, each containing a gamebot, and talks via JSON RPC to them
+    Starts up docker containers, each containing a gamebot,
+    and talks via JSON RPC to them
     """
 
     def __init__(self, *bot_names):
@@ -27,14 +28,22 @@ class BotCommunicator:
 
     def __enter__(self):
         cl = self.docker_client.containers
-        self.containers = [cl.run(f"localhost/bot/{b}", auto_remove=True, network="gamenet", detach=True) for b in
-                           self.bot_names]
+        self.containers = [
+            cl.run(
+                f"localhost/bot/{b}", auto_remove=True, network="gamenet", detach=True
+            )
+            for b in self.bot_names
+        ]
         # give containers a chance to get up
         containers_ready = [False] * len(self.containers)
         for _ in range(30):
             for i, c in enumerate(self.containers):
                 url = f"http://{c.id[:12]}:4000/jsonrpc"
-                payload = {"method": "health", "jsonrpc": "2.0", "id": randint(0, 10000)}
+                payload = {
+                    "method": "health",
+                    "jsonrpc": "2.0",
+                    "id": randint(0, 10000),
+                }
                 try:
                     response = requests.post(url, json=payload, timeout=0.1).json()
                     containers_ready[i] = response.get("result")
@@ -62,18 +71,23 @@ class BotCommunicator:
         payload = {
             "method": "next_action",
             "params": {
-                "game_state": game_state,  # TODO: do not send whole state, just stuff the bot can see
+                # TODO: do not send whole state, just stuff the bot can see
+                "game_state": game_state,
             },
             "jsonrpc": "2.0",
-            "id": randint(0, 10000)
+            "id": randint(0, 10000),
         }
         try:
-            response = requests.post(url, data=json.dumps(payload, cls=GameStateEncoder), timeout=0.1).json()
+            response = requests.post(
+                url, data=json.dumps(payload, cls=GameStateEncoder), timeout=0.1
+            ).json()
         except requests.exceptions.Timeout:
             logger.info(f"Bot {container.image.tags} took to long to respond")
             return Action.NOOP
         except requests.exceptions.RequestException:
-            logger.warning(f"Something went very wrong while talking to bot {container.image.tags}")
+            logger.warning(
+                f"Something went very wrong while talking to bot {container.image.tags}"
+            )
             return Action.NOOP
         logger.debug(f"Response from bot {container.image.tags}: {response}")
         return Action[response.get("result", "NOOP")]

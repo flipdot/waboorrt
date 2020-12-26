@@ -13,7 +13,9 @@ import logging
 
 from network import GameStateEncoder
 
-logging.basicConfig(level=logging.INFO, format="[%(asctime)s] [%(levelname)s] %(name)s: %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="[%(asctime)s] [%(levelname)s] %(name)s: %(message)s"
+)
 
 
 @dispatcher.add_method
@@ -42,11 +44,18 @@ def run_game(bot0_name: str, bot1_name: str):
 def application(request):
     if request.path == "/":
         return Response(
-            '<html><pre>curl -s -X POST -H "Content-Type: application/json" '
-            '-d \'{"method": "run_game", "jsonrpc": "2.0", "id": 420, "params": ["pyrandom", "pyrandom"]}\' '
-            'http://localhost:5000/jsonrpc</pre><p>replace pyrandom by name of bot</p></html>', mimetype="text/html")
+            '<html><pre>curl -s -X POST '
+            '-H "Content-Type: application/json" '
+            '-d \'{"method": "run_game", "jsonrpc": "2.0", '
+            '"id": 420, "params": ["pyrandom", "pyrandom"]}\' '
+            "http://localhost:5000/jsonrpc</pre>"
+            "<p>replace pyrandom by name of bot</p></html>",
+            mimetype="text/html",
+        )
     response = JSONRPCResponseManager.handle(request.data, dispatcher)
-    return Response(json.dumps(response.data, cls=GameStateEncoder), mimetype="application/json")
+    return Response(
+        json.dumps(response.data, cls=GameStateEncoder), mimetype="application/json"
+    )
 
 
 if __name__ == "__main__":

@@ -17,7 +17,7 @@ Use pipenv (`pip install pipenv`).
     # run tests
     pipenv run nosetests
     # format code
-    pipenv run black
+    pipenv run black .
     # check style
     pipenv run flake8
 
