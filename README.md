@@ -25,3 +25,8 @@ Build the "pyrandom" docker image:
 
     cd bot-templates/python
     docker build -t localhost/bot/pyrandom .
+    
+## gitserver: adding new accounts
+
+    docker-compose exec gitserver newbot username pyrandom "ssh-rsa AAAAB...."
+    git clone username@localhost:/git/username.git
