@@ -22,8 +22,8 @@ class GameState:
         super().__init__()
         self.tick = 0
         self.max_ticks = max_ticks
-        self.map_w: int = 50
-        self.map_h: int = 50
+        self.map_w: int = 16
+        self.map_h: int = 16
         self.bots: List[Bot] = []
         self.entities: List[Entity] = []
         self.running: bool = True
