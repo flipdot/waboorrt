@@ -8,7 +8,6 @@ services:
       - "5000:5000" # remove me in prod
     depends_on:
       - redis
-    privileged: true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
@@ -30,8 +29,7 @@ services:
       - gitopt:/opt
       - botbuilder-notify:/botbuilder
   botbuilder:
-    build: botbuilder
-    privileged: true
+    build: botbuilder 
     volumes:
       - botbuilder-notify:/botbuilder
       - botvolume:/git
