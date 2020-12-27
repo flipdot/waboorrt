@@ -7,6 +7,8 @@ import { GameState } from './api-types';
 
 const MapWrapper = styled.div`
   position: relative;
+  border: 2px solid var(--white);
+  margin: 20px;
 `;
 
 export default function Map({

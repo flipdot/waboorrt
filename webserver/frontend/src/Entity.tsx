@@ -12,13 +12,27 @@ const EntityBody = styled.div<Entity>`
   width: ${fieldSize}px;
   background: url(${robot});
   background-size: contain;
-  transition: top .4s, left .4s;
+  transition: top 0.4s, left 0.4s;
+`;
+
+const Health = styled.div`
+  color: var(--white);
+  font-size: 0.7rem;
+  bottom: 100%;
+  position: absolute;
+  left: 50%;
+  margin-left: -25px;
+  margin-bottom: 2px;
+  width: 50px;
+  text-align: center;
 `;
 
 export default function Entity(props: Entity) {
   return (
     <>
-      <EntityBody {...props}>{props.health}</EntityBody>
+      <EntityBody {...props}>
+        <Health>{props.health}</Health>
+      </EntityBody>
     </>
   );
 }

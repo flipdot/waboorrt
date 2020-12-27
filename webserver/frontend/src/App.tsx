@@ -11,12 +11,12 @@ type Pos = { x: number; y: number };
 
 const SnowBall = styled.div<{ $pos: Pos }>`
   position: absolute;
-  width: 12px;
-  height: 12px;
-  background: green;
+  width: 10px;
+  height: 10px;
+  background: var(--white);
   border-radius: 50%;
-  margin-left: ${fieldSize /2 - 6}px;
-  margin-top: ${fieldSize / 2 - 6}px;
+  margin-left: ${fieldSize / 2 - 5}px;
+  margin-top: ${fieldSize / 2 - 5}px;
   top: ${(props) => props.$pos.y * fieldSize}px;
   left: ${(props) => props.$pos.x * fieldSize}px;
 `;
@@ -78,12 +78,31 @@ function ActionAnimation({
   return null;
 }
 
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+`;
+
+const DebugInfo = styled.textarea.attrs({ readOnly: true })`
+  padding: 20px;
+  margin-top: 40px;
+  border: 0;
+  resize: none;
+  width: 640px;
+  height: 240px;
+
+  background: transparent;
+  color: var(--tertiary);
+  border: 2px solid var(--tertiary);
+`;
+
 export default function App({ replay }: { replay: GameReplay }) {
   const [currentFrameIdx, setCurrentFrameIdx] = useState(0);
   const frame = replay[currentFrameIdx];
 
   return (
-    <div>
+    <Wrapper>
       <input
         type="range"
         max={replay[0].game_state.max_ticks}
@@ -92,7 +111,6 @@ export default function App({ replay }: { replay: GameReplay }) {
         onChange={(e) => setCurrentFrameIdx(Number(e.currentTarget.value))}
       />
 
-      {JSON.stringify(frame)}
       <Map gameState={frame.game_state}>
         {frame.actions.map((action, i) => (
           <ActionAnimation
@@ -102,7 +120,8 @@ export default function App({ replay }: { replay: GameReplay }) {
           />
         ))}
       </Map>
+      <DebugInfo value={JSON.stringify(frame, null, 2)} />
       <GlobalStyle />
-    </div>
+    </Wrapper>
   );
 }
