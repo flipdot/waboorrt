@@ -1,12 +1,12 @@
 from werkzeug.wrappers import Request, Response
 from werkzeug.serving import run_simple
-from enum import Enum, auto
 import random
 
 from jsonrpc import JSONRPCResponseManager, dispatcher
 import logging
 
 logging.basicConfig(level=logging.INFO, format="[%(asctime)s] [%(levelname)s] %(name)s: %(message)s")
+
 
 class Action:
     NOOP = "NOOP"
@@ -15,6 +15,7 @@ class Action:
     WALK_SOUTH = "WALK_SOUTH"
     WALK_WEST = "WALK_WEST"
     THROW = "THROW"
+
 
 @dispatcher.add_method
 def next_action(game_state):
