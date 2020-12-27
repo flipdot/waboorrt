@@ -58,3 +58,58 @@ class TestWalk(TestCase):
         b0, b1 = game_state.bots
         self.assertEqual((b0.x, b0.y), (6, 5))
         self.assertEqual((b1.x, b1.y), (23, 26))
+
+
+class TestThrow(TestCase):
+    def setUp(self):
+        self.game_state = GameState.create()
+        bots = self.game_state.bots
+        bots[0].x, bots[0].y = 5, 5
+        bots[1].x, bots[1].y = 25, 25
+
+    def tearDown(self):
+        pass
+
+    def test_throw_oob(self):
+        game_state, _ = tick(self.game_state, (
+            {"name": Action.THROW, "x": -10, "y": -10},
+            {"name": Action.THROW, "x": 100, "y": 100}
+        ))
+        b0, b1 = game_state.bots
+        self.assertEqual((b0.x, b0.y), (5, 5))
+        self.assertEqual((b1.x, b1.y), (25, 25))
+        self.assertEqual(b0.health, 100)
+        self.assertEqual(b1.health, 100)
+
+    def test_throw_center(self):
+        game_state, _ = tick(self.game_state, (
+            {"name": Action.THROW, "x": 12, "y": 12},
+            {"name": Action.THROW, "x": 13, "y": 13}
+        ))
+        b0, b1 = game_state.bots
+        self.assertEqual((b0.x, b0.y), (5, 5))
+        self.assertEqual((b1.x, b1.y), (25, 25))
+        self.assertEqual(b0.health, 100)
+        self.assertEqual(b1.health, 100)
+
+    def test_throw_directly(self):
+        game_state, _ = tick(self.game_state, (
+            {"name": Action.THROW},  # should default to (5,5)
+            {"name": Action.THROW, "x": 5, "y": 5}
+        ))
+        b0, b1 = game_state.bots
+        self.assertEqual((b0.x, b0.y), (5, 5))
+        self.assertEqual((b1.x, b1.y), (25, 25))
+        self.assertEqual(b0.health, 80)  # 100-10-10
+        self.assertEqual(b1.health, 100)
+
+    def test_throw_close(self):
+        game_state, _ = tick(self.game_state, (
+            {"name": Action.THROW, "x": 5, "y": 4},
+            {"name": Action.THROW, "x": 6, "y": 6}
+        ))
+        b0, b1 = game_state.bots
+        self.assertEqual((b0.x, b0.y), (5, 5))
+        self.assertEqual((b1.x, b1.y), (25, 25))
+        self.assertEqual(b0.health, 87)  # 87=100-damage(1)-damage(sqrt(2))=100-7-6
+        self.assertEqual(b1.health, 100)
