@@ -5,7 +5,7 @@ services:
   gameserver:
     build: gameserver
     ports:
-      - "5000:5000"
+      - "5000:5000" # remove me in prod
     depends_on:
       - redis
     privileged: true

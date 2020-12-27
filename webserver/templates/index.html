@@ -16,7 +16,7 @@
     </div>
     <div class="row mt-2">
         <div class="col-8">
-            gameboard goes here
+            TODO: gameboard goes here
         </div>
         <div class="col-4">
             <div class="list-group">
@@ -25,6 +25,8 @@
                         {{ game.title }}<br />
                         <small class="text-muted text-end">{{ game.timestamp.strftime("%Y-%m-%d %H:%M") }}</small>
                     </a>
+                {% else %}
+                    <span class="list-group-item">No games yet</span>
                 {% endfor %}
             </div>
         </div>
