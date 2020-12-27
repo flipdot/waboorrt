@@ -23,7 +23,7 @@ services:
   gitserver:
     build: gitserver
     ports:
-      - "22:22"
+      - "2222:22"
     volumes:
       - botvolume:/git
       - githome:/home/

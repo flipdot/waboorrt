@@ -29,4 +29,4 @@ Build the "pyrandom" docker image:
 ## gitserver: adding new accounts
 
     docker-compose exec gitserver newbot username pyrandom "ssh-rsa AAAAB...."
-    git clone username@localhost:/git/username.git
+    git clone ssh://username@localhost:2222/git/username.git
