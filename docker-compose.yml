@@ -28,6 +28,14 @@ services:
       - botvolume:/git
       - githome:/home/
       - gitopt:/opt
+      - botbuilder-notify:/botbuilder
+  botbuilder:
+    build: botbuilder
+    privileged: true
+    volumes:
+      - botbuilder-notify:/botbuilder
+      - botvolume:/git
+      - /var/run/docker.sock:/var/run/docker.sock
 networks:
   gamenet:
     external: true
@@ -35,3 +43,4 @@ volumes:
   botvolume:
   githome:
   gitopt:
+  botbuilder-notify:
