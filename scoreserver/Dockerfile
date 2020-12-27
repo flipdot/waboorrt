@@ -8,10 +8,8 @@ COPY Pipfile Pipfile.lock ./
 
 RUN pipenv sync
 
-COPY * ./
-COPY static/ static/
-COPY templates/ templates/
+COPY ./ ./
 
 EXPOSE 80
 ENTRYPOINT ["pipenv", "run"]
-CMD ["gunicorn", "-w 2", "-b", "0.0.0.0:80", "app:app"]
+CMD ["python", "app.py"]

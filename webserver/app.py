@@ -9,7 +9,7 @@ logging.basicConfig(
 )
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
-db = redis.Redis(host="localhost", port=6379, db=0, decode_responses=True)
+db = redis.Redis(host="redis", port=6379, db=0, decode_responses=True)
 
 
 @app.route("/")

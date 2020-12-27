@@ -36,6 +36,12 @@ services:
       - botbuilder-notify:/botbuilder
       - botvolume:/git
       - /var/run/docker.sock:/var/run/docker.sock
+  scoreserver:
+    build: scoreserver
+    depends_on:
+      - gameserver
+      - redis
+
 networks:
   gamenet:
     external: true
