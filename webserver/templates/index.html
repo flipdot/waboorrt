@@ -1,0 +1,34 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <nav class="navbar navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">waboorrt</a>
+                <form class="d-flex" action="/login" method="post">
+                    <button class="btn btn-outline-success disabled">Login with rC3</button>
+                </form>
+            </div>
+        </nav>
+    </div>
+    <div class="row mt-2">
+        <div class="col-8">
+            gameboard goes here
+        </div>
+        <div class="col-4">
+            <div class="list-group">
+                {% for game in games %}
+                    <a href="#{{ game.id }}" class="list-group-item">
+                        {{ game.title }}<br />
+                        <small class="text-muted text-end">{{ game.timestamp.strftime("%Y-%m-%d %H:%M") }}</small>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
