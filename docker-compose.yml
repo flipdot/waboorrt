@@ -26,6 +26,8 @@ services:
       - "80:80"
     depends_on:
       - redis
+    env_file:
+      - webserver.env
   gitserver:
     build: gitserver
     restart: unless-stopped
