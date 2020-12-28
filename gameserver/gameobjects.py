@@ -5,10 +5,7 @@ from typing import List
 
 class Action:
     NOOP = "NOOP"
-    WALK_NORTH = "WALK_NORTH"
-    WALK_EAST = "WALK_EAST"
-    WALK_SOUTH = "WALK_SOUTH"
-    WALK_WEST = "WALK_WEST"
+    WALK = "WALK"
     THROW = "THROW"
     LOOK = "LOOK"
     noaction = {"name": NOOP}
@@ -19,9 +16,17 @@ class EntityType(Enum):
     BOT = auto()
 
 
+# class BotView:
+#     """
+#     Represents the object that gets send to the bots
+#     """
+#
+#     def __init__(self):
+#
+
+
 class GameState:
     def __init__(self, max_ticks=100):
-        super().__init__()
         self.tick = 0
         self.max_ticks = max_ticks
         self.map_w: int = 16

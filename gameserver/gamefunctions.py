@@ -52,8 +52,66 @@ def compute_damage(dist: float) -> int:
     return int(max(10 * math.pow(10, -(dist / radius)), 0))
 
 
+def action_noop(game_state, bot, action):
+    bot.coins += 1  # get one coin per noop
+    return True
+
+
+def action_walk(game_state, bot, action):
+    if action.get("direction") == "north":
+        if can_walk_north(game_state, bot):
+            bot.y -= 1
+            return True
+
+    elif action.get("direction") == "east":
+        if can_walk_east(game_state, bot):
+            bot.x += 1
+            return True
+
+    elif action.get("direction") == "south":
+        if can_walk_south(game_state, bot):
+            bot.y += 1
+            return True
+
+    elif action.get("direction") == "west":
+        if can_walk_west(game_state, bot):
+            bot.x -= 1
+            return True
+
+    return False
+
+
+def action_throw(game_state, bot, action):
+    for other in game_state.bots:
+        other.health -= compute_damage(
+            dist(
+                (other.x, other.y),
+                (action.get("x", bot.x), action.get("y", bot.y)),
+            )
+        )
+    return True
+
+
+def action_look(game_state, bot, action):
+    view_price = 1.0
+    bot.view_range = min(
+        bot.coins / view_price,  # what the bot can afford
+        action.get("range", max(  # what it wants or the max necessary
+            dist((bot.x, bot.y), (0, 0)),
+            dist((bot.x, bot.y), (game_state.map_w, 0)),
+            dist((bot.x, bot.y), (0, game_state.map_h)),
+            dist((bot.x, bot.y), (game_state.map_w, game_state.map_h)),
+        ))
+    )
+    if bot.view_range > 1:  # get up to 1 for free
+        bot.coins -= bot.view_range * view_price
+    else:  # tried to view in range <=1, makes no sense
+        bot.view_range = 1
+    return bot.view_range > 1  # if <=1, the bot would waste coins
+
+
 def tick(
-    game_state: GameState, actions: Tuple[dict, ...]
+        game_state: GameState, actions: Tuple[dict, ...]
 ) -> (GameState, Tuple[dict, ...]):
     if len(game_state.bots) != len(actions):
         raise ValueError("number of actions does not match number of bots")
@@ -66,108 +124,34 @@ def tick(
 
     executed_actions = []
 
-    # order: noop, throw, walk, look
-    # NOOP
-    for bot, action in zip(game_state.bots, actions):
-        if action.get("name") == Action.NOOP:
-            bot.coins += 1  # get one coin per noop
-            executed_actions.append(
-                {"bot_name": bot.name, "intended_action": action, "success": True}
-            )
+    action_list = random.sample(list(zip(game_state.bots, actions)), len(actions))
 
-    # THROW snowballs
-    for bot, action in zip(game_state.bots, actions):
-        if action.get("name") == Action.THROW:
-            for other in game_state.bots:
-                other.health -= compute_damage(
-                    dist(
-                        (other.x, other.y),
-                        (action.get("x", bot.x), action.get("y", bot.y)),
-                    )
-                )
-            executed_actions.append(
-                {"bot_name": bot.name, "intended_action": action, "success": True}
-            )
+    action_execution_order = [
+        (Action.NOOP, action_noop),
+        (Action.THROW, action_throw),
+        (Action.WALK, action_walk),
+        (Action.LOOK, action_look),
+    ]
 
-    # WALK: Randomly determine which bot goes first. This makes the game more fair.
-    for bot, action in random.sample(list(zip(game_state.bots, actions)), len(actions)):
-        action_success = False
-
-        if action.get("name") == Action.WALK_NORTH:
-            if can_walk_north(game_state, bot):
-                bot.y -= 1
-                action_success = True
-
-        elif action.get("name") == Action.WALK_EAST:
-            if can_walk_east(game_state, bot):
-                bot.x += 1
-                action_success = True
-
-        elif action.get("name") == Action.WALK_SOUTH:
-            if can_walk_south(game_state, bot):
-                bot.y += 1
-                action_success = True
-
-        elif action.get("name") == Action.WALK_WEST:
-            if can_walk_west(game_state, bot):
-                bot.x -= 1
-                action_success = True
-
-        if action.get("name") in [
-            Action.WALK_NORTH,
-            Action.WALK_EAST,
-            Action.WALK_SOUTH,
-            Action.WALK_WEST,
-        ]:
-            executed_actions.append(
-                {
+    for current_action_type, action_function in action_execution_order:
+        for bot, action in action_list:
+            if action.get("name") == current_action_type:
+                executed_actions.append({
                     "bot_name": bot.name,
                     "intended_action": action,
-                    "success": action_success,
-                }
-            )
-
-    # LOOK
-    for bot, action in zip(game_state.bots, actions):
-        if action.get("name") == Action.LOOK:
-            view_price = 1.0
-            bot.view_range = min(
-                bot.coins / view_price,  # what the bot can afford
-                action.get("range", max(  # what it wants or the max necessary
-                    dist((bot.x, bot.y), (0, 0)),
-                    dist((bot.x, bot.y), (game_state.map_w, 0)),
-                    dist((bot.x, bot.y), (0, game_state.map_h)),
-                    dist((bot.x, bot.y), (game_state.map_w, game_state.map_h)),
-                ))
-            )
-            if bot.view_range > 1:  # get up to 1 for free
-                bot.coins -= bot.view_range * view_price
-            else:  # tried to view in range <=1, makes no sense
-                bot.view_range = 1
-            executed_actions.append({
-                "bot_name": bot.name,
-                "intended_action": action,
-                "success": bot.view_range > 1,  # if <=1, the bot would waste coins
-            })
-        else:
-            bot.view_range = 1  # get 1 for free
+                    "success": action_function(game_state, bot, action)
+                })
+                action["_was_handled"] = True
 
     # list unknown actions
-    for bot, action in zip(game_state.bots, actions):
-        if action.get("name") not in [
-            Action.NOOP,
-            Action.THROW,
-            Action.LOOK,
-            Action.WALK_NORTH,
-            Action.WALK_EAST,
-            Action.WALK_SOUTH,
-            Action.WALK_WEST,
-        ]:
+    for bot, action in action_list:
+        if not action.get("_was_handled"):
             executed_actions.append(
                 {
                     "bot_name": bot.name,
                     "intended_action": action,
                     "success": False,
+                    "message": "Unknown action"
                 }
             )
 
