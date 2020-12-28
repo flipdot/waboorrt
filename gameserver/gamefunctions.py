@@ -48,7 +48,8 @@ def dist(a: Tuple[int, int], b: Tuple[int, int]) -> float:
 
 
 def compute_damage(dist: float) -> int:
-    return int(max(10 * math.pow(10, -(dist / 7)), 0))
+    radius = 3
+    return int(max(10 * math.pow(10, -(dist / radius)), 0))
 
 
 def tick(
@@ -69,6 +70,7 @@ def tick(
     # NOOP
     for bot, action in zip(game_state.bots, actions):
         if action.get("name") == Action.NOOP:
+            bot.coins += 1  # get one coin per noop
             executed_actions.append(
                 {"bot_name": bot.name, "intended_action": action, "success": True}
             )
