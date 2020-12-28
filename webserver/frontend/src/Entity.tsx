@@ -12,7 +12,7 @@ const EntityBody = styled.div<Entity>`
   width: ${fieldSize}px;
   background: url(${robot});
   background-size: contain;
-  transition: top 0.4s, left 0.4s;
+  transition: top 0.5s, left 0.5s;
 `;
 
 const Health = styled.div`
