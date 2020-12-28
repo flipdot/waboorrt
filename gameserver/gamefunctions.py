@@ -138,6 +138,8 @@ def tick(
 
     for current_action_type, action_function in action_execution_order:
         for bot, action in action_list:
+            # for convenience for the bot authors: convert every action to lowercase
+            action = {k.lower(): v for k, v in action.items()}
             if action.get("name") == current_action_type:
                 executed_actions.append(
                     {
