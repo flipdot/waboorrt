@@ -114,6 +114,9 @@ def auth_redirect():
     if template not in VALID_REPO_TEMPLATES:
         abort(400, f"invalid template: {template}")
 
+    if not pubkey:
+        abort(400, "pubkey missing")
+
     state = uuid4()
     db.set(f"webserver:states:{state}", json.dumps({
         "template": template,
