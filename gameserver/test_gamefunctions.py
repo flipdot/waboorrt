@@ -71,10 +71,13 @@ class TestThrow(TestCase):
         pass
 
     def test_throw_oob(self):
-        game_state, _ = tick(self.game_state, (
-            {"name": Action.THROW, "x": -10, "y": -10},
-            {"name": Action.THROW, "x": 100, "y": 100},
-        ))
+        game_state, _ = tick(
+            self.game_state,
+            (
+                {"name": Action.THROW, "x": -10, "y": -10},
+                {"name": Action.THROW, "x": 100, "y": 100},
+            ),
+        )
         b0, b1 = game_state.bots
         self.assertEqual((b0.x, b0.y), (5, 5))
         self.assertEqual((b1.x, b1.y), (11, 11))
@@ -82,10 +85,13 @@ class TestThrow(TestCase):
         self.assertEqual(b1.health, 100)
 
     def test_throw_center(self):
-        game_state, _ = tick(self.game_state, (
-            {"name": Action.THROW, "x": 8, "y": 8},
-            {"name": Action.THROW, "x": 9, "y": 9},
-        ))
+        game_state, _ = tick(
+            self.game_state,
+            (
+                {"name": Action.THROW, "x": 8, "y": 8},
+                {"name": Action.THROW, "x": 9, "y": 9},
+            ),
+        )
         b0, b1 = game_state.bots
         self.assertEqual((b0.x, b0.y), (5, 5))
         self.assertEqual((b1.x, b1.y), (11, 11))
@@ -93,10 +99,13 @@ class TestThrow(TestCase):
         self.assertEqual(b1.health, 99)
 
     def test_throw_directly(self):
-        game_state, _ = tick(self.game_state, (
-            {"name": Action.THROW},  # should default to (5,5)
-            {"name": Action.THROW, "x": 5, "y": 5},
-        ))
+        game_state, _ = tick(
+            self.game_state,
+            (
+                {"name": Action.THROW},  # should default to (5,5)
+                {"name": Action.THROW, "x": 5, "y": 5},
+            ),
+        )
         b0, b1 = game_state.bots
         self.assertEqual((b0.x, b0.y), (5, 5))
         self.assertEqual((b1.x, b1.y), (11, 11))
@@ -104,10 +113,13 @@ class TestThrow(TestCase):
         self.assertEqual(b1.health, 100)
 
     def test_throw_close(self):
-        game_state, _ = tick(self.game_state, (
-            {"name": Action.THROW, "x": 5, "y": 4},
-            {"name": Action.THROW, "x": 6, "y": 6},
-        ))
+        game_state, _ = tick(
+            self.game_state,
+            (
+                {"name": Action.THROW, "x": 5, "y": 4},
+                {"name": Action.THROW, "x": 6, "y": 6},
+            ),
+        )
         b0, b1 = game_state.bots
         self.assertEqual((b0.x, b0.y), (5, 5))
         self.assertEqual((b1.x, b1.y), (11, 11))

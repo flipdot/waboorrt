@@ -34,7 +34,28 @@ def index():
 
 @app.route("/api/games")
 def game_list():
-    game_keys = [f"game:{x}:summary" for x in db.zrevrangebyscore("matches_by_time", "+inf", "-inf", start=0, num=25)]
+    from_id = request.args.get("from", "")
+    try:
+        num = min(int(request.args.get("n", 25)), 25)
+    except ValueError:
+        abort(400, description="n must be int")
+        return  # return is only for better ide linting ("num may not be defined")
+    if ":" in from_id:
+        abort(400, description="colons are invalid")
+
+    if from_id:
+        from_key = f"game:{from_id}:summary"
+        from_game_str = db.get(from_key)
+        if not from_game_str:
+            abort(404, description="game not found")
+        from_game = json.loads(from_game_str)
+        max_range = float(from_game.get("timestamp"))
+    else:
+        max_range = "+inf"
+    game_keys = [
+        f"game:{x}:summary" for x in
+        db.zrevrangebyscore("matches_by_time", max_range, "-inf", start=0, num=num)
+    ]
     games = [json.loads(db.get(k)) for k in game_keys]
     return jsonify(games)
 

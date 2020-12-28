@@ -44,7 +44,7 @@ def run_game(bot0_name: str, bot1_name: str):
 def application(request):
     if request.path == "/":
         return Response(
-            '<html><pre>curl -s -X POST '
+            "<html><pre>curl -s -X POST "
             '-H "Content-Type: application/json" '
             '-d \'{"method": "run_game", "jsonrpc": "2.0", '
             '"id": 420, "params": ["pyrandom", "pyrandom"]}\' '
