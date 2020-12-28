@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
 import { CgUndo, CgPlayButton, CgPlayPause } from 'react-icons/cg';
+import styled from 'styled-components';
 
 import { GameReplay } from '../api-types';
 import { GlobalStyle } from '../styles';
@@ -31,10 +31,15 @@ const IconButton = styled.button`
   padding: 0;
   margin: 0;
   border: 0;
-  line-height: 30px;
-  height: 30px;
-  width: 30px;
+  line-height: 20px;
+  height: 40px;
+  width: 40px;
   cursor: pointer;
+`;
+
+const LargeIconButton = styled(IconButton)`
+  font-size: 38px;
+  margin: -4px;
 `;
 
 export default function Player({ replay }: { replay: GameReplay }) {
@@ -98,7 +103,7 @@ export default function Player({ replay }: { replay: GameReplay }) {
       </Map>
 
       <PlayBar>
-        <IconButton
+        <LargeIconButton
           type="button"
           onClick={() => {
             setPlay(!play);
@@ -109,7 +114,7 @@ export default function Player({ replay }: { replay: GameReplay }) {
           title={play ? 'Pause' : 'Play'}
         >
           {play ? <CgPlayPause /> : <CgPlayButton />}
-        </IconButton>
+        </LargeIconButton>
         <Range
           max={replay[0].game_state.max_ticks}
           min={0}
