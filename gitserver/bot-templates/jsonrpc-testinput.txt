@@ -1,0 +1,36 @@
+{
+	"method": "next_action",
+	"jsonrpc": "2.0",
+	"id": 420,
+	"params": {
+		"me": {
+			"x": 1,
+			"y": 2,
+			"coins": 3,
+			"view_range": 4.5
+		},
+		"meta": {
+			"w": 100,
+			"h": 200,
+			"tick": 300,
+			"name": "Hans"
+		},
+		"entities": [
+			{
+				"x": 5,
+				"y": 6,
+				"type": "BOT"
+			},
+			{
+				"x": 7,
+				"y": 8,
+				"type": "BOT"
+			},
+			{
+				"x": 9,
+				"y": 10,
+				"type": "BOT"
+			}
+		]
+	}
+}
