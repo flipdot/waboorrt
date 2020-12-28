@@ -2,9 +2,11 @@ import json
 import logging
 import os
 import random
+import subprocess
 from datetime import datetime, timedelta
+from urllib.parse import urlparse
 
-from flask import Flask, render_template, request, redirect, jsonify, abort
+from flask import Flask, render_template, request, redirect, jsonify, abort, url_for
 import redis
 
 logging.basicConfig(
@@ -37,8 +39,22 @@ def game_history(game_id):
     return history
 
 
+@app.route("/login_success/<username>")
+def login_success(username):
+    hostname = urlparse(request.base_url).hostname
+    return render_template("login_success.html", username=username, hostname=hostname)
+
+
 @app.route("/login", methods=["POST"])
 def login():
-    user_id = random.randint(0, 10000)  # probably we get some kind of unique stuff from oauth flow
-    db.set(f"users:{user_id}", json.dumps({"botname": request.form.get("username")}))
-    return redirect("/")
+    # TODO: validate with regex
+    # ^[a-zA-Z0-9_-]+
+    username = request.form.get("username")
+    # TODO: limit to certain options (bot-templates/*
+    template = request.form.get("template")
+    # TODO: validate with regex
+    # ^[a-zA-Z0-9+=/ -]+$
+    pubkey = request.form.get("pubkey")
+    # TODO: IS THIS REALLY SECURE?!
+    subprocess.run(["ssh", "root@gitserver", "newbot", f'"{username}" "{template}" "{pubkey}"'])
+    return redirect(url_for(".login_success", username=username))
