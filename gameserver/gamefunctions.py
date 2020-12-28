@@ -48,7 +48,8 @@ def dist(a: Tuple[int, int], b: Tuple[int, int]) -> float:
 
 
 def compute_damage(dist: float) -> int:
-    return int(max(10 * math.pow(10, -(dist / 7)), 0))
+    radius = 3
+    return int(max(10 * math.pow(10, -(dist / radius)), 0))
 
 
 def tick(
@@ -65,10 +66,11 @@ def tick(
 
     executed_actions = []
 
-    # order: noop, throw, walk
+    # order: noop, throw, walk, look
     # NOOP
     for bot, action in zip(game_state.bots, actions):
         if action.get("name") == Action.NOOP:
+            bot.coins += 1  # get one coin per noop
             executed_actions.append(
                 {"bot_name": bot.name, "intended_action": action, "success": True}
             )
@@ -125,11 +127,37 @@ def tick(
                 }
             )
 
+    # LOOK
+    for bot, action in zip(game_state.bots, actions):
+        if action.get("name") == Action.LOOK:
+            view_price = 1.0
+            bot.view_range = min(
+                bot.coins / view_price,  # what the bot can afford
+                action.get("range", max(  # what it wants or the max necessary
+                    dist((bot.x, bot.y), (0, 0)),
+                    dist((bot.x, bot.y), (game_state.map_w, 0)),
+                    dist((bot.x, bot.y), (0, game_state.map_h)),
+                    dist((bot.x, bot.y), (game_state.map_w, game_state.map_h)),
+                ))
+            )
+            if bot.view_range > 1:  # get up to 1 for free
+                bot.coins -= bot.view_range * view_price
+            else:  # tried to view in range <=1, makes no sense
+                bot.view_range = 1
+            executed_actions.append({
+                "bot_name": bot.name,
+                "intended_action": action,
+                "success": bot.view_range > 1,  # if <=1, the bot would waste coins
+            })
+        else:
+            bot.view_range = 1  # get 1 for free
+
     # list unknown actions
-    for bot, action in random.sample(list(zip(game_state.bots, actions)), len(actions)):
+    for bot, action in zip(game_state.bots, actions):
         if action.get("name") not in [
             Action.NOOP,
             Action.THROW,
+            Action.LOOK,
             Action.WALK_NORTH,
             Action.WALK_EAST,
             Action.WALK_SOUTH,
