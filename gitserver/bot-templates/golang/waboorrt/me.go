@@ -5,4 +5,5 @@ type MeInfo struct {
 	Y         int     `json:"y"`
 	Coins     int     `json:"coins"`
 	ViewRange float64 `json:"view_range"`
+	Name      string  `json:"name"`
 }

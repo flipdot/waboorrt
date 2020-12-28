@@ -9,7 +9,7 @@ import (
 type Bot struct {
 }
 
-func (b *Bot) NextAction(state waboorrt.GameState, yourName string) (waboorrt.Action, error) {
+func (b *Bot) NextAction(state *waboorrt.GameState) (waboorrt.Action, error) {
 	return nil, nil
 }
 

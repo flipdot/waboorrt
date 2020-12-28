@@ -14,12 +14,12 @@ func newWrapper(bot Bot) *wrapper {
 	}
 }
 
-func (w *wrapper) NextAction(r *http.Request, args *NextActionArgs, result *Action) error {
-	ret, err := w.bot.NextAction(args.GameState, args.YourName)
+func (w *wrapper) NextAction(r *http.Request, args *GameState, result *Action) error {
+	ret, err := w.bot.NextAction(args)
 	if err != nil {
 		return err
 	}
-	
+
 	*result = ret
 	return nil
 }
