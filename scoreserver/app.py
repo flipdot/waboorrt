@@ -60,16 +60,17 @@ def get_score(game_history) -> Dict[str, float]:
 def calculate_new_elo_ranking(
         current_rank: Tuple[int, int], points: Tuple[float, float], k=20
 ) -> Tuple[int, int]:
-    """Get new ELO rating. Formular implemented from https://de.wikipedia.org/wiki/Elo-Zahl
+    """Get new ELO rating. Formula implemented from https://de.wikipedia.org/wiki/Elo-Zahl
 
     current_rank is a tuple with ELO ranking from both players.
     points is a tuple, which may be (1, 0) for first player won,
     (0, 1) for second player won, (0.5, 0.5) for draw"""
     # current ranks
     r0, r1 = current_rank
+    rdiff = max(min(r1 - r0, 400), -400)  # rdiff in [-400, 400]
     # expected values
-    e0 = 1 / (1 + 10 ** ((r1 - r0) / 400))
-    e1 = 1 / (1 + 10 ** ((r0 - r1) / 400))
+    e0 = 1 / (1 + 10 ** (rdiff / 400))
+    e1 = 1 / (1 + 10 ** (-rdiff / 400))
     new_r0 = round(r0 + k * (points[0] - e0))
     new_r1 = round(r1 + k * (points[1] - e1))
     return new_r0, new_r1
