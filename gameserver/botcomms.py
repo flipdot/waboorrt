@@ -30,25 +30,30 @@ def get_bot_view(game_state: GameState, bot_name: str):
 
     modified_game_state: GameState = copy.deepcopy(game_state)
     modified_game_state.entities = []
-    visible_entities = [{
-        "x": e.x,
-        "y": e.y,
-        "type": e.type,
-    } for e in game_state.entities if dist((me.x, me.y), (e.x, e.y)) <= me.view_range]
+    visible_entities = [
+        {
+            "x": e.x,
+            "y": e.y,
+            "type": e.type,
+        }
+        for e in game_state.entities
+        if dist((me.x, me.y), (e.x, e.y)) <= me.view_range
+    ]
 
     view = {
         "me": {
             "x": me.x,
             "y": me.y,
+            "name": me.name,
             "coins": me.coins,
-            "view_range": me.view_range
+            "view_range": me.view_range,
         },
         "meta": {
             "w": game_state.map_w,
             "h": game_state.map_h,
             "tick": game_state.tick,
         },
-        "entities": visible_entities
+        "entities": visible_entities,
     }
     return view
 
@@ -105,7 +110,7 @@ class BotCommunicator:
         return tuple(actions)
 
     def get_next_action(
-            self, game_state: GameState, container: Container, bot: Bot
+        self, game_state: GameState, container: Container, bot: Bot
     ) -> dict:
         url = f"http://{container.id[:12]}:4000/jsonrpc"
         payload = {
@@ -116,6 +121,7 @@ class BotCommunicator:
             "jsonrpc": "2.0",
             "id": randint(0, 10000),
         }
+        bot.view_range = Bot.DEFAULT_VIEW_RANGE
         try:
             response = requests.post(
                 url, data=json.dumps(payload, cls=GameStateEncoder), timeout=0.1

@@ -62,10 +62,13 @@ class Entity:
 
 
 class Bot(Entity):
+
+    DEFAULT_VIEW_RANGE = 1.0
+
     def __init__(self, name: str, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.type: EntityType = EntityType.BOT
         self.health: int = 100
         self.name: str = name
         self.coins: int = 42
-        self.view_range: float = 1.0
+        self.view_range: float = Bot.DEFAULT_VIEW_RANGE
