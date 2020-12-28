@@ -88,10 +88,9 @@ def login_rc3():
     refresh_token = rc3.get_refresh_token(code)
     username = rc3.get_username(refresh_token)
 
-    if not db.get(f"webserver:users:{username}"):
         stored_state = json.loads(stored_state)
 
-        if create_user(username, stored_state.template, stored_state.template):
+    if create_user(username, stored_state["template"], stored_state["pubkey"]):
             return redirect(url_for(".login_failed"))
 
         db.set(f"webserver:users:{username}")
