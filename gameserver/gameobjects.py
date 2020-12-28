@@ -36,7 +36,7 @@ class GameState:
         self.running: bool = True
 
     @staticmethod
-    def create(*args, **kwargs) -> "GameState":
+    def create(bot0_name="0", bot1_name="1", *args, **kwargs) -> "GameState":
         game_state = GameState(*args, **kwargs)
 
         margin = 1
@@ -47,8 +47,8 @@ class GameState:
         def rndh() -> int:
             return random.randint(margin, game_state.map_h - 1 - margin)
 
-        bot0 = Bot("0", rndw(), rndh())
-        bot1 = Bot("1", rndw(), rndh())
+        bot0 = Bot(bot0_name, rndw(), rndh())
+        bot1 = Bot(bot1_name, rndw(), rndh())
         game_state.bots = [bot0, bot1]
         game_state.entities = [bot0, bot1]
         return game_state
@@ -62,10 +62,13 @@ class Entity:
 
 
 class Bot(Entity):
+
+    DEFAULT_VIEW_RANGE = 1.0
+
     def __init__(self, name: str, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.type: EntityType = EntityType.BOT
         self.health: int = 100
         self.name: str = name
         self.coins: int = 42
-        self.view_range: float = 1.0
+        self.view_range: float = Bot.DEFAULT_VIEW_RANGE

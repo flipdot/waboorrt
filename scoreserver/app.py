@@ -91,9 +91,9 @@ async def main():
             bot_a_new_rank, bot_b_new_rank = calculate_new_elo_ranking(
                 (bot_a_old_rank, bot_b_old_rank),
                 (
-                    score["0"],
-                    score["1"],
-                ),  # TODO: replace "0" / "1" by bot_a_name and bot_b_name
+                    score[bot_a_name],
+                    score[bot_b_name],
+                ),
             )
             rankdiff_a = bot_a_new_rank - bot_a_old_rank
             rankdiff_b = bot_b_new_rank - bot_b_old_rank
@@ -102,7 +102,7 @@ async def main():
             game_result = {
                 "id": str(uuid1()),
                 "title": f"{bot_a_name} vs {bot_b_name}",
-                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "timestamp": datetime.now().timestamp(),
                 "scores": score,
                 "elo_rank": {
                     bot_a_name: bot_a_new_rank,
@@ -117,7 +117,7 @@ async def main():
             db.set(f"game:{game_result['id']}:summary", json.dumps(game_result))
             db.set(f"game:{game_result['id']}:history", json.dumps(game_history))
             db.zadd(
-                "matches_by_time", {f"{game_result['id']}": datetime.now().timestamp()}
+                "matches_by_time", {f"{game_result['id']}": game_result["timestamp"]}
             )
             db.set(key_a, json.dumps(user_a))
             db.set(key_b, json.dumps(user_b))

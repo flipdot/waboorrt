@@ -53,7 +53,7 @@ def compute_damage(dist: float) -> int:
 
 
 def action_noop(game_state, bot, action):
-    bot.coins += 1  # get one coin per noop
+    bot.coins += 1
     return True
 
 
@@ -96,12 +96,15 @@ def action_look(game_state, bot, action):
     view_price = 1.0
     bot.view_range = min(
         bot.coins / view_price,  # what the bot can afford
-        action.get("range", max(  # what it wants or the max necessary
-            dist((bot.x, bot.y), (0, 0)),
-            dist((bot.x, bot.y), (game_state.map_w, 0)),
-            dist((bot.x, bot.y), (0, game_state.map_h)),
-            dist((bot.x, bot.y), (game_state.map_w, game_state.map_h)),
-        ))
+        action.get(
+            "range",
+            max(  # what it wants or the max necessary
+                dist((bot.x, bot.y), (0, 0)),
+                dist((bot.x, bot.y), (game_state.map_w, 0)),
+                dist((bot.x, bot.y), (0, game_state.map_h)),
+                dist((bot.x, bot.y), (game_state.map_w, game_state.map_h)),
+            ),
+        ),
     )
     if bot.view_range > 1:  # get up to 1 for free
         bot.coins -= bot.view_range * view_price
@@ -111,7 +114,7 @@ def action_look(game_state, bot, action):
 
 
 def tick(
-        game_state: GameState, actions: Tuple[dict, ...]
+    game_state: GameState, actions: Tuple[dict, ...]
 ) -> (GameState, Tuple[dict, ...]):
     if len(game_state.bots) != len(actions):
         raise ValueError("number of actions does not match number of bots")
@@ -136,11 +139,13 @@ def tick(
     for current_action_type, action_function in action_execution_order:
         for bot, action in action_list:
             if action.get("name") == current_action_type:
-                executed_actions.append({
-                    "bot_name": bot.name,
-                    "intended_action": action,
-                    "success": action_function(game_state, bot, action)
-                })
+                executed_actions.append(
+                    {
+                        "bot_name": bot.name,
+                        "intended_action": action,
+                        "success": action_function(game_state, bot, action),
+                    }
+                )
                 action["_was_handled"] = True
 
     # list unknown actions
@@ -151,7 +156,7 @@ def tick(
                     "bot_name": bot.name,
                     "intended_action": action,
                     "success": False,
-                    "message": "Unknown action"
+                    "message": "Unknown action",
                 }
             )
 

@@ -5,7 +5,8 @@ import subprocess
 from urllib.parse import urlparse
 import re
 
-from flask import Flask, render_template, request, redirect, jsonify, abort, url_for
+
+from flask import Flask, render_template, request, redirect, jsonify, abort, url_for, Response
 import redis
 from uuid import uuid4
 import rc3
@@ -29,27 +30,46 @@ db = redis.Redis(
 
 @app.route("/")
 def index():
-    game_keys = [
-        f"game:{x}:summary"
-        for x in db.zrevrangebyscore("matches_by_time", "+inf", "-inf", start=0, num=25)
-    ]
-    logging.debug(f"game_keys: {game_keys}")
-    # game_keys = sorted(db.keys("game:*:summary"))
+    game_keys = [f"game:{x}:summary" for x in db.zrevrangebyscore("matches_by_time", "+inf", "-inf", start=0, num=25)]
     games = [json.loads(db.get(k)) for k in game_keys]
-    # games = [
-    #     {"title": "A vs B", "timestamp": datetime.now(), "id": 420},
-    #     {"title": "C vs B", "timestamp": datetime.now() - timedelta(minutes=3), "id": 520},
-    #     {"title": "C vs A", "timestamp": datetime.now() - timedelta(minutes=6), "id": 620},
-    # ]
     return render_template("index.html", games=games)
 
 
-@app.route("/game/<game_id>")
+@app.route("/api/games")
+def game_list():
+    from_id = request.args.get("from", "")
+    try:
+        num = min(int(request.args.get("n", 25)), 25)
+    except ValueError:
+        abort(400, description="n must be int")
+        return  # return is only for better ide linting ("num may not be defined")
+    if ":" in from_id:
+        abort(400, description="colons are invalid")
+
+    if from_id:
+        from_key = f"game:{from_id}:summary"
+        from_game_str = db.get(from_key)
+        if not from_game_str:
+            abort(404, description="game not found")
+        from_game = json.loads(from_game_str)
+        max_range = float(from_game.get("timestamp"))
+    else:
+        max_range = "+inf"
+    game_keys = [
+        f"game:{x}:summary" for x in
+        db.zrevrangebyscore("matches_by_time", max_range, "-inf", start=0, num=num)
+    ]
+    games = [json.loads(db.get(k)) for k in game_keys]
+    return jsonify(games)
+
+
+@app.route("/api/games/<game_id>")
 def game_history(game_id):
     history = db.get(f"game:{game_id}:history")
     if not history:
         abort(404)
-    return history
+
+    return Response(history, mimetype='application/json')
 
 
 @app.route("/login_success/<username>")
