@@ -17,6 +17,8 @@ logging.basicConfig(
     level=logging.INFO, format="[%(asctime)s] [%(levelname)s] %(name)s: %(message)s"
 )
 
+logger = logging.getLogger(__name__)
+
 REDIS_HOST = os.environ.get("REDIS_HOST", "redis")
 GAMESERVER_HOST = os.environ.get("GAMESERVER_HOST", "gameserver")
 
@@ -37,7 +39,9 @@ async def run_match(*bot_names):
     response = await loop.run_in_executor(
         None, lambda: requests.post(GAMESERVER_URL, json=payload)
     )
-    game_history = response.json()["result"]
+    game_history = response.json().get("result")
+    if not game_history:
+        raise Exception("invalid response from gameserver")
     return game_history
 
 

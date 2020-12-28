@@ -17,7 +17,7 @@ logging.basicConfig(
     level=logging.INFO, format="[%(asctime)s] [%(levelname)s] %(name)s: %(message)s"
 )
 
-VALID_REPO_TEMPLATES = ["python"]
+VALID_REPO_TEMPLATES = ["python", "c-sharp"]
 
 
 AUTH_TOKEN_SECRET = os.environ["AUTH_TOKEN_SECRET"]

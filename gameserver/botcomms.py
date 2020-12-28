@@ -121,9 +121,11 @@ class BotCommunicator:
         }
         bot.view_range = Bot.DEFAULT_VIEW_RANGE
         try:
+            # logger.debug(payload)
             response = requests.post(
                 url, data=json.dumps(payload, cls=GameStateEncoder), timeout=0.1
             ).json()
+            # logger.debug(response)
         except requests.exceptions.Timeout:
             logger.info(f"Bot {container.image.tags} took to long to respond")
             return Action.noaction
@@ -138,14 +140,14 @@ class BotCommunicator:
             "type": "object",
             "properties": {
                 "name": {"type": "string"},
-                "x": {"type": "integer"},
-                "y": {"type": "integer"},
+                "x": {"type": "number"},
+                "y": {"type": "number"},
                 "range": {"type": "number"},
-            },
-            "required": ["name"],
+            }
         }
         try:
             validate(instance=result, schema=schema)
             return result
         except ValidationError:
+            logger.info("Invalid client action: %s", result)
             return Action.noaction
