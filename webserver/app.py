@@ -22,12 +22,17 @@ VALID_REPO_TEMPLATES = ["python"]
 AUTH_TOKEN_SECRET = os.environ["AUTH_TOKEN_SECRET"]
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
-db = redis.Redis(host=os.environ.get("REDIS_HOST", "redis"), port=6379, db=0, decode_responses=True)
+db = redis.Redis(
+    host=os.environ.get("REDIS_HOST", "redis"), port=6379, db=0, decode_responses=True
+)
 
 
 @app.route("/")
 def index():
-    game_keys = [f"game:{x}:summary" for x in db.zrevrangebyscore("matches_by_time", "+inf", "-inf", start=0, num=25)]
+    game_keys = [
+        f"game:{x}:summary"
+        for x in db.zrevrangebyscore("matches_by_time", "+inf", "-inf", start=0, num=25)
+    ]
     logging.debug(f"game_keys: {game_keys}")
     # game_keys = sorted(db.keys("game:*:summary"))
     games = [json.loads(db.get(k)) for k in game_keys]
@@ -84,25 +89,25 @@ def login_rc3():
 
     if not stored_state:
         abort(400, "invalid state")
-    
+
     refresh_token = rc3.get_refresh_token(code)
     username = rc3.get_username(refresh_token)
 
-        stored_state = json.loads(stored_state)
+    stored_state = json.loads(stored_state)
 
     if create_user(username, stored_state["template"], stored_state["pubkey"]):
-            return redirect(url_for(".login_failed"))
+        return redirect(url_for(".login_failed"))
 
-        db.set(f"webserver:users:{username}")
-
-    auth_token = jwt.encode({"username": username}, AUTH_TOKEN_SECRET, algorithm="HS256")
+    auth_token = jwt.encode(
+        {"username": username}, AUTH_TOKEN_SECRET, algorithm="HS256"
+    )
 
     db.delete(f"webserver:states:{state}")
 
     return redirect(url_for(".login_success", username=username, auth_token=auth_token))
 
 
-AUTH_TIMEOUT = 15*60*1000
+AUTH_TIMEOUT = 15 * 60 * 1000
 
 
 @app.route("/auth-redirect", methods=["GET"])
@@ -117,10 +122,11 @@ def auth_redirect():
         abort(400, "pubkey missing")
 
     state = uuid4()
-    db.set(f"webserver:states:{state}", json.dumps({
-        "template": template,
-        "pubkey": pubkey
-    }), px=AUTH_TIMEOUT)
+    db.set(
+        f"webserver:states:{state}",
+        json.dumps({"template": template, "pubkey": pubkey}),
+        px=AUTH_TIMEOUT,
+    )
 
     return redirect(rc3.gen_login_redirect(state))
 
@@ -135,7 +141,12 @@ def create_user(username, template, pubkey):
         abort(400, description="Invalid ssh public key")
         return "Invalid ssh public key", 400
     if template not in VALID_REPO_TEMPLATES:
-        abort(400, description=f"Invalid template, please choose from {VALID_REPO_TEMPLATES}")
+        abort(
+            400,
+            description=f"Invalid template, please choose from {VALID_REPO_TEMPLATES}",
+        )
 
-    completed_process = subprocess.run(["ssh", "root@gitserver", "newbot", f'"{username}" "{template}" "{pubkey}"'])
+    completed_process = subprocess.run(
+        ["ssh", "root@gitserver", "newbot", f'"{username}" "{template}" "{pubkey}"']
+    )
     return completed_process.returncode
