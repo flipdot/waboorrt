@@ -111,7 +111,7 @@ class BotCommunicator:
         payload = {
             "method": "next_action",
             "params": {
-                "game_state": get_bot_view(game_state),
+                "game_state": get_bot_view(game_state, bot.name),
             },
             "jsonrpc": "2.0",
             "id": randint(0, 10000),
