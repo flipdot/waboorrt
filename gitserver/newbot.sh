@@ -30,7 +30,7 @@ if [ ! -d "/git/$USERNAME.git" ]; then
   cd "$TMP_DIR"
   git clone -q "/git/$USERNAME.git"
   cd "$USERNAME"
-  cp -r "/app/bot-templates/$TEMPLATEREPO/*" .
+  cp -r "/app/bot-templates/$TEMPLATEREPO/"* .
   git add -A
   git commit -qm "Initialized with $TEMPLATEREPO template"
   git push -q origin master
