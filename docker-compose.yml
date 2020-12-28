@@ -32,6 +32,8 @@ services:
       - githome:/home/
       - gitopt:/opt
       - botbuilder-notify:/botbuilder
+    depends_on:
+      - redis
   botbuilder:
     build: botbuilder 
     volumes:

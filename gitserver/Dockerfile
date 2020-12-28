@@ -10,7 +10,7 @@ RUN ssh-keygen -A
 #                                      think twice                                             #
 ################################################################################################
 
-RUN apt-get install -y git sudo
+RUN apt-get install -y git sudo redis-tools
 RUN mkdir -p /run/sshd
 RUN git config --global user.email "com@flipdot.org"; git config --global user.name "flipbot"
 

@@ -14,4 +14,4 @@ COPY templates/ templates/
 
 EXPOSE 80
 ENTRYPOINT ["pipenv", "run"]
-CMD ["gunicorn", "-w 2", "-b", "0.0.0.0:80", "app:app"]
+CMD ["sh", "start.sh"]
