@@ -1,18 +1,25 @@
 import styled from 'styled-components';
+import useSWR from 'swr';
 
 const EntryWrapper = styled.li`
   border: 2px solid var(--plattform);
   background: linear-gradient(270deg, #100E23 0%, var(--plattform) 100%);
   padding: .5rem;
   color: var(--white);
+  cursor: pointer;
 
   &:not(:last-child) {
     margin-bottom: 10px;
   }
 `;
 
-function Entry() {
-  return <EntryWrapper>Test</EntryWrapper>;
+type Game = {
+  id: string;
+  title: string;
+}
+
+function Entry({ item, onClick }: { item: Game, onClick: () => void }) {
+  return <EntryWrapper onClick={onClick}>{item.title}</EntryWrapper>;
 }
 
 const ListWrapper = styled.ul`
@@ -24,11 +31,13 @@ const ListWrapper = styled.ul`
   padding-right: 15px;
 `;
 
-export default function List() {
+export default function List({ onItemSelect }: { onItemSelect: (id: string) => void}) {
+  const { data: gameData } = useSWR<Game[]>('/api/games');
+
   return (
     <ListWrapper>
-      {new Array(100).fill(0).map((_) => (
-        <Entry />
+      {(gameData || []).map((item) => (
+        <Entry key={item.id} item={item} onClick={() => onItemSelect(item.id)} />
       ))}
     </ListWrapper>
   );

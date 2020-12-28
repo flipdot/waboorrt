@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 import re
 
 
-from flask import Flask, render_template, request, redirect, jsonify, abort, url_for, Response
+from flask import Flask, render_template, request, redirect, jsonify, abort, url_for, Response, current_app
 import redis
 from uuid import uuid4
 import rc3
@@ -30,9 +30,7 @@ db = redis.Redis(
 
 @app.route("/")
 def index():
-    game_keys = [f"game:{x}:summary" for x in db.zrevrangebyscore("matches_by_time", "+inf", "-inf", start=0, num=25)]
-    games = [json.loads(db.get(k)) for k in game_keys]
-    return render_template("index.html", games=games)
+    return current_app.send_static_file('webapp/index.html')
 
 
 @app.route("/api/games")

@@ -139,10 +139,7 @@ export default function ActionAnimation({
   let delay = 0;
 
   switch (action.name) {
-    case 'WALK_EAST':
-    case 'WALK_NORTH':
-    case 'WALK_SOUTH':
-    case 'WALK_WEST':
+    case 'WALK':
       delay = 600;
       break;
   }

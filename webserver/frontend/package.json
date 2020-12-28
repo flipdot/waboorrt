@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "parcel src/index.html",
-    "build": "parcel build src/index.html",
+    "build": "parcel build --public-url /static/webapp src/index.html",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint src"
   },
@@ -15,7 +15,8 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-icons": "^4.1.0",
-    "styled-components": "^5.2.1"
+    "styled-components": "^5.2.1",
+    "swr": "^0.3.11"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
