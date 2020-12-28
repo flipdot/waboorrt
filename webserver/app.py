@@ -106,14 +106,14 @@ def login_rc3():
 
 
 def create_user(username, template, pubkey):
+    # Remove everything after the second space. Discards comments from ssh keys
+    pubkey = " ".join(pubkey.split(" ")[:2])
     if not re.match(r"^[a-zA-Z0-9_-]+$", username):
         abort(400, description="Invalid username")
         return "Invalid username", 400
     if not re.match(r"^[a-zA-Z0-9+=/@ -]+$", pubkey):
         abort(400, description="Invalid ssh public key")
         return "Invalid ssh public key", 400
-    # Remove everything after the second space. Discards comments from ssh keys
-    pubkey = " ".join(pubkey.split(" ")[:2])
     if template not in VALID_REPO_TEMPLATES:
         abort(400, description=f"Invalid template, please choose from {VALID_REPO_TEMPLATES}")
 
