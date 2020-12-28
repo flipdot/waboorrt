@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="row mt-2 justify-content-center">
+        <div class="col-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Welcome, {{ username }}!</h5>
+                    <p class="card-text">
+                        Clone your repo. Your bot will join the game after you made your first commit!
+                    </p>
+                    <pre><code>git clone ssh://{{ username }}@{{ hostname }}:2222/git/{{ username }}.git waboorrt-bot
+cd waboorrt-bot/
+# make your changes
+git push</code></pre>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-2">
+{% endblock %}
