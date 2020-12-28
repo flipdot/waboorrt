@@ -30,7 +30,7 @@ db = redis.Redis(
 
 @app.route("/")
 def index():
-    return current_app.send_static_file('/webapp/index.html')
+    return current_app.send_static_file('webapp/index.html')
 
 
 @app.route("/api/games")
