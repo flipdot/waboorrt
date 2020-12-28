@@ -116,6 +116,7 @@ class BotCommunicator:
             "jsonrpc": "2.0",
             "id": randint(0, 10000),
         }
+        bot.view_range = Bot.DEFAULT_VIEW_RANGE
         try:
             response = requests.post(
                 url, data=json.dumps(payload, cls=GameStateEncoder), timeout=0.1
