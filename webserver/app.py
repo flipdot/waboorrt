@@ -5,9 +5,13 @@ import subprocess
 from urllib.parse import urlparse
 import re
 
-import requests
+
 from flask import Flask, render_template, request, redirect, jsonify, abort, url_for, Response
 import redis
+from uuid import uuid4
+import rc3
+
+import jwt
 
 logging.basicConfig(
     level=logging.INFO, format="[%(asctime)s] [%(levelname)s] %(name)s: %(message)s"
@@ -15,14 +19,13 @@ logging.basicConfig(
 
 VALID_REPO_TEMPLATES = ["python"]
 
-RC3_CLIENT_ID = os.environ["RC3_CLIENT_ID"]
-RC3_REDIRECT_URI = os.environ["RC3_REDIRECT_URI"]
-RC3_TOKEN_URI = os.environ["RC3_TOKEN_URI"]
-RC3_CLIENT_SECRET = os.environ["RC3_CLIENT_SECRET"]
+
 AUTH_TOKEN_SECRET = os.environ["AUTH_TOKEN_SECRET"]
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
-db = redis.Redis(host=os.environ.get("REDIS_HOST", "redis"), port=6379, db=0, decode_responses=True)
+db = redis.Redis(
+    host=os.environ.get("REDIS_HOST", "redis"), port=6379, db=0, decode_responses=True
+)
 
 
 @app.route("/")
@@ -92,7 +95,7 @@ def login_local():
     return redirect(url_for(".login_success", username=username))
 
 
-@app.route("/login/rc3", methods=["POST"])
+@app.route("/rc3/login", methods=["GET"])
 def login_rc3():
     if "code" not in request.args:
         abort(400, "authorization code missing")
@@ -101,30 +104,51 @@ def login_rc3():
 
     code = request.args["code"]
     state = request.args["state"]
-    # TODO: what is that state?
-    stored_state = db.get(f"webserver:state:{state}")
 
-    username = "OAUTH"
-    template = VALID_REPO_TEMPLATES[0]  # user should be able to choose
-    pubkey = "ssh-rsa AAAAA"
+    stored_state = db.get(f"webserver:oauth_states:{state}")
 
-    resp = requests.post(
-        f"https://rc3.world/sso/token/"
-        f"?grant_type=authorization_code"
-        f"&code={code}"
-        f"&redirect_uri={RC3_TOKEN_URI}"
-        f"&client_id={RC3_CLIENT_ID}"
-        f"&client_secret={RC3_CLIENT_SECRET}")
+    if not stored_state:
+        abort(400, "invalid state")
 
-    resp_data = resp.json()
-    if resp_data.error:
-        logging.error("failed to exchange auth code for token: %s", resp_data)
-        abort(500)
+    refresh_token = rc3.get_refresh_token(code)
+    username = rc3.get_username(refresh_token)
 
-    if create_user(username, template, pubkey):
+    stored_state = json.loads(stored_state)
+
+    if create_user(username, stored_state["template"], stored_state["pubkey"]):
         return redirect(url_for(".login_failed"))
 
-    return redirect(url_for(".login_success", username=username))
+    auth_token = jwt.encode(
+        {"username": username}, AUTH_TOKEN_SECRET, algorithm="HS256"
+    )
+
+    db.delete(f"webserver:oauth_states:{state}")
+
+    return redirect(url_for(".login_success", username=username, auth_token=auth_token))
+
+
+AUTH_TIMEOUT = 15 * 60 * 1000
+
+
+@app.route("/auth-redirect", methods=["GET"])
+def auth_redirect():
+    template = request.args.get("template")
+    pubkey = request.args.get("pubkey")
+
+    if template not in VALID_REPO_TEMPLATES:
+        abort(400, f"invalid template: {template}")
+
+    if not pubkey:
+        abort(400, "pubkey missing")
+
+    state = uuid4()
+    db.set(
+        f"webserver:oauth_states:{state}",
+        json.dumps({"template": template, "pubkey": pubkey}),
+        px=AUTH_TIMEOUT,
+    )
+
+    return redirect(rc3.gen_login_redirect(state))
 
 
 def create_user(username, template, pubkey):
@@ -137,7 +161,12 @@ def create_user(username, template, pubkey):
         abort(400, description="Invalid ssh public key")
         return "Invalid ssh public key", 400
     if template not in VALID_REPO_TEMPLATES:
-        abort(400, description=f"Invalid template, please choose from {VALID_REPO_TEMPLATES}")
+        abort(
+            400,
+            description=f"Invalid template, please choose from {VALID_REPO_TEMPLATES}",
+        )
 
-    completed_process = subprocess.run(["ssh", "root@gitserver", "newbot", f'"{username}" "{template}" "{pubkey}"'])
+    completed_process = subprocess.run(
+        ["ssh", "root@gitserver", "newbot", f'"{username}" "{template}" "{pubkey}"']
+    )
     return completed_process.returncode
