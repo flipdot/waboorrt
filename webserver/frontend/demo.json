@@ -1,0 +1,2415 @@
+[
+  {
+    "game_state": {
+      "tick": 0,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 5, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 11, "y": 11, "type": "BOT", "health": 100, "name": "1" }
+      ]
+    },
+    "actions": []
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 14, "y": 14 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 18, "y": 12 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 1,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 5, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 11, "y": 11, "type": "BOT", "health": 98, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "NOOP" },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 32, "y": 26 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 2,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 5, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 11, "y": 11, "type": "BOT", "health": 98, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 22, "y": 26 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 26, "y": 0 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 3,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 5, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 11, "y": 11, "type": "BOT", "health": 98, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 21, "y": 0 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 25, "y": 14 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 4,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 5, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 11, "y": 11, "type": "BOT", "health": 98, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 4, "y": 27 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 3, "y": 46 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 5,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 5, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 11, "y": 11, "type": "BOT", "health": 98, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "NOOP" },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_SOUTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 6,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 5, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 11, "y": 12, "type": "BOT", "health": 98, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 47, "y": 8 },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_SOUTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 7,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 6, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 11, "y": 12, "type": "BOT", "health": 98, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_SOUTH" },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_WEST" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 8,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 6, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 11, "y": 13, "type": "BOT", "health": 98, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 9, "y": 20 },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_SOUTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 9,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 7, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 11, "y": 13, "type": "BOT", "health": 98, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 41, "y": 3 },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_EAST" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 10,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 7, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 11, "y": 13, "type": "BOT", "health": 98, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 4, "y": 14 },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_WEST" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 11,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 7, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 11, "y": 13, "type": "BOT", "health": 98, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 22, "y": 20 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 49, "y": 14 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 12,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 7, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 11, "y": 13, "type": "BOT", "health": 98, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 17, "y": 43 },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_NORTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 13,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 6, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 11, "y": 13, "type": "BOT", "health": 98, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 44, "y": 47 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 17, "y": 44 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 14,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 6, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 11, "y": 13, "type": "BOT", "health": 98, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "NOOP" },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_SOUTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 15,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 6, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 11, "y": 14, "type": "BOT", "health": 98, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "NOOP" },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 9, "y": 28 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 16,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 6, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 11, "y": 14, "type": "BOT", "health": 98, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 9, "y": 48 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_EAST" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 17,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 6, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 12, "y": 14, "type": "BOT", "health": 98, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 19, "y": 17 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_NORTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 18,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 6, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 12, "y": 13, "type": "BOT", "health": 98, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "NOOP" },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "NOOP" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 19,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 6, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 12, "y": 13, "type": "BOT", "health": 98, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 29, "y": 49 },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_NORTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 20,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 5, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 12, "y": 13, "type": "BOT", "health": 98, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 16, "y": 43 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_SOUTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 21,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 5, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 12, "y": 14, "type": "BOT", "health": 98, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 25, "y": 8 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 41, "y": 20 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 22,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 5, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 12, "y": 14, "type": "BOT", "health": 98, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "NOOP" },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 8, "y": 12 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 23,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 5, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 12, "y": 14, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_NORTH" },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_WEST" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 24,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 4, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 11, "y": 14, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 21, "y": 20 },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_WEST" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 25,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 3, "y": 4, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 11, "y": 14, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 6, "y": 47 },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_WEST" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 26,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 2, "y": 4, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 11, "y": 14, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_WEST" },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_NORTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 27,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 1, "y": 4, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 11, "y": 13, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "NOOP" },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_SOUTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 28,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 1, "y": 4, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 11, "y": 14, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_SOUTH" },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_WEST" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 29,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 1, "y": 5, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 10, "y": 14, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 16, "y": 7 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_EAST" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 30,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 1, "y": 5, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 11, "y": 14, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 34, "y": 19 },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_SOUTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 31,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 1, "y": 6, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 11, "y": 14, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "NOOP" },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_NORTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 32,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 1, "y": 5, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 11, "y": 14, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_EAST" },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_WEST" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 33,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 0, "y": 5, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 12, "y": 14, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "NOOP" },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 17, "y": 25 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 34,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 0, "y": 5, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 12, "y": 14, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_NORTH" },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_EAST" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 35,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 0, "y": 4, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 13, "y": 14, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "NOOP" },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_EAST" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 36,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 1, "y": 4, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 13, "y": 14, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 23, "y": 32 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_EAST" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 37,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 1, "y": 4, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 14, "y": 14, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "NOOP" },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_SOUTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 38,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 1, "y": 5, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 14, "y": 14, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 27, "y": 42 },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_NORTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 39,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 1, "y": 4, "type": "BOT", "health": 100, "name": "0" },
+        { "x": 14, "y": 14, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 6, "y": 4 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 24, "y": 42 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 40,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 1, "y": 4, "type": "BOT", "health": 99, "name": "0" },
+        { "x": 14, "y": 14, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 4, "y": 42 },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_EAST" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 41,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 2, "y": 4, "type": "BOT", "health": 99, "name": "0" },
+        { "x": 14, "y": 14, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "NOOP" },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 34, "y": 8 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 42,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 2, "y": 4, "type": "BOT", "health": 99, "name": "0" },
+        { "x": 14, "y": 14, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 46, "y": 4 },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_SOUTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 43,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 2, "y": 5, "type": "BOT", "health": 99, "name": "0" },
+        { "x": 14, "y": 14, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 15, "y": 36 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 24, "y": 8 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 44,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 2, "y": 5, "type": "BOT", "health": 99, "name": "0" },
+        { "x": 14, "y": 14, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_EAST" },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_NORTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 45,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 3, "y": 5, "type": "BOT", "health": 99, "name": "0" },
+        { "x": 14, "y": 13, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 41, "y": 19 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 38, "y": 27 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 46,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 3, "y": 5, "type": "BOT", "health": 99, "name": "0" },
+        { "x": 14, "y": 13, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 25, "y": 7 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 33, "y": 22 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 47,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 3, "y": 5, "type": "BOT", "health": 99, "name": "0" },
+        { "x": 14, "y": 13, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_SOUTH" },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_NORTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 48,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 3, "y": 4, "type": "BOT", "health": 99, "name": "0" },
+        { "x": 14, "y": 14, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_NORTH" },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_SOUTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 49,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 3, "y": 3, "type": "BOT", "health": 99, "name": "0" },
+        { "x": 14, "y": 15, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 17, "y": 3 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 27, "y": 17 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 50,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 3, "y": 3, "type": "BOT", "health": 99, "name": "0" },
+        { "x": 14, "y": 15, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 29, "y": 49 },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_EAST" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 51,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 3, "type": "BOT", "health": 99, "name": "0" },
+        { "x": 14, "y": 15, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 49, "y": 15 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 37, "y": 14 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 52,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 3, "type": "BOT", "health": 99, "name": "0" },
+        { "x": 14, "y": 15, "type": "BOT", "health": 96, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 13, "y": 11 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_NORTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 53,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 3, "type": "BOT", "health": 99, "name": "0" },
+        { "x": 14, "y": 14, "type": "BOT", "health": 94, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 47, "y": 13 },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_SOUTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 54,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 4, "type": "BOT", "health": 99, "name": "0" },
+        { "x": 14, "y": 14, "type": "BOT", "health": 94, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "NOOP" },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 2, "y": 49 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 55,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 4, "type": "BOT", "health": 99, "name": "0" },
+        { "x": 14, "y": 14, "type": "BOT", "health": 94, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 21, "y": 35 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_EAST" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 56,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 4, "type": "BOT", "health": 99, "name": "0" },
+        { "x": 15, "y": 14, "type": "BOT", "health": 94, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 19, "y": 12 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_WEST" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 57,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 4, "type": "BOT", "health": 99, "name": "0" },
+        { "x": 14, "y": 14, "type": "BOT", "health": 92, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 10, "y": 7 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 46, "y": 1 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 58,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 4, "type": "BOT", "health": 98, "name": "0" },
+        { "x": 14, "y": 14, "type": "BOT", "health": 92, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "NOOP" },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 31, "y": 18 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 59,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 4, "type": "BOT", "health": 98, "name": "0" },
+        { "x": 14, "y": 14, "type": "BOT", "health": 92, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 28, "y": 37 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 4, "y": 44 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 60,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 4, "type": "BOT", "health": 98, "name": "0" },
+        { "x": 14, "y": 14, "type": "BOT", "health": 92, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 20, "y": 3 },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_NORTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 61,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 3, "type": "BOT", "health": 98, "name": "0" },
+        { "x": 14, "y": 14, "type": "BOT", "health": 92, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 29, "y": 3 },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_NORTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 62,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 2, "type": "BOT", "health": 98, "name": "0" },
+        { "x": 14, "y": 14, "type": "BOT", "health": 92, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 32, "y": 11 },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_WEST" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 63,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 3, "y": 2, "type": "BOT", "health": 98, "name": "0" },
+        { "x": 14, "y": 14, "type": "BOT", "health": 92, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_SOUTH" },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_EAST" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 64,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 2, "type": "BOT", "health": 98, "name": "0" },
+        { "x": 14, "y": 15, "type": "BOT", "health": 92, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "NOOP" },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_SOUTH" },
+        "success": false
+      }
+    ],
+    "game_state": {
+      "tick": 65,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 2, "type": "BOT", "health": 98, "name": "0" },
+        { "x": 14, "y": 15, "type": "BOT", "health": 92, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 46, "y": 9 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 13, "y": 28 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 66,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 2, "type": "BOT", "health": 98, "name": "0" },
+        { "x": 14, "y": 15, "type": "BOT", "health": 92, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_EAST" },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_SOUTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 67,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 3, "type": "BOT", "health": 98, "name": "0" },
+        { "x": 15, "y": 15, "type": "BOT", "health": 92, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "NOOP" },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_NORTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 68,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 2, "type": "BOT", "health": 98, "name": "0" },
+        { "x": 15, "y": 15, "type": "BOT", "health": 92, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 3, "y": 4 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 34, "y": 9 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 69,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 2, "type": "BOT", "health": 94, "name": "0" },
+        { "x": 15, "y": 15, "type": "BOT", "health": 92, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 4, "y": 23 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_WEST" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 70,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 2, "type": "BOT", "health": 94, "name": "0" },
+        { "x": 14, "y": 15, "type": "BOT", "health": 92, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 14, "y": 11 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_NORTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 71,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 2, "type": "BOT", "health": 94, "name": "0" },
+        { "x": 14, "y": 14, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "NOOP" },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 39, "y": 37 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 72,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 2, "type": "BOT", "health": 94, "name": "0" },
+        { "x": 14, "y": 14, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 2, "y": 4 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_WEST" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 73,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 2, "type": "BOT", "health": 91, "name": "0" },
+        { "x": 13, "y": 14, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 22, "y": 47 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 42, "y": 21 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 74,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 2, "type": "BOT", "health": 91, "name": "0" },
+        { "x": 13, "y": 14, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_NORTH" },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_WEST" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 75,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 1, "type": "BOT", "health": 91, "name": "0" },
+        { "x": 12, "y": 14, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_NORTH" },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_EAST" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 76,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 4, "y": 0, "type": "BOT", "health": 91, "name": "0" },
+        { "x": 13, "y": 14, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 4, "y": 13 },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_EAST" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 77,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 0, "type": "BOT", "health": 91, "name": "0" },
+        { "x": 13, "y": 14, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "NOOP" },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_EAST" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 78,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 0, "type": "BOT", "health": 91, "name": "0" },
+        { "x": 14, "y": 14, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 31, "y": 31 },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_SOUTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 79,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 1, "type": "BOT", "health": 91, "name": "0" },
+        { "x": 14, "y": 14, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_NORTH" },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_NORTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 80,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 0, "type": "BOT", "health": 91, "name": "0" },
+        { "x": 14, "y": 13, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 6, "y": 2 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_NORTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 81,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 0, "type": "BOT", "health": 87, "name": "0" },
+        { "x": 14, "y": 12, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_NORTH" },
+        "success": false
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_EAST" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 82,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 0, "type": "BOT", "health": 87, "name": "0" },
+        { "x": 15, "y": 12, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 47, "y": 49 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_SOUTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 83,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 0, "type": "BOT", "health": 87, "name": "0" },
+        { "x": 15, "y": 13, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 42, "y": 26 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_EAST" },
+        "success": false
+      }
+    ],
+    "game_state": {
+      "tick": 84,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 0, "type": "BOT", "health": 87, "name": "0" },
+        { "x": 15, "y": 13, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 25, "y": 40 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 48, "y": 2 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 85,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 0, "type": "BOT", "health": 87, "name": "0" },
+        { "x": 15, "y": 13, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_WEST" },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_NORTH" },
+        "success": false
+      }
+    ],
+    "game_state": {
+      "tick": 86,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 0, "type": "BOT", "health": 87, "name": "0" },
+        { "x": 14, "y": 13, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 34, "y": 1 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 18, "y": 41 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 87,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 0, "type": "BOT", "health": 87, "name": "0" },
+        { "x": 14, "y": 13, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 27, "y": 43 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_NORTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 88,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 0, "type": "BOT", "health": 87, "name": "0" },
+        { "x": 14, "y": 12, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 37, "y": 40 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_EAST" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 89,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 0, "type": "BOT", "health": 87, "name": "0" },
+        { "x": 15, "y": 12, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 31, "y": 36 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 0, "y": 31 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 90,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 0, "type": "BOT", "health": 87, "name": "0" },
+        { "x": 15, "y": 12, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "NOOP" },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 8, "y": 46 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 91,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 0, "type": "BOT", "health": 87, "name": "0" },
+        { "x": 15, "y": 12, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 32, "y": 4 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_EAST" },
+        "success": false
+      }
+    ],
+    "game_state": {
+      "tick": 92,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 0, "type": "BOT", "health": 87, "name": "0" },
+        { "x": 15, "y": 12, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 20, "y": 47 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_SOUTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 93,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 0, "type": "BOT", "health": 87, "name": "0" },
+        { "x": 15, "y": 13, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 21, "y": 4 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_NORTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 94,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 0, "type": "BOT", "health": 87, "name": "0" },
+        { "x": 15, "y": 12, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 28, "y": 43 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 46, "y": 5 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 95,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 0, "type": "BOT", "health": 87, "name": "0" },
+        { "x": 15, "y": 12, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "WALK_NORTH" },
+        "success": false
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_SOUTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 96,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 0, "type": "BOT", "health": 87, "name": "0" },
+        { "x": 15, "y": 13, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 13, "y": 37 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "THROW", "x": 21, "y": 0 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 97,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 0, "type": "BOT", "health": 87, "name": "0" },
+        { "x": 15, "y": 13, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 43, "y": 23 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_SOUTH" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 98,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 0, "type": "BOT", "health": 87, "name": "0" },
+        { "x": 15, "y": 14, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 21, "y": 45 },
+        "success": true
+      },
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "WALK_WEST" },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 99,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 0, "type": "BOT", "health": 87, "name": "0" },
+        { "x": 14, "y": 14, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  },
+  {
+    "actions": [
+      {
+        "bot_name": "1",
+        "intended_action": { "name": "NOOP" },
+        "success": true
+      },
+      {
+        "bot_name": "0",
+        "intended_action": { "name": "THROW", "x": 20, "y": 27 },
+        "success": true
+      }
+    ],
+    "game_state": {
+      "tick": 100,
+      "max_ticks": 100,
+      "map_w": 16,
+      "map_h": 16,
+      "entities": [
+        { "x": 5, "y": 0, "type": "BOT", "health": 87, "name": "0" },
+        { "x": 14, "y": 14, "type": "BOT", "health": 90, "name": "1" }
+      ]
+    }
+  }
+]
