@@ -21,6 +21,10 @@ services:
       - "80:80"
     depends_on:
       - redis
+    environment:
+      - RC3_CLIENT_ID=EQilXFujAiRa3yj0Sli3OanTZg5apPO0ccpYi4Sp
+      - RC3_REDIRECT_URI=https://waboorrt.flipdot.org/login
+      - RC3_TOKEN_URI=https://waboorrt.flipdot.org/token
   gitserver:
     build: gitserver
     ports:
