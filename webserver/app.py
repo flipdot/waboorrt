@@ -17,7 +17,9 @@ db = redis.Redis(host=os.environ.get("REDIS_HOST", "redis"), port=6379, db=0, de
 
 @app.route("/")
 def index():
-    game_keys = sorted(db.keys("game:*:summary"))
+    game_keys = [f"game:{x}:summary" for x in db.zrevrangebyscore("matches_by_time", "+inf", "-inf", start=0, num=25)]
+    logging.debug(f"game_keys: {game_keys}")
+    # game_keys = sorted(db.keys("game:*:summary"))
     games = [json.loads(db.get(k)) for k in game_keys]
     # games = [
     #     {"title": "A vs B", "timestamp": datetime.now(), "id": 420},

@@ -111,6 +111,7 @@ async def main():
                          )
             db.set(f"game:{game_result['id']}:summary", json.dumps(game_result))
             db.set(f"game:{game_result['id']}:history", json.dumps(game_history))
+            db.zadd("matches_by_time", { f"{game_result['id']}": datetime.now().timestamp() })
             db.set(key_a, json.dumps(user_a))
             db.set(key_b, json.dumps(user_b))
         # logging.info("Sleeping, next matches will start soon")
