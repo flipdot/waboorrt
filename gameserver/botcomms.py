@@ -40,6 +40,7 @@ def get_bot_view(game_state: GameState, bot_name: str):
         "me": {
             "x": me.x,
             "y": me.y,
+            "name": me.name,
             "coins": me.coins,
             "view_range": me.view_range
         },
