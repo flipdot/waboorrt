@@ -96,7 +96,7 @@ async def main():
             game_result = {
                 "id": str(uuid1()),
                 "title": f"{bot_a_name} vs {bot_b_name}",
-                "timestamp": str(datetime.now()),
+                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 "scores": score,
                 "elo_rank": {
                     bot_a_name: bot_a_new_rank,

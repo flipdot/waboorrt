@@ -24,7 +24,7 @@
                 {% for game in games %}
                     <a href="#{{ game.id }}" class="list-group-item">
                         {{ game.title }}<br />
-                        <small class="text-muted text-end">{{ game.timestamp.strftime("%Y-%m-%d %H:%M") }}</small>
+                        <small class="text-muted text-end">{{ game.timestamp }}</small>
                     </a>
                 {% else %}
                     <span class="list-group-item">No games yet</span>
