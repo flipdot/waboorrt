@@ -85,7 +85,7 @@ def login_rc3():
     code = request.args["code"]
     state = request.args["state"]
 
-    stored_state = db.get(f"webserver:states:{state}")
+    stored_state = db.get(f"webserver:oauth_states:{state}")
 
     if not stored_state:
         abort(400, "invalid state")
@@ -102,7 +102,7 @@ def login_rc3():
         {"username": username}, AUTH_TOKEN_SECRET, algorithm="HS256"
     )
 
-    db.delete(f"webserver:states:{state}")
+    db.delete(f"webserver:oauth_states:{state}")
 
     return redirect(url_for(".login_success", username=username, auth_token=auth_token))
 
@@ -123,7 +123,7 @@ def auth_redirect():
 
     state = uuid4()
     db.set(
-        f"webserver:states:{state}",
+        f"webserver:oauth_states:{state}",
         json.dumps({"template": template, "pubkey": pubkey}),
         px=AUTH_TIMEOUT,
     )
