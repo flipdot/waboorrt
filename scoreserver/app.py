@@ -85,12 +85,14 @@ async def main():
             # TODO: maybe parallelize it. gameserver can handle multiple requests
             game_history = await run_match(bot_a_name, bot_b_name)
             score = get_score(game_history)
+            bot_a_old_rank = user_a.get("elo_rank", 1200)
+            bot_b_old_rank = user_b.get("elo_rank", 1200)
             bot_a_new_rank, bot_b_new_rank = calculate_new_elo_ranking(
-                (user_a.get("elo_rank", 1200), user_b.get("elo_rank", 1200)),
-                (score["0"], score["1"])
+                (bot_a_old_rank, bot_b_old_rank),
+                (score["0"], score["1"])  # TODO: replace "0" / "1" by bot_a_name and bot_b_name
             )
-            rankdiff_a = user_a["elo_rank"] - bot_a_new_rank
-            rankdiff_b = user_b["elo_rank"] - bot_b_new_rank
+            rankdiff_a = bot_a_old_rank - bot_a_new_rank
+            rankdiff_b = bot_b_old_rank - bot_b_new_rank
             user_a["elo_rank"] = bot_a_new_rank
             user_b["elo_rank"] = bot_b_new_rank
             game_result = {
@@ -107,8 +109,8 @@ async def main():
                          f"{bot_a_name}: {user_a['elo_rank']} ({rankdiff_a:+}), "
                          f"{bot_b_name}: {user_b['elo_rank']} ({rankdiff_b:+})"
                          )
-            db.set(f"games:{game_result['id']}:summary", json.dumps(game_result))
-            db.set(f"games:{game_result['id']}:history", json.dumps(game_history))
+            db.set(f"game:{game_result['id']}:summary", json.dumps(game_result))
+            db.set(f"game:{game_result['id']}:history", json.dumps(game_history))
             db.set(key_a, json.dumps(user_a))
             db.set(key_b, json.dumps(user_b))
         # logging.info("Sleeping, next matches will start soon")
