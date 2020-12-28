@@ -51,7 +51,7 @@ class BotCommunicator:
                 except requests.exceptions.RequestException:
                     logger.debug(f"Bot {c.image.tags} not yet ready")
             if all(containers_ready):
-                logger.info("All bots are ready")
+                logger.debug("All bots are ready")
                 break
             sleep(0.1)
         return self

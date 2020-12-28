@@ -17,7 +17,7 @@ db = redis.Redis(host=os.environ.get("REDIS_HOST", "redis"), port=6379, db=0, de
 
 @app.route("/")
 def index():
-    game_keys = sorted(db.keys("games:*"))
+    game_keys = sorted(db.keys("games:*:summary"))
     games = [json.loads(db.get(k)) for k in game_keys]
     # games = [
     #     {"title": "A vs B", "timestamp": datetime.now(), "id": 420},
