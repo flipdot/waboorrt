@@ -1,10 +1,9 @@
 import json
 import logging
 import os
-import random
 import subprocess
-from datetime import datetime, timedelta
 from urllib.parse import urlparse
+import re
 
 from flask import Flask, render_template, request, redirect, jsonify, abort, url_for
 import redis
@@ -12,6 +11,8 @@ import redis
 logging.basicConfig(
     level=logging.INFO, format="[%(asctime)s] [%(levelname)s] %(name)s: %(message)s"
 )
+
+VALID_REPO_TEMPLATES = ["python"]
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 db = redis.Redis(host=os.environ.get("REDIS_HOST", "redis"), port=6379, db=0, decode_responses=True)
@@ -53,14 +54,20 @@ def login_failed():
 @app.route("/login", methods=["POST"])
 def login():
     # TODO: validate with regex
-    # ^[a-zA-Z0-9_-]+$
+    #
     username = request.form.get("username")
     # TODO: limit to certain options (bot-templates/*)
     template = request.form.get("template")
     # TODO: validate with regex
-    # ^[a-zA-Z0-9+=/ -]+$
+    #
     pubkey = request.form.get("pubkey")
-    # TODO: IS THIS REALLY SECURE?!
+
+    if not re.match(r"^[a-zA-Z0-9_-]+$", username):
+        return "Invalid username", 400
+    if not re.match(r"^[a-zA-Z0-9+=/@ -]+$", pubkey):
+        return "Invalid ssh public key", 400
+    if template not in VALID_REPO_TEMPLATES:
+        return f"Invalid template, please choose from {VALID_REPO_TEMPLATES}", 400
     completed_process = subprocess.run(["ssh", "root@gitserver", "newbot", f'"{username}" "{template}" "{pubkey}"'])
     if completed_process.returncode:
         return redirect(url_for(".login_failed"))
