@@ -3,7 +3,6 @@ import { CgUndo, CgPlayButton, CgPlayPause } from 'react-icons/cg';
 import styled from 'styled-components';
 
 import { GameReplay } from '../api-types';
-import { GlobalStyle } from '../styles';
 
 import ActionAnimation from './ActionAnimation';
 import DebugInfo from './DebugInfo';
@@ -49,7 +48,16 @@ export default function Player({ replay }: { replay?: GameReplay }) {
 
   const unfinishedActions = useRef<number[]>([]);
 
-  const frame = replay && replay[currentFrameIdx];
+  const frame: GameReplay[number] = replay ? replay[currentFrameIdx] : {
+    actions: [],
+    game_state: {
+      entities: [],
+      map_h: 16,
+      map_w: 16,
+      tick: 0,
+      max_ticks: 100,
+    }
+  };
 
   useEffect(() => {
     setPlay(true);
@@ -87,9 +95,7 @@ export default function Player({ replay }: { replay?: GameReplay }) {
     }
   }, [frame, frameAnimatonsFinished]);
 
-  if (!replay || !frame) return null;
-
-  const maxTicks = replay[0].game_state.max_ticks;
+  const maxTicks = replay && replay[0].game_state.max_ticks || 100;
 
   return (
     <Wrapper>

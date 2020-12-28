@@ -32,7 +32,7 @@ const ListWrapper = styled.ul`
 `;
 
 export default function List({ onItemSelect }: { onItemSelect: (id: string) => void}) {
-  const { data: gameData} = useSWR<Game[]>('/api/games');
+  const { data: gameData } = useSWR<Game[]>('/api/games');
 
   return (
     <ListWrapper>
