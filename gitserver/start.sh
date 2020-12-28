@@ -22,7 +22,9 @@ if [ -f "/opt/etc/gshadow" ]; then
     echo "copied /etc/gshadow from volume"
 fi
 
-AUTHORIZED_KEY = $(redis-cli -h redis get gitserver-root-sshkey)
+redis-cli -h redis del gitserver-root-sshkey > /dev/null
+echo "Getting SSH pubkey from redis..."
+AUTHORIZED_KEY=""
 while [ -z "$AUTHORIZED_KEY" ]; do
   AUTHORIZED_KEY=$(redis-cli -h redis get gitserver-root-sshkey)
   sleep 1

@@ -45,16 +45,24 @@ def login_success(username):
     return render_template("login_success.html", username=username, hostname=hostname)
 
 
+@app.route("/login_failed")
+def login_failed():
+    return render_template("login_failed.html")
+
+
 @app.route("/login", methods=["POST"])
 def login():
     # TODO: validate with regex
-    # ^[a-zA-Z0-9_-]+
+    # ^[a-zA-Z0-9_-]+$
     username = request.form.get("username")
-    # TODO: limit to certain options (bot-templates/*
+    # TODO: limit to certain options (bot-templates/*)
     template = request.form.get("template")
     # TODO: validate with regex
     # ^[a-zA-Z0-9+=/ -]+$
     pubkey = request.form.get("pubkey")
     # TODO: IS THIS REALLY SECURE?!
-    subprocess.run(["ssh", "root@gitserver", "newbot", f'"{username}" "{template}" "{pubkey}"'])
+    completed_process = subprocess.run(["ssh", "root@gitserver", "newbot", f'"{username}" "{template}" "{pubkey}"'])
+    if completed_process.returncode:
+        return redirect(url_for(".login_failed"))
+
     return redirect(url_for(".login_success", username=username))
