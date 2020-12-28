@@ -78,7 +78,7 @@ def calculate_new_elo_ranking(
 
 async def main():
     while True:
-        users = db.keys("users:*")
+        users = db.keys("user:*")
         for key_a, key_b in itertools.combinations(users, 2):
             user_a, user_b = json.loads(db.get(key_a)), json.loads(db.get(key_b))
             bot_a_name, bot_b_name = user_a["botname"], user_b["botname"]
@@ -115,8 +115,8 @@ async def main():
             db.zadd("matches_by_time", { f"{game_result['id']}": datetime.now().timestamp() })
             db.set(key_a, json.dumps(user_a))
             db.set(key_b, json.dumps(user_b))
-        # logging.info("Sleeping, next matches will start soon")
-        # await sleep(1)
+        logging.info("Sleeping, next matches will start soon")
+        await sleep(10)
 
 
 if __name__ == "__main__":

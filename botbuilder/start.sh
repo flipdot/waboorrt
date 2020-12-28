@@ -11,6 +11,7 @@ while [ true ] ; do
     echo "Building bot $file"
     git clone /git/$file.git .
     docker build -t localhost/bot/$file .
+    redis-cli -h redis set "user:$file" "{\"botname\": \"$file\"}"
     cd
 
     rm /botbuilder/$file;
