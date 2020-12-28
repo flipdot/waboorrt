@@ -51,13 +51,13 @@ namespace Wabooorrt
 	public class BotLookOperation : IBotOperation
 	{
 		public string Name { get; init; } = "LOOK";
-		public int? Range { get; set; }
+		public double? Range { get; set; }
 
 		public BotLookOperation()
 		{
 		}
 
-		public BotLookOperation(int range)
+		public BotLookOperation(double range)
 		{
 			Range = range;
 		}
