@@ -4,6 +4,8 @@ services:
     image: redis
     ports:
       - "6379:6379" # remove me in prod
+    volumes:
+      -  dbvolume:/data
   gameserver:
     build: gameserver
     ports:
@@ -50,3 +52,4 @@ volumes:
   githome:
   gitopt:
   botbuilder-notify:
+  dbvolume:
