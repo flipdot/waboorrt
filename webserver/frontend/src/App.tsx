@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import useSWR from 'swr';
 
+import InstructionPage from './InstructionPage';
 import List from './List';
 import Player from './Player';
 import { GameReplay } from './api-types';
@@ -102,6 +103,17 @@ export default function App() {
   const { data } = useSWR<GameReplay>(
     selectedReplay && `/api/games/${selectedReplay}`
   );
+
+  const searchParams = new URLSearchParams(window.location.search);
+  const loggedInUser = searchParams.get('login_success');
+  if (loggedInUser) {
+    return (
+      <>
+        <InstructionPage username={loggedInUser} />
+        <GlobalStyle />
+      </>
+    );
+  }
 
   return (
     <>
