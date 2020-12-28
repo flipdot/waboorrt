@@ -5,6 +5,8 @@ services:
     restart: unless-stopped
     ports:
       - "6379:6379" # remove me in prod
+    volumes:
+      -  dbvolume:/data
   gameserver:
     build: gameserver
     restart: unless-stopped
@@ -34,6 +36,8 @@ services:
       - githome:/home/
       - gitopt:/opt
       - botbuilder-notify:/botbuilder
+    depends_on:
+      - redis
   botbuilder:
     build: botbuilder 
     restart: unless-stopped
@@ -56,3 +60,4 @@ volumes:
   githome:
   gitopt:
   botbuilder-notify:
+  dbvolume:

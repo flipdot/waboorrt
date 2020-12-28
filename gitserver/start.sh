@@ -22,5 +22,16 @@ if [ -f "/opt/etc/gshadow" ]; then
     echo "copied /etc/gshadow from volume"
 fi
 
+AUTHORIZED_KEY = $(redis-cli -h redis get gitserver-root-sshkey)
+while [ -z "$AUTHORIZED_KEY" ]; do
+  AUTHORIZED_KEY=$(redis-cli -h redis get gitserver-root-sshkey)
+  sleep 1
+done
+
+mkdir -p /root/.ssh
+echo "Writing $AUTHORIZED_KEY to /root/.ssh/authorized_keys"
+echo $AUTHORIZED_KEY > /root/.ssh/authorized_keys
+
+redis-cli -h redis del gitserver-root-sshkey > /dev/null
 echo "Starting sshd"
 /usr/sbin/sshd -D

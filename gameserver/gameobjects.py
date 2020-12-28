@@ -1,3 +1,4 @@
+import random
 from enum import Enum, auto
 from typing import List
 
@@ -33,8 +34,16 @@ class GameState:
     def create(*args, **kwargs) -> "GameState":
         game_state = GameState(*args, **kwargs)
 
-        bot0 = Bot("0", 5, 5)
-        bot1 = Bot("1", game_state.map_w - 5, game_state.map_h - 5)
+        margin = 1
+
+        def rndw() -> int:
+            return random.randint(margin, game_state.map_w - 1 - margin)
+
+        def rndh() -> int:
+            return random.randint(margin, game_state.map_h - 1 - margin)
+
+        bot0 = Bot("0", rndw(), rndh())
+        bot1 = Bot("1", rndw(), rndh())
         game_state.bots = [bot0, bot1]
         game_state.entities = [bot0, bot1]
         return game_state
