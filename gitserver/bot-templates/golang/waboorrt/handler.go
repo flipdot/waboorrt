@@ -8,13 +8,11 @@ import (
 	"github.com/gorilla/rpc/v2"
 )
 
-type GameState interface{}
-
-type Action interface {}
+type Action interface{}
 
 type NextActionArgs struct {
-	GameState string `json:"game_state"`
-	YourName  string `json:"your_name"`
+	GameState GameState `json:"game_state"`
+	YourName  string    `json:"your_name"`
 }
 
 type Bot interface {
