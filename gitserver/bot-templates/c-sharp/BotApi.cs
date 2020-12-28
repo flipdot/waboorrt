@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using EdjCase.JsonRpc.Router;
 using EdjCase.JsonRpc.Router.Abstractions;
 
 namespace Wabooorrt.BotApi
 {
+	[JsonConverter(typeof(JsonStringEnumConverter))]
 	public enum Direction
 	{
 		North,
@@ -25,11 +27,16 @@ namespace Wabooorrt.BotApi
 
 	public class WalkOp : IOperation
 	{
-		public string Name { get; init; }
+		public string Name { get; init; } = "WALK";
+		public Direction? Direction { get; set; }
+
+		public WalkOp()
+		{
+		}
 
 		public WalkOp(Direction direction)
 		{
-			Name = $"WALK_{direction.ToString().ToUpperInvariant()}";
+			Direction = direction;
 		}
 	}
 
@@ -65,6 +72,7 @@ namespace Wabooorrt.BotApi
 		}
 	}
 
+	[JsonConverter(typeof(JsonStringEnumConverter))]
 	public enum EntityType
 	{
 		Bot,
@@ -92,6 +100,6 @@ namespace Wabooorrt.BotApi
 	{
 		public int X { get; set; }
 		public int Y { get; set; }
-		public string? Type { get; set; }
+		public EntityType? Type { get; set; }
 	}
 }
