@@ -53,23 +53,25 @@ def login_failed():
 
 @app.route("/login", methods=["POST"])
 def login():
-    # TODO: validate with regex
-    #
     username = request.form.get("username")
-    # TODO: limit to certain options (bot-templates/*)
     template = request.form.get("template")
-    # TODO: validate with regex
-    #
     pubkey = request.form.get("pubkey")
 
-    if not re.match(r"^[a-zA-Z0-9_-]+$", username):
-        return "Invalid username", 400
-    if not re.match(r"^[a-zA-Z0-9+=/@ -]+$", pubkey):
-        return "Invalid ssh public key", 400
-    if template not in VALID_REPO_TEMPLATES:
-        return f"Invalid template, please choose from {VALID_REPO_TEMPLATES}", 400
-    completed_process = subprocess.run(["ssh", "root@gitserver", "newbot", f'"{username}" "{template}" "{pubkey}"'])
-    if completed_process.returncode:
+    if create_user(username, template, pubkey):
         return redirect(url_for(".login_failed"))
 
     return redirect(url_for(".login_success", username=username))
+
+
+def create_user(username, template, pubkey):
+    if not re.match(r"^[a-zA-Z0-9_-]+$", username):
+        abort(400, description="Invalid username")
+        return "Invalid username", 400
+    if not re.match(r"^[a-zA-Z0-9+=/@ -]+$", pubkey):
+        abort(400, description="Invalid ssh public key")
+        return "Invalid ssh public key", 400
+    if template not in VALID_REPO_TEMPLATES:
+        abort(400, description=f"Invalid template, please choose from {VALID_REPO_TEMPLATES}")
+
+    completed_process = subprocess.run(["ssh", "root@gitserver", "newbot", f'"{username}" "{template}" "{pubkey}"'])
+    return completed_process.returncode
