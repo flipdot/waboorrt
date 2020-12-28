@@ -5,9 +5,12 @@ import subprocess
 from urllib.parse import urlparse
 import re
 
-import requests
 from flask import Flask, render_template, request, redirect, jsonify, abort, url_for
 import redis
+from uuid import uuid4
+import rc3
+
+import jwt
 
 logging.basicConfig(
     level=logging.INFO, format="[%(asctime)s] [%(levelname)s] %(name)s: %(message)s"
@@ -15,10 +18,7 @@ logging.basicConfig(
 
 VALID_REPO_TEMPLATES = ["python"]
 
-RC3_CLIENT_ID = os.environ["RC3_CLIENT_ID"]
-RC3_REDIRECT_URI = os.environ["RC3_REDIRECT_URI"]
-RC3_TOKEN_URI = os.environ["RC3_TOKEN_URI"]
-RC3_CLIENT_SECRET = os.environ["RC3_CLIENT_SECRET"]
+
 AUTH_TOKEN_SECRET = os.environ["AUTH_TOKEN_SECRET"]
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
@@ -70,7 +70,7 @@ def login_local():
     return redirect(url_for(".login_success", username=username))
 
 
-@app.route("/login/rc3", methods=["POST"])
+@app.route("/rc3/login", methods=["GET"])
 def login_rc3():
     if "code" not in request.args:
         abort(400, "authorization code missing")
@@ -79,30 +79,48 @@ def login_rc3():
 
     code = request.args["code"]
     state = request.args["state"]
-    # TODO: what is that state?
-    stored_state = db.get(f"webserver:state:{state}")
 
-    username = "OAUTH"
-    template = VALID_REPO_TEMPLATES[0]  # user should be able to choose
-    pubkey = "ssh-rsa AAAAA"
+    stored_state = db.get(f"webserver:states:{state}")
 
-    resp = requests.post(
-        f"https://rc3.world/sso/token/"
-        f"?grant_type=authorization_code"
-        f"&code={code}"
-        f"&redirect_uri={RC3_TOKEN_URI}"
-        f"&client_id={RC3_CLIENT_ID}"
-        f"&client_secret={RC3_CLIENT_SECRET}")
+    if not stored_state:
+        abort(400, "invalid state")
+    
+    refresh_token = rc3.get_refresh_token(code)
+    username = rc3.get_username(refresh_token)
 
-    resp_data = resp.json()
-    if resp_data.error:
-        logging.error("failed to exchange auth code for token: %s", resp_data)
-        abort(500)
+    if not db.get(f"webserver:users:{username}"):
+        stored_state = json.loads(stored_state)
 
-    if create_user(username, template, pubkey):
-        return redirect(url_for(".login_failed"))
+        if create_user(username, stored_state.template, stored_state.template):
+            return redirect(url_for(".login_failed"))
 
-    return redirect(url_for(".login_success", username=username))
+        db.set(f"webserver:users:{username}")
+
+    auth_token = jwt.encode({"username": username}, AUTH_TOKEN_SECRET, algorithm="HS256")
+
+    db.delete(f"webserver:states:{state}")
+
+    return redirect(url_for(".login_success", username=username, auth_token=auth_token))
+
+
+AUTH_TIMEOUT = 15*60*1000
+
+
+@app.route("/auth-redirect", methods=["GET"])
+def auth_redirect():
+    template = request.args.get("template")
+    pubkey = request.args.get("pubkey")
+
+    if template not in VALID_REPO_TEMPLATES:
+        abort(400, f"invalid template: {template}")
+
+    state = uuid4()
+    db.set(f"webserver:states:{state}", json.dumps({
+        "template": template,
+        "pubkey": pubkey
+    }), px=AUTH_TIMEOUT)
+
+    return redirect(rc3.gen_login_redirect(state))
 
 
 def create_user(username, template, pubkey):
