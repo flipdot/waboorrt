@@ -2,13 +2,13 @@ import json
 import logging
 import copy
 from random import randint
-from typing import Tuple
+from typing import Tuple, Optional
 import requests
 
 import docker
 from docker.models.containers import Container
 
-from gameobjects import GameState, Action, Bot
+from gameobjects import GameState, Action, Bot, EntityType
 from gamefunctions import dist
 from time import sleep
 
@@ -16,6 +16,41 @@ from network import GameStateEncoder
 from jsonschema import validate, ValidationError
 
 logger = logging.getLogger(__name__)
+
+
+def get_bot_view(game_state: GameState, bot_name: str):
+    me: Optional[Bot] = None
+    for entity in game_state.entities:
+        if entity.type == EntityType.BOT:
+            entity: Bot
+            if entity.name == bot_name:
+                me = entity
+    if me is None:
+        raise ValueError(f"Unknown bot {bot_name}")
+
+    modified_game_state: GameState = copy.deepcopy(game_state)
+    modified_game_state.entities = []
+    visible_entities = [{
+        "x": e.x,
+        "y": e.y,
+        "type": e.type,
+    } for e in game_state.entities if dist((me.x, me.y), (e.x, e.y)) <= me.view_range]
+
+    view = {
+        "me": {
+            "x": me.x,
+            "y": me.y,
+            "coins": me.coins,
+            "view_range": me.view_range
+        },
+        "meta": {
+            "w": game_state.map_w,
+            "h": game_state.map_h,
+            "tick": game_state.tick,
+        },
+        "entities": visible_entities
+    }
+    return view
 
 
 class BotCommunicator:
@@ -70,19 +105,13 @@ class BotCommunicator:
         return tuple(actions)
 
     def get_next_action(
-        self, game_state: GameState, container: Container, bot: Bot
+            self, game_state: GameState, container: Container, bot: Bot
     ) -> dict:
         url = f"http://{container.id[:12]}:4000/jsonrpc"
-        modified_game_state: GameState = copy.deepcopy(game_state)
-        modified_game_state.entities = []
-        for e in game_state.entities:
-            if dist([bot.x, bot.y], [e.x, e.y]) <= bot.view_range:
-                modified_game_state.entities.append(e)
         payload = {
             "method": "next_action",
             "params": {
-                "game_state": modified_game_state,
-                "your_name": bot.name,
+                "game_state": get_bot_view(game_state, bot.name),
             },
             "jsonrpc": "2.0",
             "id": randint(0, 10000),

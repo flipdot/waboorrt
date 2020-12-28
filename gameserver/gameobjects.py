@@ -5,10 +5,7 @@ from typing import List
 
 class Action:
     NOOP = "NOOP"
-    WALK_NORTH = "WALK_NORTH"
-    WALK_EAST = "WALK_EAST"
-    WALK_SOUTH = "WALK_SOUTH"
-    WALK_WEST = "WALK_WEST"
+    WALK = "WALK"
     THROW = "THROW"
     LOOK = "LOOK"
     noaction = {"name": NOOP}
@@ -19,9 +16,17 @@ class EntityType(Enum):
     BOT = auto()
 
 
+# class BotView:
+#     """
+#     Represents the object that gets send to the bots
+#     """
+#
+#     def __init__(self):
+#
+
+
 class GameState:
     def __init__(self, max_ticks=100):
-        super().__init__()
         self.tick = 0
         self.max_ticks = max_ticks
         self.map_w: int = 16
@@ -31,7 +36,7 @@ class GameState:
         self.running: bool = True
 
     @staticmethod
-    def create(*args, **kwargs) -> "GameState":
+    def create(bot0_name="0", bot1_name="1", *args, **kwargs) -> "GameState":
         game_state = GameState(*args, **kwargs)
 
         margin = 1
@@ -42,8 +47,8 @@ class GameState:
         def rndh() -> int:
             return random.randint(margin, game_state.map_h - 1 - margin)
 
-        bot0 = Bot("0", rndw(), rndh())
-        bot1 = Bot("1", rndw(), rndh())
+        bot0 = Bot(bot0_name, rndw(), rndh())
+        bot1 = Bot(bot1_name, rndw(), rndh())
         game_state.bots = [bot0, bot1]
         game_state.entities = [bot0, bot1]
         return game_state

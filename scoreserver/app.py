@@ -91,9 +91,9 @@ async def main():
             bot_a_new_rank, bot_b_new_rank = calculate_new_elo_ranking(
                 (bot_a_old_rank, bot_b_old_rank),
                 (
-                    score["0"],
-                    score["1"],
-                ),  # TODO: replace "0" / "1" by bot_a_name and bot_b_name
+                    score[bot_a_name],
+                    score[bot_b_name],
+                ),
             )
             rankdiff_a = bot_a_new_rank - bot_a_old_rank
             rankdiff_b = bot_b_new_rank - bot_b_old_rank

@@ -20,7 +20,7 @@ logging.basicConfig(
 
 @dispatcher.add_method
 def run_game(bot0_name: str, bot1_name: str):
-    game_state = GameState.create()
+    game_state = GameState.create(bot0_name, bot1_name)
     game_history = [
         {
             "game_state": game_state,

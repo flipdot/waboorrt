@@ -1,10 +1,10 @@
 from gamefunctions import tick, GameState, Action
 from unittest import TestCase
 
-WALK_NORTH = {"name": Action.WALK_NORTH}
-WALK_EAST = {"name": Action.WALK_EAST}
-WALK_SOUTH = {"name": Action.WALK_SOUTH}
-WALK_WEST = {"name": Action.WALK_WEST}
+WALK_NORTH = {"name": Action.WALK, "direction": "north"}
+WALK_EAST = {"name": Action.WALK, "direction": "east"}
+WALK_SOUTH = {"name": Action.WALK, "direction": "south"}
+WALK_WEST = {"name": Action.WALK, "direction": "west"}
 
 
 class TestWalk(TestCase):
