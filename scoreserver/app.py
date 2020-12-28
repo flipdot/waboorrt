@@ -58,7 +58,7 @@ def get_score(game_history) -> Dict[str, float]:
 
 
 def calculate_new_elo_ranking(
-        current_rank: Tuple[int, int], points: Tuple[float, float], k=20
+    current_rank: Tuple[int, int], points: Tuple[float, float], k=20
 ) -> Tuple[int, int]:
     """Get new ELO rating. Formula implemented from https://de.wikipedia.org/wiki/Elo-Zahl
 
@@ -90,7 +90,10 @@ async def main():
             bot_b_old_rank = user_b.get("elo_rank", 1200)
             bot_a_new_rank, bot_b_new_rank = calculate_new_elo_ranking(
                 (bot_a_old_rank, bot_b_old_rank),
-                (score["0"], score["1"])  # TODO: replace "0" / "1" by bot_a_name and bot_b_name
+                (
+                    score["0"],
+                    score["1"],
+                ),  # TODO: replace "0" / "1" by bot_a_name and bot_b_name
             )
             rankdiff_a = bot_a_new_rank - bot_a_old_rank
             rankdiff_b = bot_b_new_rank - bot_b_old_rank
@@ -104,15 +107,18 @@ async def main():
                 "elo_rank": {
                     bot_a_name: bot_a_new_rank,
                     bot_b_name: bot_b_new_rank,
-                }
+                },
             }
-            logging.info("Match done, new rankings: "
-                         f"{bot_a_name}: {user_a['elo_rank']} ({rankdiff_a:+}), "
-                         f"{bot_b_name}: {user_b['elo_rank']} ({rankdiff_b:+})"
-                         )
+            logging.info(
+                "Match done, new rankings: "
+                f"{bot_a_name}: {user_a['elo_rank']} ({rankdiff_a:+}), "
+                f"{bot_b_name}: {user_b['elo_rank']} ({rankdiff_b:+})"
+            )
             db.set(f"game:{game_result['id']}:summary", json.dumps(game_result))
             db.set(f"game:{game_result['id']}:history", json.dumps(game_history))
-            db.zadd("matches_by_time", { f"{game_result['id']}": datetime.now().timestamp() })
+            db.zadd(
+                "matches_by_time", {f"{game_result['id']}": datetime.now().timestamp()}
+            )
             db.set(key_a, json.dumps(user_a))
             db.set(key_b, json.dumps(user_b))
         logging.info("Sleeping, next matches will start soon")
