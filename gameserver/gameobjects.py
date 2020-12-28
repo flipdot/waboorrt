@@ -9,6 +9,7 @@ class Action:
     WALK_SOUTH = "WALK_SOUTH"
     WALK_WEST = "WALK_WEST"
     THROW = "THROW"
+    LOOK = "LOOK"
     noaction = {"name": NOOP}
 
 
@@ -52,3 +53,5 @@ class Bot(Entity):
         self.type: EntityType = EntityType.BOT
         self.health: int = 100
         self.name: str = name
+        self.coins: int = 42
+        self.view_range: float = 1.0

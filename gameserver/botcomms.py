@@ -1,5 +1,6 @@
 import json
 import logging
+import copy
 from random import randint
 from typing import Tuple
 import requests
@@ -7,7 +8,8 @@ import requests
 import docker
 from docker.models.containers import Container
 
-from gameobjects import GameState, Action
+from gameobjects import GameState, Action, Bot
+from gamefunctions import dist
 from time import sleep
 
 from network import GameStateEncoder
@@ -63,17 +65,22 @@ class BotCommunicator:
 
     def get_next_actions(self, game_state: GameState) -> Tuple[dict, ...]:
         actions = []
-        for container in self.containers:
-            actions.append(self.get_next_action(game_state, container))
+        for container, bot in zip(self.containers, game_state.bots):
+            actions.append(self.get_next_action(game_state, container, bot))
         return tuple(actions)
 
-    def get_next_action(self, game_state: GameState, container: Container) -> dict:
+    def get_next_action(self, game_state: GameState, container: Container, bot: Bot) -> dict:
         url = f"http://{container.id[:12]}:4000/jsonrpc"
+        modified_game_state: GameState = copy.deepcopy(game_state)
+        modified_game_state.entities = []
+        for e in game_state.entities:
+            if dist([bot.x, bot.y], [e.x, e.y]) <= bot.view_range:
+                modified_game_state.entities.append(e)
         payload = {
             "method": "next_action",
             "params": {
-                # TODO: do not send whole state, just stuff the bot can see
-                "game_state": game_state,
+                "game_state": modified_game_state,
+                "your_name": bot.name,
             },
             "jsonrpc": "2.0",
             "id": randint(0, 10000),
@@ -98,6 +105,7 @@ class BotCommunicator:
                 "name": {"type": "string"},
                 "x": {"type": "integer"},
                 "y": {"type": "integer"},
+                "range": {"type": "number"},
             },
             "required": ["name"],
         }

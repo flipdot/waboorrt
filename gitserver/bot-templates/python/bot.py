@@ -15,10 +15,11 @@ class Action:
     WALK_SOUTH = "WALK_SOUTH"
     WALK_WEST = "WALK_WEST"
     THROW = "THROW"
+    LOOK = "LOOK"
 
 
 @dispatcher.add_method
-def next_action(game_state):
+def next_action(game_state, your_name):
     logging.info(game_state)
     return random.choice([
         {
@@ -34,6 +35,10 @@ def next_action(game_state):
             "name": Action.THROW,
             "x": random.randint(0, 50 - 1),
             "y": random.randint(0, 50 - 1),
+        },
+        {
+            "name": Action.LOOK,
+            "range": random.randint(0, 50 - 1),
         },
     ])
 
