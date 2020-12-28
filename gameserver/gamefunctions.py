@@ -53,7 +53,7 @@ def compute_damage(dist: float) -> int:
 
 
 def action_noop(game_state, bot, action):
-    bot.coins += 1  # get one coin per noop
+    bot.coins += 1
     return True
 
 
