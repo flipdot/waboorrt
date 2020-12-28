@@ -15,7 +15,7 @@ def get_username(refresh_token):
     })
 
     resp_data = resp.json()
-    if resp_data.authenticated:
+    if not resp_data.authenticated:
         raise Exception(f"user not authenticated: {resp_data}")
 
     return resp.username
