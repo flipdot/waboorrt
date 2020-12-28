@@ -1,19 +1,18 @@
 #!/bin/bash
 
-while [ true ] ; do
+while true; do
   inotifywait -e create /botbuilder;
-  while [ ! -z "$(ls /botbuilder/)" ]; do
-    file=$(ls /botbuilder/ | head -n1);
+  while [ -n "$(ls /botbuilder/)" ]; do
+    file=$(find /botbuilder/ -type f -exec basename {} \; | head -n1);
 
     TMP_DIR=$(mktemp -d)
-    mkdir -p $TMP_DIR
-    cd $TMP_DIR
+    cd "$TMP_DIR" || exit
     echo "Building bot $file"
-    git clone /git/$file.git .
-    docker build -t localhost/bot/$file .
+    git clone "/git/$file.git" .
+    docker build -t "localhost/bot/$file" .
     redis-cli -h redis set "user:$file" "{\"botname\": \"$file\"}"
-    cd
+    cd "$HOME" || exit
 
-    rm /botbuilder/$file;
+    rm "/botbuilder/$file";
     done;
 done

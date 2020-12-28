@@ -32,7 +32,7 @@ done
 
 mkdir -p /root/.ssh
 echo "Writing $AUTHORIZED_KEY to /root/.ssh/authorized_keys"
-echo $AUTHORIZED_KEY > /root/.ssh/authorized_keys
+echo "$AUTHORIZED_KEY" > /root/.ssh/authorized_keys
 
 redis-cli -h redis del gitserver-root-sshkey > /dev/null
 echo "Starting sshd"
