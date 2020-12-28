@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-
-import demoGame from '../demo.json';
+import useSWR from 'swr';
 
 import List from './List';
 import Player from './Player';
 import { GameReplay } from './api-types';
+import { GlobalStyle } from './styles';
 
 const Columns = styled.div`
   display: flex;
@@ -45,8 +45,8 @@ const LoginButton = styled.button`
   padding: 5px 20px;
   color: #fff;
   border: 0;
-  background-color: var(--primary);;
-  box-shadow: inset 0px 0px 15px rgba(32,29,71,.5);
+  background-color: var(--plattform);
+  box-shadow: inset 0px 0px 15px rgba(32, 29, 71, 0.5);
   cursor: pointer;
   font-size: 1.125rem;
 `;
@@ -54,7 +54,7 @@ const LoginButton = styled.button`
 const Input = styled.input`
   display: block;
   height: 40px;
-  padding: 1rem 1rem;
+  padding: 0 1rem;
   font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI',
     Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif,
     'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -76,12 +76,20 @@ const Input = styled.input`
 `;
 
 function Navbar() {
+  const { data: templateData = [] } = useSWR('/api/templates');
+
   return (
     <NavbarWrapper>
       <NavbarInner>
         <HorizontalFormGroup method="GET" action="/auth-redirect">
-          <Input placeholder="Template" type="text" name="template" />
-          <Input placeholder="SSH Pub Key" type="text" name="pubkey" />
+          <Input as="select" placeholder="Template" name="template" required>
+            {templateData.map((item: string) => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
+          </Input>
+          <Input placeholder="SSH Pub Key" type="text" name="pubkey" required />
           <LoginButton>Login</LoginButton>
         </HorizontalFormGroup>
       </NavbarInner>
@@ -90,15 +98,19 @@ function Navbar() {
 }
 
 export default function App() {
-  const [selectedReplay, setSelectedReplay] = useState(null);
+  const [selectedReplay, setSelectedReplay] = useState<string | null>(null);
+  const { data } = useSWR<GameReplay>(
+    selectedReplay && `/api/games/${selectedReplay}`
+  );
 
   return (
     <>
       <Navbar />
       <Columns>
-        <Player replay={demoGame as GameReplay} />
-        <List />
+        <Player replay={data} />
+        <List onItemSelect={(id) => setSelectedReplay(id)} />
       </Columns>
+      <GlobalStyle />
     </>
   );
 }

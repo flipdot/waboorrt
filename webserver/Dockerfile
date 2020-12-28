@@ -1,3 +1,13 @@
+FROM node AS frontend
+
+COPY frontend /app
+
+WORKDIR /app
+
+RUN npm ci
+RUN npm run build
+
+
 FROM python:3.8
 
 RUN pip install pipenv
@@ -10,6 +20,7 @@ RUN pipenv sync
 
 COPY * ./
 COPY static/ static/
+COPY --from=frontend /app/dist static/webapp
 COPY templates/ templates/
 
 EXPOSE 80

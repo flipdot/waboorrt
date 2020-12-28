@@ -5,7 +5,8 @@ export type ThrowAction = {
 };
 
 export type WalkAction = {
-  name: 'WALK_WEST' | 'WALK_SOUTH' | 'WALK_NORTH' | 'WALK_EAST';
+  name: 'WALK';
+  direction: 'WEST' | 'SOUTH' | 'NORTH' | 'EAST';
 };
 
 export type NoOpAction = {

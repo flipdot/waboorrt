@@ -42,14 +42,21 @@ const LargeIconButton = styled(IconButton)`
   margin: -4px;
 `;
 
-export default function Player({ replay }: { replay: GameReplay }) {
+export default function Player({ replay }: { replay?: GameReplay }) {
   const [currentFrameIdx, setCurrentFrameIdx] = useState(0);
   const [play, setPlay] = useState(true);
   const currentFrameIdxRef = useRef(currentFrameIdx);
 
-  const frame = replay[currentFrameIdx];
-
   const unfinishedActions = useRef<number[]>([]);
+
+  const frame = replay && replay[currentFrameIdx];
+
+  useEffect(() => {
+    setPlay(true);
+    const newIdx = 0;
+    setCurrentFrameIdx(newIdx);
+    currentFrameIdxRef.current = newIdx;
+  }, [replay]);
 
   const frameAnimatonsFinished = useCallback(
     (frameIdx: number) => {
@@ -57,7 +64,7 @@ export default function Player({ replay }: { replay: GameReplay }) {
         console.log('Animations finished!', frameIdx);
 
         if (play) {
-          if (currentFrameIdx === replay[0].game_state.max_ticks) {
+          if (!replay || currentFrameIdx === replay[0].game_state.max_ticks) {
             setPlay(false);
           } else {
             console.log('Going to next frame');
@@ -71,7 +78,7 @@ export default function Player({ replay }: { replay: GameReplay }) {
   );
 
   useEffect(() => {
-    unfinishedActions.current = new Array(frame.actions.length)
+    unfinishedActions.current = new Array(frame?.actions.length || 0)
       .fill(0)
       .map((_, i) => i);
 
@@ -79,6 +86,10 @@ export default function Player({ replay }: { replay: GameReplay }) {
       frameAnimatonsFinished(currentFrameIdx);
     }
   }, [frame, frameAnimatonsFinished]);
+
+  if (!replay || !frame) return null;
+
+  const maxTicks = replay[0].game_state.max_ticks;
 
   return (
     <Wrapper>
@@ -107,7 +118,7 @@ export default function Player({ replay }: { replay: GameReplay }) {
           type="button"
           onClick={() => {
             setPlay(!play);
-            const newIdx = currentFrameIdx + 1;
+            const newIdx = Math.min(currentFrameIdx + 1, maxTicks);
             setCurrentFrameIdx(newIdx);
             currentFrameIdxRef.current = newIdx;
           }}
@@ -116,7 +127,7 @@ export default function Player({ replay }: { replay: GameReplay }) {
           {play ? <CgPlayPause /> : <CgPlayButton />}
         </LargeIconButton>
         <Range
-          max={replay[0].game_state.max_ticks}
+          max={maxTicks}
           min={0}
           value={currentFrameIdx}
           onChange={(e) => {
@@ -141,7 +152,6 @@ export default function Player({ replay }: { replay: GameReplay }) {
       </PlayBar>
 
       <DebugInfo value={JSON.stringify(frame, null, 2)} />
-      <GlobalStyle />
     </Wrapper>
   );
 }
