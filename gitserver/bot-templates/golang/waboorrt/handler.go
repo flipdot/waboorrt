@@ -5,12 +5,12 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/rpc/v2"
+
+	"waboorrt/waboorrt/actions"
 )
 
-type Action interface{}
-
 type Bot interface {
-	NextAction(state *GameState) (Action, error)
+	NextAction(state *GameState) actions.Action
 }
 
 func Run(bot Bot) error {

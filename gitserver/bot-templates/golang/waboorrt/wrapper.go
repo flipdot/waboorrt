@@ -2,6 +2,8 @@ package waboorrt
 
 import (
 	"net/http"
+
+	"waboorrt/waboorrt/actions"
 )
 
 type wrapper struct {
@@ -14,13 +16,8 @@ func newWrapper(bot Bot) *wrapper {
 	}
 }
 
-func (w *wrapper) NextAction(r *http.Request, args *GameState, result *Action) error {
-	ret, err := w.bot.NextAction(args)
-	if err != nil {
-		return err
-	}
-
-	*result = ret
+func (w *wrapper) NextAction(r *http.Request, args *GameState, result *actions.Action) error {
+	*result = w.bot.NextAction(args)
 	return nil
 }
 
