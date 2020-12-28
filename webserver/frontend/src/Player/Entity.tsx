@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 
-import { Entity } from './api-types';
-import { fieldSize } from './constants';
+import { Entity } from '../api-types';
+import { fieldSize } from '../constants';
+
 import robot from './robot.png';
 
 const EntityBody = styled.div<Entity>`

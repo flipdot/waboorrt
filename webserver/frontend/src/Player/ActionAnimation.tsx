@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
 
-import { ActionResult, Entity, GameState } from './api-types';
-import { fieldSize } from './constants';
+import { ActionResult, Entity, GameState } from '../api-types';
+import { fieldSize } from '../constants';
 
 type Pos = { x: number; y: number };
 

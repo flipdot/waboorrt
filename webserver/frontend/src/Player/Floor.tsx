@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { fieldSize } from './constants';
+import { fieldSize } from '../constants';
 
 const FloorTile = styled.div<{ $alternative: boolean }>`
   width: ${fieldSize}px;

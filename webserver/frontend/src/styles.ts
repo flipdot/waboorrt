@@ -1,4 +1,4 @@
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyle = createGlobalStyle`
   :root {
@@ -28,5 +28,27 @@ export const GlobalStyle = createGlobalStyle`
   body {
     background: var(--dark);
     font-family: sans-serif;
+  }
+
+  ::selection {
+      color: #fff;
+      background: #ae30ff;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #6800e7 #29255b;
+  }
+
+  *::-webkit-scrollbar {
+    width: 0.75rem;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: #29255b;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: #6800e7;
   }
 `;
