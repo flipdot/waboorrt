@@ -69,7 +69,9 @@ class BotCommunicator:
             actions.append(self.get_next_action(game_state, container, bot))
         return tuple(actions)
 
-    def get_next_action(self, game_state: GameState, container: Container, bot: Bot) -> dict:
+    def get_next_action(
+        self, game_state: GameState, container: Container, bot: Bot
+    ) -> dict:
         url = f"http://{container.id[:12]}:4000/jsonrpc"
         modified_game_state: GameState = copy.deepcopy(game_state)
         modified_game_state.entities = []
