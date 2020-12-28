@@ -63,6 +63,11 @@ def game_list():
     return jsonify(games)
 
 
+@app.route("/api/templates")
+def valid_repo_templates():
+    return jsonify(VALID_REPO_TEMPLATES)
+
+
 @app.route("/api/games/<game_id>")
 def game_history(game_id):
     history = db.get(f"game:{game_id}:history")
