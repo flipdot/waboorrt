@@ -2,10 +2,12 @@ version: "3.9"
 services:
   redis:
     image: redis
+    restart: unless-stopped
     ports:
       - "6379:6379" # remove me in prod
   gameserver:
     build: gameserver
+    restart: unless-stopped
     ports:
       - "5000:5000" # remove me in prod
     depends_on:
@@ -17,12 +19,14 @@ services:
       - gamenet
   webserver:
     build: webserver
+    restart: unless-stopped
     ports:
       - "80:80"
     depends_on:
       - redis
   gitserver:
     build: gitserver
+    restart: unless-stopped
     ports:
       - "2222:22"
     volumes:
@@ -32,12 +36,14 @@ services:
       - botbuilder-notify:/botbuilder
   botbuilder:
     build: botbuilder 
+    restart: unless-stopped
     volumes:
       - botbuilder-notify:/botbuilder
       - botvolume:/git
       - /var/run/docker.sock:/var/run/docker.sock
   scoreserver:
     build: scoreserver
+    restart: unless-stopped
     depends_on:
       - gameserver
       - redis
