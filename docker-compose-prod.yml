@@ -1,0 +1,90 @@
+version: "3.9"
+services:
+  traefik:
+    image: "traefik:v2.3"
+    container_name: "traefik"
+    restart: unless-stopped
+    command:
+      #- "--log.level=DEBUG"
+      #- "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      # - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+      - "--certificatesresolvers.myresolver.acme.email=com@flipdot.org"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
+      - "--entrypoints.websecure.address=:443"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+  redis:
+    image: redis
+    restart: unless-stopped
+    volumes:
+      -  dbvolume:/data
+  gameserver:
+    build: gameserver
+    restart: unless-stopped
+    depends_on:
+      - redis
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - default
+      - gamenet
+  webserver:
+    build: webserver
+    restart: unless-stopped
+    depends_on:
+      - redis
+    env_file:
+      - webserver.env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.webserver.rule=Host(`waboorrt.flipdot.org`)"
+      - "traefik.http.routers.webserver.entrypoints=websecure"
+      - "traefik.http.routers.webserver.tls.certresolver=myresolver"
+  gitserver:
+    build: gitserver
+    restart: unless-stopped
+    ports:
+      - "2222:22"
+    volumes:
+      - botvolume:/git
+      - githome:/home/
+      - gitopt:/opt
+      - botbuilder-notify:/botbuilder
+    depends_on:
+      - redis
+  botbuilder:
+    build: botbuilder 
+    restart: unless-stopped
+    volumes:
+      - botbuilder-notify:/botbuilder
+      - botvolume:/git
+      - /var/run/docker.sock:/var/run/docker.sock
+  scoreserver:
+    build: scoreserver
+    restart: unless-stopped
+    depends_on:
+      - gameserver
+      - redis
+
+networks:
+  gamenet:
+    external: true
+volumes:
+  botvolume:
+  githome:
+  gitopt:
+  botbuilder-notify:
+  dbvolume:
+  letsencrypt:
