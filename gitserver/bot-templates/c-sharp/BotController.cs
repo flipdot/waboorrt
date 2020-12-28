@@ -3,6 +3,8 @@ using EdjCase.JsonRpc.Router;
 using EdjCase.JsonRpc.Router.Abstractions;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
+using Wabooorrt.BotApi;
+using System.Collections.Generic;
 
 namespace Wabooorrt
 {
@@ -16,19 +18,21 @@ namespace Wabooorrt
 			_logger = logger.CreateLogger(nameof(BotController));
 		}
 
-		public IRpcMethodResult NextAction(object gameState, string yourName)
+		public IRpcMethodResult NextAction(Me me, Meta meta, List<Entity> entities)
 		{
 			_logger.LogInformation("Next action requested.");
-			_logger.LogInformation(JsonSerializer.Serialize(gameState));
+			_logger.LogInformation(JsonSerializer.Serialize(me));
+			_logger.LogInformation(JsonSerializer.Serialize(meta));
+			_logger.LogInformation(JsonSerializer.Serialize(entities));
 
 			var rnd = new Random();
 
-			var noop = new BotNoOperation();
-			var walk = new BotWalkOperation(BotWalkDirection.North);
-			var throww = new BotThrowOperation(rnd.Next(0, 50), rnd.Next(0, 50));
-			var look = new BotLookOperation(rnd.Next(0, 50));
+			var noop = new NoOp();
+			var walk = new WalkOp(Direction.North);
+			var throww = new ThrowOp(rnd.Next(0, 50), rnd.Next(0, 50));
+			var look = new LookOp(rnd.Next(0, 50));
 
-			var actions = new IBotOperation[] { noop, walk, throww, look };
+			var actions = new IOperation[] { noop, walk, throww, look };
 			var result = actions[rnd.Next(0, actions.Length)];
 
 			_logger.LogInformation("Sending reply: {Result}", JsonSerializer.Serialize(result));
