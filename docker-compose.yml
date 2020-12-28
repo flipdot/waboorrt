@@ -63,4 +63,3 @@ volumes:
   gitopt:
   botbuilder-notify:
   dbvolume:
-  letsencrypt:

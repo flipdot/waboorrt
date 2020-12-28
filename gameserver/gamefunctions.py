@@ -1,9 +1,12 @@
+import logging
 import random
 import copy
 import math
 
 from gameobjects import GameState, Bot, Action
 from typing import Tuple
+
+logger = logging.getLogger(__name__)
 
 
 def can_walk_north(state: GameState, bot: Bot) -> bool:
@@ -118,9 +121,6 @@ def tick(
 ) -> (GameState, Tuple[dict, ...]):
     if len(game_state.bots) != len(actions):
         raise ValueError("number of actions does not match number of bots")
-    actions = tuple(
-        map(lambda a: a if (type(a) == dict) else Action.noaction, actions)
-    )  # replace illegal actions by NOOP
 
     game_state = copy.deepcopy(game_state)
     game_state.tick += 1
@@ -139,7 +139,7 @@ def tick(
     for current_action_type, action_function in action_execution_order:
         for bot, action in action_list:
             # for convenience for the bot authors: convert every action to lowercase
-            action = {k.lower(): v for k, v in action.items()}
+            action = {k.lower(): (v.lower() if isinstance(v, str) else v) for k, v in action.items()}
             if action.get("name") == current_action_type:
                 executed_actions.append(
                     {

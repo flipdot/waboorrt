@@ -17,7 +17,7 @@ logging.basicConfig(
     level=logging.INFO, format="[%(asctime)s] [%(levelname)s] %(name)s: %(message)s"
 )
 
-VALID_REPO_TEMPLATES = ["python"]
+VALID_REPO_TEMPLATES = ["python", "c-sharp"]
 
 
 AUTH_TOKEN_SECRET = os.environ["AUTH_TOKEN_SECRET"]
@@ -75,10 +75,10 @@ def game_history(game_id):
     return Response(history, mimetype='application/json')
 
 
-@app.route("/login_success/<username>")
-def login_success(username):
-    hostname = urlparse(request.base_url).hostname
-    return render_template("login_success.html", username=username, hostname=hostname)
+# @app.route("/login_success/<username>")
+# def login_success(username):
+#     hostname = urlparse(request.base_url).hostname
+#     return render_template("login_success.html", username=username, hostname=hostname)
 
 
 @app.route("/login_failed")
@@ -86,16 +86,16 @@ def login_failed():
     return render_template("login_failed.html")
 
 
-@app.route("/login/local", methods=["POST"])
-def login_local():
-    username = request.form.get("username")
-    template = request.form.get("template")
-    pubkey = request.form.get("pubkey")
-
-    if create_user(username, template, pubkey):
-        return redirect(url_for(".login_failed"))
-
-    return redirect(url_for(".login_success", username=username))
+# @app.route("/login/local", methods=["POST"])
+# def login_local():
+#     username = request.form.get("username")
+#     template = request.form.get("template")
+#     pubkey = request.form.get("pubkey")
+#
+#     if create_user(username, template, pubkey):
+#         return redirect(url_for(".login_failed"))
+#
+#     return redirect(url_for(".login_success", username=username))
 
 
 @app.route("/rc3/login", methods=["GET"])
@@ -127,7 +127,7 @@ def login_rc3():
 
     db.delete(f"webserver:oauth_states:{state}")
 
-    return redirect(url_for(".login_success", username=username, auth_token=auth_token))
+    return redirect(f"/?username={username}")
 
 
 AUTH_TIMEOUT = 15 * 60 * 1000
