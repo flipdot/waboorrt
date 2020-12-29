@@ -63,7 +63,7 @@ def get_bot_view(game_state: GameState, bot_name: str):
 
 
 def get_bot_image_name(bot_name):
-    hasher = hashlib.sha256()
+    hasher = hashlib.sha1()
     hasher.update(bot_name.encode())
 
     return f"localhost/bot/{hasher.hexdigest()[:32]}"

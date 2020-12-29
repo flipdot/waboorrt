@@ -4,7 +4,7 @@ while true; do
   inotifywait -e create /botbuilder;
   while [ -n "$(ls /botbuilder/)" ]; do
     file=$(find /botbuilder/ -type f -exec basename {} \; | head -n1);
-    imageName=$(printf %s "$file" | sha256sum | head -c 32)
+    imageName=$(printf %s "$file" | sha1sum | head -c 32)
 
     TMP_DIR=$(mktemp -d)
     cd "$TMP_DIR" || exit
