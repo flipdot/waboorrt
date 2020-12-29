@@ -138,7 +138,7 @@ class BotCommunicator:
         try:
             resp_data = response.json()
         except JSONDecodeError:
-            logger.warning(f"Not a valid JSON response from {bot.name}")
+            logger.warning(f"Not a valid JSON response from {bot.name}: %s", response)
             return Action.noaction
         logger.debug(f"Response from bot {container.image.tags}: {response}")
         result = resp_data.get("result", Action.noaction)
