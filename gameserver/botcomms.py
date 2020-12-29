@@ -1,6 +1,7 @@
 import json
 import logging
 import copy
+from json import JSONDecodeError
 from random import randint
 from typing import Tuple, Optional
 import requests
@@ -123,8 +124,9 @@ class BotCommunicator:
         try:
             # logger.debug(payload)
             response = requests.post(
-                url, data=json.dumps(payload, cls=GameStateEncoder), timeout=0.1
-            ).json()
+                url, data=json.dumps(payload, cls=GameStateEncoder), timeout=0.1,
+                headers={"Content-Type": "application/json"}
+            )
             # logger.debug(response)
         except requests.exceptions.Timeout:
             logger.info(f"Bot {container.image.tags} took to long to respond")
@@ -134,8 +136,13 @@ class BotCommunicator:
                 f"Something went very wrong while talking to bot {container.image.tags}"
             )
             return Action.noaction
+        try:
+            resp_data = response.json()
+        except JSONDecodeError:
+            logger.warning(f"Not a valid JSON response from {bot.name}: %s", response)
+            return Action.noaction
         logger.debug(f"Response from bot {container.image.tags}: {response}")
-        result = response.get("result", Action.noaction)
+        result = resp_data.get("result", Action.noaction)
         schema = {
             "type": "object",
             "properties": {
