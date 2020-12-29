@@ -1,16 +1,16 @@
 export type ThrowAction = {
-  name: 'THROW';
+  name: 'throw';
   x: number;
   y: number;
 };
 
 export type WalkAction = {
-  name: 'WALK';
-  direction: 'WEST' | 'SOUTH' | 'NORTH' | 'EAST';
+  name: 'walk';
+  direction: 'west' | 'south' | 'north' | 'east';
 };
 
 export type NoOpAction = {
-  name: 'NOOP';
+  name: 'noop';
 };
 
 export type Action = ThrowAction | WalkAction | NoOpAction;
@@ -21,7 +21,7 @@ export type ActionResult = {
   success: boolean;
 };
 
-export type EntityType = 'BOT';
+export type EntityType = 'bot';
 
 export type Entity = {
   x: number;
