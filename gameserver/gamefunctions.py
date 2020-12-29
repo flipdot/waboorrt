@@ -4,7 +4,7 @@ import copy
 import math
 
 from gameobjects import GameState, Bot, Action
-from typing import Tuple
+from typing import Tuple, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -60,31 +60,34 @@ def action_noop(game_state, bot, action):
     return True
 
 
-def action_walk(game_state, bot, action):
+def action_walk(game_state, bot, action) -> Tuple[bool, Optional[str]]:
     if action.get("direction") == "north":
         if can_walk_north(game_state, bot):
             bot.y -= 1
-            return True
+            return True, None
 
     elif action.get("direction") == "east":
         if can_walk_east(game_state, bot):
             bot.x += 1
-            return True
+            return True, None
 
     elif action.get("direction") == "south":
         if can_walk_south(game_state, bot):
             bot.y += 1
-            return True
+            return True, None
 
     elif action.get("direction") == "west":
         if can_walk_west(game_state, bot):
             bot.x -= 1
-            return True
+            return True, None
 
-    return False
+    return False, "position was occupied or you walked out of the map"
 
 
-def action_throw(game_state, bot, action):
+def action_throw(game_state, bot, action) -> Tuple[bool, Optional[str]]:
+
+    if dist((bot.x, bot.y), (action.get("x", 0), action.get("y", 0))) > bot.coins:
+        return False, "not enough coins to throw this far"
     for other in game_state.bots:
         other.health -= compute_damage(
             dist(
@@ -92,28 +95,25 @@ def action_throw(game_state, bot, action):
                 (action.get("x", bot.x), action.get("y", bot.y)),
             )
         )
-    return True
+    return True, None
 
 
-def action_look(game_state, bot, action):
+def action_look(game_state, bot, action) -> Tuple[bool, Optional[str]]:
     view_price = 1.0
-    bot.view_range = min(
-        bot.coins / view_price,  # what the bot can afford
-        action.get(
-            "range",
-            max(  # what it wants or the max necessary
-                dist((bot.x, bot.y), (0, 0)),
-                dist((bot.x, bot.y), (game_state.map_w, 0)),
-                dist((bot.x, bot.y), (0, game_state.map_h)),
-                dist((bot.x, bot.y), (game_state.map_w, game_state.map_h)),
-            ),
+    desired_range = int(action.get(
+        "range",
+        max(  # what it wants or the max necessary
+            dist((bot.x, bot.y), (0, 0)),
+            dist((bot.x, bot.y), (game_state.map_w, 0)),
+            dist((bot.x, bot.y), (0, game_state.map_h)),
+            dist((bot.x, bot.y), (game_state.map_w, game_state.map_h)),
         ),
-    )
-    if bot.view_range > 1:  # get up to 1 for free
-        bot.coins -= bot.view_range * view_price
-    else:  # tried to view in range <=1, makes no sense
-        bot.view_range = 1
-    return bot.view_range > 1  # if <=1, the bot would waste coins
+    ))
+    if desired_range > (bot.coins / view_price):
+        return False, "not enough coins to look this far"
+    bot.view_range = desired_range
+    bot.coins -= int(bot.view_range * view_price)
+    return True, None
 
 
 def tick(
@@ -141,30 +141,34 @@ def tick(
             # for convenience for the bot authors: convert every action to lowercase
             action = {k.lower(): (v.lower() if isinstance(v, str) else v) for k, v in action.items()}
             if action.get("name") == current_action_type:
-                executed_actions.append(
-                    {
-                        "bot_name": bot.name,
-                        "intended_action": action,
-                        "success": action_function(game_state, bot, action),
-                    }
-                )
+                success, failure_reason = action_function(game_state, bot, action)
+                executed = {
+                    "bot_name": bot.name,
+                    "intended_action": action,
+                    "success": success,
+                }
+                if not success:
+                    executed["reason"] = failure_reason
+                executed_actions.append(executed)
                 action["_was_handled"] = True
 
     # list unknown actions
-    for bot, action in action_list:
-        if not action.get("_was_handled"):
-            executed_actions.append(
-                {
-                    "bot_name": bot.name,
-                    "intended_action": action,
-                    "success": False,
-                    "message": "Unknown action",
-                }
-            )
+    # for bot, action in action_list:
+    #     if not action.get("_was_handled"):
+    #         executed_actions.append(
+    #             {
+    #                 "bot_name": bot.name,
+    #                 "intended_action": action,
+    #                 "success": False,
+    #                 "message": "Unknown action",
+    #             }
+    #         )
 
-    for action in executed_actions:
-        if "_was_handled" in action:
-            del action["_was_handled"]
+    # for action in executed_actions:
+    #     if "_was_handled" in action:
+    #         del action["_was_handled"]
+    #     if "_was_handled" in action["intended_action"]:
+    #         del action["intended_action"]["_was_handled"]
 
     if game_state.tick >= game_state.max_ticks:
         game_state.running = False
