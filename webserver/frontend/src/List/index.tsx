@@ -1,31 +1,95 @@
-import { CgTrophy } from 'react-icons/cg';
-import styled from 'styled-components';
+import {
+  CgChevronDoubleDown,
+  CgChevronDoubleUp,
+  CgTrophy,
+} from 'react-icons/cg';
+import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
 import { Game } from '../api-types';
 
-const EntryWrapper = styled.li`
+const EntryWrapper = styled.li<{ $selected: boolean }>`
   border: 2px solid var(--plattform);
   background: linear-gradient(270deg, #100e23 0%, var(--plattform) 100%);
   padding: 0.5rem;
-  color: var(--white);
+  color: #ffffffbb;
   cursor: pointer;
+  display: flex;
+  justify-content: space-around;
 
   &:not(:last-child) {
     margin-bottom: 10px;
   }
+
+  ${(props) =>
+    props.$selected &&
+    css`
+      border-color: #02fae0;
+      background: linear-gradient(270deg, #100e23 0%, #018577 100%);
+    `}
+
+  > div {
+    flex: 1 1 0%;
+
+    text-align: center;
+  }
 `;
 
-function Entry({ item, onClick }: { item: Game; onClick: () => void }) {
+const Trophy = styled(CgTrophy)`
+  vertical-align: middle;
+  color: var(--plattform);
+  background: #fff;
+  border-radius: 50%;
+`;
+
+const Name = styled.span`
+  font-weight: bold;
+  color: var(--white);
+`;
+
+const Elo = styled.span`
+  font-size: 0.7em;
+  opacity: 0.6;
+  font-weight: normal;
+`;
+
+const Divider = styled.div`
+  opacity: 0.5;
+
+  && {
+    flex: 0 0 20px;
+  }
+`;
+
+function Entry({
+  item,
+  onClick,
+  selected,
+}: {
+  item: Game;
+  onClick: () => void;
+  selected: boolean;
+}) {
+  const scoreEntries = Object.entries(item.scores);
+
   return (
-    <EntryWrapper onClick={onClick}>
-      {Object.entries(item.scores).map(([name, score], i) => (
-        <span key={i}>
-          {i !== 0 && ' vs '}
-          <span style={score > 0 ? { fontWeight: 'bold'}: {}}>{name}</span>
-          {score > 0 && <><CgTrophy style={{ verticalAlign: 'middle' }} /></>}
-          {' '}
-        </span>
+    <EntryWrapper onClick={onClick} $selected={selected}>
+      {scoreEntries.map(([label, score], i) => (
+        <>
+          {i !== 0 && <Divider>/</Divider>}
+          <div key={i}>
+            <Name>{label}</Name>{' '}
+            {score > 0 && (
+              <>
+                <Trophy />{' '}
+              </>
+            )}
+            <Elo>
+              {score > 0 ? <CgChevronDoubleUp /> : <CgChevronDoubleDown />}
+              {item.elo_rank[label]}
+            </Elo>
+          </div>
+        </>
       ))}
     </EntryWrapper>
   );
@@ -42,8 +106,10 @@ const ListWrapper = styled.ul`
 
 export default function List({
   onItemSelect,
+  selectedId,
 }: {
   onItemSelect: (id: string) => void;
+  selectedId: string | null;
 }) {
   const { data: gameData } = useSWR<Game[]>('/api/games');
 
@@ -54,6 +120,7 @@ export default function List({
           key={item.id}
           item={item}
           onClick={() => onItemSelect(item.id)}
+          selected={selectedId === item.id}
         />
       ))}
     </ListWrapper>
