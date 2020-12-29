@@ -7,7 +7,7 @@ const (
 )
 
 type Entity struct {
-	X    int        `json:"x"`
-	Y    int        `json:"y"`
+	X    float64        `json:"x"`
+	Y    float64        `json:"y"`
 	Type EntityType `json:"type"`
 }

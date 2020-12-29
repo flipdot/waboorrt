@@ -58,11 +58,11 @@ func NewWalkOp(dir WalkDirection) Action {
 type ThrowOp struct {
 	ActionImpl
 
-	X int `json:"x"`
-	Y int `json:"y"`
+	X float64 `json:"x"`
+	Y float64 `json:"y"`
 }
 
-func NewThrowOp(x, y int) Action {
+func NewThrowOp(x, y float64) Action {
 	return &ThrowOp{
 		ActionImpl: ActionImpl{
 			Name: ActionThrow,
@@ -75,10 +75,10 @@ func NewThrowOp(x, y int) Action {
 type LookOp struct {
 	ActionImpl
 
-	Range int `json:"range"`
+	Range float64 `json:"range"`
 }
 
-func NewLookOp(lookRange int) Action {
+func NewLookOp(lookRange float64) Action {
 	return &LookOp{
 		ActionImpl: ActionImpl{
 			Name: ActionLook,

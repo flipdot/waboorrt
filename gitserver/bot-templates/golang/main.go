@@ -12,37 +12,30 @@ type Bot struct {
 }
 
 func (b *Bot) NextAction(state *waboorrt.GameState) actions.Action {
+	dirs := []actions.WalkDirection{
+		actions.WalkNorth,
+		actions.WalkWest,
+		actions.WalkSouth,
+		actions.WalkEast,
+	}
+	
 	switch rand.Intn(4) {
 	case 0:
-		return actions.NewNoOp()
-
-	case 1:
-		dirs := []actions.WalkDirection{
-			actions.WalkNorth,
-			actions.WalkWest,
-			actions.WalkSouth,
-			actions.WalkEast,
-		}
-
 		return actions.NewWalkOp(dirs[rand.Intn(len(dirs))])
 
+	case 1:
+		return actions.NewLookOp(16)
+
 	case 2:
-		return actions.NewThrowOp(rand.Intn(state.Meta.Width), rand.Intn(state.Meta.Height))
+		return actions.NewThrowOp(float64(rand.Intn(int(state.Meta.Width))), float64(rand.Intn(int(state.Meta.Height))))
 
-	case 3:
-		d := state.Meta.Width
-		if state.Meta.Height > d {
-			d = state.Meta.Height
-		}
-
-		return actions.NewLookOp(rand.Intn(d))
+	default:
+		return actions.NewNoOp()
 	}
-
-	return nil
 }
 
 func main() {
-	bot := new(Bot)
+	bot := &Bot{}
 
 	if err := waboorrt.Run(bot); err != nil {
 		log.Fatal(err)
