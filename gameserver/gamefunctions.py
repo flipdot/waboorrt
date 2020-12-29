@@ -162,6 +162,10 @@ def tick(
                 }
             )
 
+    for action in executed_actions:
+        if "_was_handled" in action:
+            del action["_was_handled"]
+
     if game_state.tick >= game_state.max_ticks:
         game_state.running = False
 
