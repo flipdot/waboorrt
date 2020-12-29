@@ -11,6 +11,8 @@ import redis
 from uuid import uuid4
 import rc3
 
+import hashlib
+
 import jwt
 
 logging.basicConfig(
@@ -98,6 +100,17 @@ def login_failed():
 #     return redirect(url_for(".login_success", username=username))
 
 
+def get_unix_legal_username(username):
+    # this regex kinda hopefully catches illegal names
+    if not re.match(r"^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$", username):
+        return username
+
+    hasher = hashlib.sha1()
+    hasher.update(username.encode())
+
+    return hasher.hexdigest()[:32]
+
+
 @app.route("/rc3/login", methods=["GET"])
 def login_rc3():
     if "code" not in request.args:
@@ -127,7 +140,7 @@ def login_rc3():
 
     db.delete(f"webserver:oauth_states:{state}")
 
-    return redirect(f"/?login_success={username}")
+    return redirect(f"/?login_success={username}&git_username={get_unix_legal_username(username)}")
 
 
 AUTH_TIMEOUT = 15 * 60 * 1000
@@ -153,7 +166,6 @@ def auth_redirect():
 
     return redirect(rc3.gen_login_redirect(state))
 
-
 def create_user(username, template, pubkey):
     # Remove everything after the second space. Discards comments from ssh keys
     pubkey = " ".join(pubkey.split(" ")[:2])
@@ -168,6 +180,9 @@ def create_user(username, template, pubkey):
             400,
             description=f"Invalid template, please choose from {VALID_REPO_TEMPLATES}",
         )
+
+    # some rc3 usernames are not valid as unix usernames
+    username = get_unix_legal_username(username)
 
     completed_process = subprocess.run(
         ["ssh", "root@gitserver", "newbot", f'"{username}" "{template}" "{pubkey}"']

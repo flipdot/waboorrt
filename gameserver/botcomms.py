@@ -5,6 +5,7 @@ from json import JSONDecodeError
 from random import randint
 from typing import Tuple, Optional
 import requests
+import re
 
 import docker
 import docker.errors
@@ -63,9 +64,20 @@ def get_bot_view(game_state: GameState, bot_name: str):
     return view
 
 
+def get_unix_legal_username(username):
+    # this regex kinda hopefully catches illegal names
+    if not re.match(r"^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$", username):
+        return username
+
+    hasher = hashlib.sha1()
+    hasher.update(username.encode())
+
+    return hasher.hexdigest()[:32]
+
+
 def get_bot_image_name(bot_name):
     hasher = hashlib.sha1()
-    hasher.update(bot_name.encode())
+    hasher.update(get_unix_legal_username(bot_name).encode())
 
     return f"localhost/bot/{hasher.hexdigest()[:32]}"
 

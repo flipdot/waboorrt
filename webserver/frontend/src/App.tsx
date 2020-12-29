@@ -106,10 +106,11 @@ export default function App() {
 
   const searchParams = new URLSearchParams(window.location.search);
   const loggedInUser = searchParams.get('login_success');
+  const gitUser = searchParams.get('git_username')
   if (loggedInUser) {
     return (
       <>
-        <InstructionPage username={loggedInUser} />
+        <InstructionPage username={loggedInUser} gitUser={gitUser} />
         <GlobalStyle />
       </>
     );

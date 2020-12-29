@@ -40,7 +40,7 @@ const LoginButton = styled.a`
 `;
 
 
-export default function InstructionPage({ username }: { username: string }) {
+export default function InstructionPage({ username, gitUser }: { username: string, gitUser: string }) {
   return (
     <PageWrapper>
       <Headline>Welcome, {username}!</Headline>
@@ -51,7 +51,7 @@ export default function InstructionPage({ username }: { username: string }) {
 
       <Pre>
         <Code>
-          git clone ssh://{username}@{window.location.hostname}:2222/git/{username}.git waboorrt-bot
+          git clone ssh://{gitUser}@{window.location.hostname}:2222/git/{gitUser}.git waboorrt-bot
           <br />
           cd waboorrt-bot/
           <br />
