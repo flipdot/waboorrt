@@ -162,7 +162,7 @@ def tick(
                 }
             )
 
-    for bot, action in action_list:
+    for action in executed_actions:
         if "_was_handled" in action:
             del action["_was_handled"]
 
