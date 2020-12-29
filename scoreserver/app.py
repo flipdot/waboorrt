@@ -41,30 +41,14 @@ async def run_match(*bot_names):
         None, lambda: requests.post(GAMESERVER_URL, json=payload)
     )
     try:
-        game_history = response.json().get("result")
+        game_result = response.json().get("result")
     except JSONDecodeError:
         logger.error(f"could not decode json response from gameserver (bots: {bot_names}")
-        return None
-    if not game_history:
+        return {}
+    if not game_result:
         logger.error("invalid response from gameserver")
-        return None
-    return game_history
-
-
-def get_score(game_history) -> Dict[str, float]:
-    last_state = game_history[-1]["game_state"]
-    bot0, bot1 = [x for x in last_state["entities"] if x["type"] == "BOT"]
-    p0 = p1 = 0.5
-    if bot0["health"] > bot1["health"]:
-        p0 = 1
-        p1 = 0
-    elif bot0["health"] < bot1["health"]:
-        p0 = 0
-        p1 = 1
-    return {
-        bot0["name"]: p0,
-        bot1["name"]: p1,
-    }
+        return {}
+    return game_result
 
 
 def calculate_new_elo_ranking(
@@ -94,10 +78,12 @@ async def main():
             bot_a_name, bot_b_name = user_a["botname"], user_b["botname"]
             logging.debug(f"Next match: {bot_a_name} vs {bot_b_name}")
             # TODO: maybe parallelize it. gameserver can handle multiple requests
-            game_history = await run_match(bot_a_name, bot_b_name)
-            if not game_history:
+            game_result = await run_match(bot_a_name, bot_b_name)
+            score = game_result.get("score")
+            game_history = game_result.get("history")
+            if not score:
+                logger.info(f"The game between {bot_a_name} and {bot_b_name} did not happen")
                 continue
-            score = get_score(game_history)
             bot_a_old_rank = user_a.get("elo_rank", 1200)
             bot_b_old_rank = user_b.get("elo_rank", 1200)
             bot_a_new_rank, bot_b_new_rank = calculate_new_elo_ranking(
@@ -111,7 +97,7 @@ async def main():
             rankdiff_b = bot_b_new_rank - bot_b_old_rank
             user_a["elo_rank"] = bot_a_new_rank
             user_b["elo_rank"] = bot_b_new_rank
-            game_result = {
+            game_summary = {
                 "id": str(uuid1()),
                 "title": f"{bot_a_name} vs {bot_b_name}",
                 "timestamp": datetime.now().timestamp(),
@@ -126,15 +112,15 @@ async def main():
                 f"{bot_a_name}: {user_a['elo_rank']} ({rankdiff_a:+}), "
                 f"{bot_b_name}: {user_b['elo_rank']} ({rankdiff_b:+})"
             )
-            db.set(f"game:{game_result['id']}:summary", json.dumps(game_result))
-            db.set(f"game:{game_result['id']}:history", json.dumps(game_history))
+            db.set(f"game:{game_summary['id']}:summary", json.dumps(game_summary))
+            db.set(f"game:{game_summary['id']}:history", json.dumps(game_history))
             db.zadd(
-                "matches_by_time", {f"{game_result['id']}": game_result["timestamp"]}
+                "matches_by_time", {f"{game_summary['id']}": game_summary["timestamp"]}
             )
             db.set(key_a, json.dumps(user_a))
             db.set(key_b, json.dumps(user_b))
-        logging.info("Sleeping, next matches will start soon")
-        await sleep(10)
+        # logging.info("Sleeping, next matches will start soon")
+        # await sleep(10)
 
 
 if __name__ == "__main__":

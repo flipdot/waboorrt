@@ -7,6 +7,7 @@ from typing import Tuple, Optional
 import requests
 
 import docker
+import docker.errors
 from docker.models.containers import Container
 
 from gameobjects import GameState, Action, Bot, EntityType
@@ -79,19 +80,40 @@ class BotCommunicator:
         self.bot_names = bot_names
         self.docker_client = docker.from_env()
         self.containers = []
+        self.containers_ready = []
 
     def __enter__(self):
         cl = self.docker_client.containers
-        self.containers = [
-            cl.run(
-                get_bot_image_name(b), auto_remove=True, network="gamenet", detach=True
-            )
-            for b in self.bot_names
-        ]
-        # give containers a chance to get up
-        containers_ready = [False] * len(self.containers)
+        self.containers_ready = [False] * len(self.bot_names)
+        self.containers = []
+        for bot_name in self.bot_names:
+            try:
+                container = cl.run(
+                    get_bot_image_name(bot_name),
+                    auto_remove=True,
+                    network="gamenet",
+                    detach=True
+                )
+            except docker.errors.APIError as e:
+                logger.error(f"Could not start container for {bot_name}: %s", e)
+                container = None
+            self.containers.append(container)
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self._kill_containers()
+
+    def _kill_containers(self):
+        for c in self.containers:
+            if c is not None:
+                c.kill()
+        self.containers = []
+
+    def wait_for_container_ready(self):
         for _ in range(30):
             for i, c in enumerate(self.containers):
+                if c is None:
+                    continue
                 url = f"http://{c.id[:12]}:4000/jsonrpc"
                 payload = {
                     "method": "health",
@@ -100,19 +122,14 @@ class BotCommunicator:
                 }
                 try:
                     response = requests.post(url, json=payload, timeout=0.1).json()
-                    containers_ready[i] = response.get("result")
+                    self.containers_ready[i] = response.get("result")
                 except requests.exceptions.RequestException:
                     logger.debug(f"Bot {c.image.tags} not yet ready")
-            if all(containers_ready):
+            if all(self.containers_ready):
                 logger.debug("All bots are ready")
                 break
             sleep(0.1)
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        for c in self.containers:
-            c.kill()
-        self.containers = []
+        return self.containers_ready
 
     def get_next_actions(self, game_state: GameState) -> Tuple[dict, ...]:
         actions = []
