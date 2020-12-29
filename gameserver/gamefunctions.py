@@ -96,6 +96,8 @@ def action_throw(game_state, bot, action) -> Tuple[bool, Optional[str]]:
                 (action.get("x", bot.x), action.get("y", bot.y)),
             )
         )
+        # don't allow negative health
+        other.health = max(other.health, 0)
     bot.coins -= costs
     return True, None
 
@@ -141,7 +143,10 @@ def tick(
     for current_action_type, action_function in action_execution_order:
         for bot, action in action_list:
             # for convenience for the bot authors: convert every action to lowercase
-            action = {k.lower(): (v.lower() if isinstance(v, str) else v) for k, v in action.items()}
+            action = {
+                k.lower(): (v.lower() if isinstance(v, str) else v)
+                for k, v in action.items()
+            }
             if action.get("name") == current_action_type:
                 success, failure_reason = action_function(game_state, bot, action)
                 executed = {
@@ -172,6 +177,9 @@ def tick(
     #     if "_was_handled" in action["intended_action"]:
     #         del action["intended_action"]["_was_handled"]
 
+    alive_bots = [x for x in game_state.bots if x.health > 0]
+    if len(alive_bots) <= 1:
+        game_state.running = False
     if game_state.tick >= game_state.max_ticks:
         game_state.running = False
 

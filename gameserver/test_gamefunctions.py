@@ -192,6 +192,7 @@ class TestLook(TestCase):
         self.assertEqual(e0["reason"], "not enough coins to look this far")
         self.assertTrue(e1["success"])
 
+
 class TestActionHistory(TestCase):
     def setUp(self):
         self.game_state = GameState.create()
@@ -209,3 +210,20 @@ class TestActionHistory(TestCase):
     #     ))
     #
     #
+
+
+class TestTick(TestCase):
+    def setUp(self):
+        self.game_state = GameState.create()
+        bots = self.game_state.bots
+        bots[0].x, bots[0].y = 5, 5
+        bots[1].x, bots[1].y = 11, 11
+
+    def test_end_on_death(self):
+        self.game_state.bots[0].health = 0
+        self.game_state.bots[1].health = 50
+        game_state, _ = tick(self.game_state, (
+            {"name": Action.NOOP},
+            {"name": Action.NOOP}
+        ))
+        self.assertFalse(game_state.running)
