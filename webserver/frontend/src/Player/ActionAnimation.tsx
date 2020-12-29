@@ -50,9 +50,13 @@ export default function ActionAnimation({
   onFinished?: () => void;
   speed?: number;
 }) {
+  if (!actionResult.success) {
+    return <NoOpAnimation onFinished={onFinished} />
+  }
+
   const action = actionResult.intended_action;
 
-  if (action.name === 'THROW') {
+  if (action.name === 'throw') {
     const throwingBot: Entity | undefined = gameState.entities.filter(
       (entity) => entity.name === actionResult.bot_name
     )[0];
@@ -139,7 +143,7 @@ export default function ActionAnimation({
   let delay = 0;
 
   switch (action.name) {
-    case 'WALK':
+    case 'walk':
       delay = 600;
       break;
   }

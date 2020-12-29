@@ -24,6 +24,8 @@ def next_action(me, meta, entities):
     x, y = me.get("x"), me.get("y")
     # How many coins do we have?
     coins = me.get("coins")
+    # What is our health level?
+    coins = me.get("health")
     # How far can we currently look?
     # This will always be 1.0, or larger if we executed the "LOOK" action
     view_range = me.get("view_range")
