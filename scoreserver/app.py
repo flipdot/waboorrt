@@ -5,6 +5,7 @@ import json
 import logging
 import os
 from asyncio import sleep
+from json import JSONDecodeError
 from typing import Dict, Tuple
 from uuid import uuid1
 
@@ -39,7 +40,11 @@ async def run_match(*bot_names):
     response = await loop.run_in_executor(
         None, lambda: requests.post(GAMESERVER_URL, json=payload)
     )
-    game_history = response.json().get("result")
+    try:
+        game_history = response.json().get("result")
+    except JSONDecodeError:
+        logger.error("could not decode json response from gameserver")
+        return None
     if not game_history:
         logger.error("invalid response from gameserver")
         return None
