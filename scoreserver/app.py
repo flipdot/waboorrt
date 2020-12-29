@@ -43,7 +43,7 @@ async def run_match(*bot_names):
     try:
         game_history = response.json().get("result")
     except JSONDecodeError:
-        logger.error("could not decode json response from gameserver")
+        logger.error(f"could not decode json response from gameserver (bots: {bot_names}")
         return None
     if not game_history:
         logger.error("invalid response from gameserver")
