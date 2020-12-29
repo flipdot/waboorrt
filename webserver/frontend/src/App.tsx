@@ -91,7 +91,7 @@ function Navbar() {
             ))}
           </Input>
           <Input placeholder="SSH Pub Key" type="text" name="pubkey" required />
-          <LoginButton>Login</LoginButton>
+          <LoginButton>Create Repository</LoginButton>
         </HorizontalFormGroup>
       </NavbarInner>
     </NavbarWrapper>
