@@ -127,7 +127,7 @@ def login_rc3():
 
     db.delete(f"webserver:oauth_states:{state}")
 
-    return redirect(f"/?username={username}")
+    return redirect(f"/?login_success={username}")
 
 
 AUTH_TIMEOUT = 15 * 60 * 1000
