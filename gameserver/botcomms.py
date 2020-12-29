@@ -7,6 +7,7 @@ from typing import Tuple, Optional
 import requests
 
 import docker
+import docker.errors
 from docker.models.containers import Container
 
 from gameobjects import GameState, Action, Bot, EntityType
@@ -73,13 +74,25 @@ class BotCommunicator:
 
     def __enter__(self):
         cl = self.docker_client.containers
-        self.containers = [
-            cl.run(
-                f"localhost/bot/{b}", auto_remove=True, network="gamenet", detach=True
-            )
-            for b in self.bot_names
-        ]
-        # give containers a chance to get up
+        try:
+            self.containers = [
+                cl.run(
+                    f"localhost/bot/{b}", auto_remove=True, network="gamenet", detach=True
+                )
+                for b in self.bot_names
+            ]
+        except docker.errors.APIError as e:
+            logger.error(f"Could not start containers for {self.bot_names}: %s", e)
+            return self
+
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        for c in self.containers:
+            c.kill()
+        self.containers = []
+
+    def wait_for_container_ready(self):
         containers_ready = [False] * len(self.containers)
         for _ in range(30):
             for i, c in enumerate(self.containers):
@@ -98,12 +111,7 @@ class BotCommunicator:
                 logger.debug("All bots are ready")
                 break
             sleep(0.1)
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        for c in self.containers:
-            c.kill()
-        self.containers = []
+        return containers_ready
 
     def get_next_actions(self, game_state: GameState) -> Tuple[dict, ...]:
         actions = []
