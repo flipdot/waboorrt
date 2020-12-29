@@ -88,6 +88,21 @@ class TestThrow(TestCase):
         self.assertEqual(e0["reason"], "not enough coins to throw this far")
         self.assertTrue(e1["success"])
 
+    def test_throw_costs_coins(self):
+        self.game_state.bots[0].coins = 4
+        self.game_state.bots[1].coins = 6
+        game_state, executed = tick(
+            self.game_state,
+            (
+                {"name": Action.THROW, "x": 5, "y": 10},
+                {"name": Action.THROW, "x": 11, "y": 16},
+            ),
+        )
+        # not successful, do not withdraw
+        self.assertEqual(game_state.bots[0].coins, 4)
+        # withdraw euclidean distance
+        self.assertEqual(game_state.bots[1].coins, 1)
+
     def test_throw_oob(self):
         game_state, _ = tick(
             self.game_state,

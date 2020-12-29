@@ -86,7 +86,8 @@ def action_walk(game_state, bot, action) -> Tuple[bool, Optional[str]]:
 
 def action_throw(game_state, bot, action) -> Tuple[bool, Optional[str]]:
 
-    if dist((bot.x, bot.y), (action.get("x", 0), action.get("y", 0))) > bot.coins:
+    costs = round(dist((bot.x, bot.y), (action.get("x", 0), action.get("y", 0))))
+    if costs > bot.coins:
         return False, "not enough coins to throw this far"
     for other in game_state.bots:
         other.health -= compute_damage(
@@ -95,6 +96,7 @@ def action_throw(game_state, bot, action) -> Tuple[bool, Optional[str]]:
                 (action.get("x", bot.x), action.get("y", bot.y)),
             )
         )
+    bot.coins -= costs
     return True, None
 
 
