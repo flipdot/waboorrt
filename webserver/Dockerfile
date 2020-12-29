@@ -1,12 +1,13 @@
 FROM node AS frontend
 
-COPY frontend /app
-
 WORKDIR /app
 
+COPY frontend/package.json /app/package.json
+COPY frontend/package-lock.json /app/package-lock.json
 RUN npm ci
-RUN npm run build
 
+COPY frontend /app
+RUN npm run build
 
 FROM python:3.8
 
