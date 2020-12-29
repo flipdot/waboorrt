@@ -124,7 +124,8 @@ class BotCommunicator:
         try:
             # logger.debug(payload)
             response = requests.post(
-                url, data=json.dumps(payload, cls=GameStateEncoder), timeout=0.1
+                url, data=json.dumps(payload, cls=GameStateEncoder), timeout=0.1,
+                headers={"Content-Type": "application/json"}
             )
             # logger.debug(response)
         except requests.exceptions.Timeout:
