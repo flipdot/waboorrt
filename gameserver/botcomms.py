@@ -17,6 +17,8 @@ from time import sleep
 from network import GameStateEncoder
 from jsonschema import validate, ValidationError
 
+import hashlib
+
 logger = logging.getLogger(__name__)
 
 
@@ -61,6 +63,13 @@ def get_bot_view(game_state: GameState, bot_name: str):
     return view
 
 
+def get_bot_image_name(bot_name):
+    hasher = hashlib.sha1()
+    hasher.update(bot_name.encode())
+
+    return f"localhost/bot/{hasher.hexdigest()[:32]}"
+
+
 class BotCommunicator:
     """
     Starts up docker containers, each containing a gamebot,
@@ -80,7 +89,7 @@ class BotCommunicator:
         for bot_name in self.bot_names:
             try:
                 container = cl.run(
-                    f"localhost/bot/{bot_name}",
+                    get_bot_image_name(bot_name),
                     auto_remove=True,
                     network="gamenet",
                     detach=True
