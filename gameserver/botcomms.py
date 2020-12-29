@@ -96,7 +96,8 @@ class BotCommunicator:
 
     def _kill_containers(self):
         for c in self.containers:
-            c.kill()
+            if c is not None:
+                c.kill()
         self.containers = []
 
     def wait_for_container_ready(self):
