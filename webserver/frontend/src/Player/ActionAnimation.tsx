@@ -129,7 +129,7 @@ export default function ActionAnimation({
               { duration: 400 / speed, delay: 800 / speed }
             )
           }
-          radius={6.5}
+          radius={3}
           $pos={toPos}
         />
       </>
