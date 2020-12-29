@@ -55,9 +55,9 @@ def compute_damage(dist: float) -> int:
     return int(max(10 * math.pow(10, -(dist / radius)), 0))
 
 
-def action_noop(game_state, bot, action):
+def action_noop(game_state, bot, action) -> Tuple[bool, Optional[str]]:
     bot.coins += 1
-    return True
+    return True, None
 
 
 def action_walk(game_state, bot, action) -> Tuple[bool, Optional[str]]:
