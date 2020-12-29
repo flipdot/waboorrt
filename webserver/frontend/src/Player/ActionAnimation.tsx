@@ -51,7 +51,7 @@ export default function ActionAnimation({
   speed?: number;
 }) {
   if (!actionResult.success) {
-    return <NoOpAnimation onFinished={onFinished} />
+    return <NoOpAnimation delay={400} onFinished={onFinished} />
   }
 
   const action = actionResult.intended_action;
