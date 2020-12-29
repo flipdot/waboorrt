@@ -23,7 +23,7 @@ namespace Wabooorrt
 				};
 			});
 
-			services.AddSingleton<BotLogic>();
+			services.AddSingleton<IBotLogic, RandomBotLogic>();
 		}
 
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

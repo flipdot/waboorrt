@@ -8,9 +8,9 @@ namespace Wabooorrt
 	[RpcRoute("jsonrpc")]
 	public class BotController : RpcController
 	{
-		private readonly BotLogic _logic;
+		private readonly IBotLogic _logic;
 
-		public BotController(BotLogic logic)
+		public BotController(IBotLogic logic)
 		{
 			_logic = logic;
 		}

@@ -6,13 +6,13 @@ using System.Collections.Generic;
 
 namespace Wabooorrt
 {
-	public class BotLogic
+	public class RandomBotLogic : IBotLogic
 	{
 		private readonly ILogger _logger;
 
-		public BotLogic(ILoggerFactory logger)
+		public RandomBotLogic(ILoggerFactory logger)
 		{
-			_logger = logger.CreateLogger(nameof(BotLogic));
+			_logger = logger.CreateLogger(nameof(RandomBotLogic));
 		}
 
 		public IOperation NextAction(Me me, Meta meta, List<Entity> entities)
