@@ -53,9 +53,13 @@ export default function InstructionPage({ username }: { username: string }) {
         <Code>
           git clone ssh://{username}@{window.location.hostname}:2222/git/{username}.git waboorrt-bot
           <br />
-          cd waboorrt-bot/ # make your changes
+          cd waboorrt-bot/
+          <br />
+          # make your changes
           <br/>
-          git commit . -m &quot;Do all the things&quot;
+          git add .
+          <br/>
+          git commit -m &quot;Do all the things&quot;
           <br />
           git push
         </Code>
