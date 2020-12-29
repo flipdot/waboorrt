@@ -5,10 +5,8 @@ import { fieldSize } from '../constants';
 
 import robot from './robot.png';
 
-const EntityBody = styled.div<Entity>`
+const EntityBody = styled.div`
   position: absolute;
-  top: ${(props) => props.y * fieldSize}px;
-  left: ${(props) => props.x * fieldSize}px;
   height: ${fieldSize}px;
   width: ${fieldSize}px;
   background: url(${robot});
@@ -40,7 +38,12 @@ const Name = styled(Annotation)`
 export default function Entity(props: Entity) {
   return (
     <>
-      <EntityBody {...props}>
+      <EntityBody
+        style={{
+          top: `${props.y * fieldSize}px`,
+          left: `${props.x * fieldSize}px`,
+        }}
+      >
         <Health>{props.health}</Health>
         <Name>{props.name}</Name>
       </EntityBody>

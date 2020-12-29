@@ -19,14 +19,14 @@ const SnowBall = styled.div<{ $pos: Pos }>`
   opacity: 0;
 `;
 
-const Impact = styled.div<{ $pos: Pos; radius: number }>`
+const Impact = styled.div<{ $pos: Pos; $radius: number }>`
   position: absolute;
-  width: ${(props) => props.radius * fieldSize * 2}px;
-  height: ${(props) => props.radius * fieldSize * 2}px;
+  width: ${(props) => props.$radius * fieldSize * 2}px;
+  height: ${(props) => props.$radius * fieldSize * 2}px;
   background: #b239ff;
   border-radius: 50%;
-  margin-left: ${(props) => fieldSize / 2 - props.radius * fieldSize}px;
-  margin-top: ${(props) => fieldSize / 2 - props.radius * fieldSize}px;
+  margin-left: ${(props) => fieldSize / 2 - props.$radius * fieldSize}px;
+  margin-top: ${(props) => fieldSize / 2 - props.$radius * fieldSize}px;
   top: ${(props) => props.$pos.y * fieldSize}px;
   left: ${(props) => props.$pos.x * fieldSize}px;
   opacity: 0;
@@ -133,7 +133,7 @@ export default function ActionAnimation({
               { duration: 400 / speed, delay: 800 / speed }
             )
           }
-          radius={3}
+          $radius={3}
           $pos={toPos}
         />
       </>
