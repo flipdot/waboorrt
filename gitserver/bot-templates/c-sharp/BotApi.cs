@@ -84,7 +84,7 @@ namespace Wabooorrt.BotApi
 		public int Y { get; set; }
 		public int Coins { get; set; }
 		public int Health { get; set; }
-		public string? Name { get; set; }
+		public string? Name { get; set; } // dafuck?
 
 		[JsonPropertyName("view_range")]
 		public double ViewRange { get; set; }
