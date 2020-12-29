@@ -55,8 +55,7 @@ def run_game(bot0_name: str, bot1_name: str):
             score = {k: 1 for k in botcom.bot_names}
             for i, ready in enumerate(containers_ready):
                 logger.info(
-                    f"The bot {botcom.bot_names[i]} in container "
-                    f"{botcom.containers[i].id[:12]} did not became ready. Loosing"
+                    f"The bot {botcom.bot_names[i]} did not became ready. Loosing"
                 )
                 score[botcom.bot_names[i]] = 0
         else:
