@@ -1,3 +1,15 @@
+export type Game = {
+  elo_rank: {
+    [key: string]: number;
+  };
+  id: string;
+  scores: {
+    [key: string]: number;
+  };
+  timestamp: number;
+  title: string;
+};
+
 export type ThrowAction = {
   name: 'throw';
   x: number;
