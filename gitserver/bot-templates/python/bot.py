@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.INFO, format="[%(asctime)s] [%(levelname)s] %(
 
 class Action:
     NOOP = "NOOP"
-    WALK = "WALK_NORTH"
+    WALK = "WALK"
     THROW = "THROW"
     LOOK = "LOOK"
 
