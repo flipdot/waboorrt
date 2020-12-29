@@ -22,6 +22,8 @@ namespace Wabooorrt
 					PropertyNameCaseInsensitive = true,
 				};
 			});
+
+			services.AddSingleton<IBotLogic, RandomBotLogic>();
 		}
 
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
