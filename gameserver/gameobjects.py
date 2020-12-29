@@ -4,10 +4,10 @@ from typing import List
 
 
 class Action:
-    NOOP = "NOOP"
-    WALK = "WALK"
-    THROW = "THROW"
-    LOOK = "LOOK"
+    NOOP = "noop"
+    WALK = "walk"
+    THROW = "throw"
+    LOOK = "look"
     noaction = {"name": NOOP}
 
 
