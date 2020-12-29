@@ -59,6 +59,8 @@ export default function Player({ replay }: { replay?: GameReplay }) {
     }
   };
 
+  const tickCount = replay?.length || 100;
+
   useEffect(() => {
     setPlay(true);
     const newIdx = 0;
@@ -72,7 +74,7 @@ export default function Player({ replay }: { replay?: GameReplay }) {
         console.log('Animations finished!', frameIdx);
 
         if (play) {
-          if (!replay || currentFrameIdx === replay[0].game_state.max_ticks) {
+          if (!replay || currentFrameIdx === (tickCount - 1)) {
             setPlay(false);
           } else {
             console.log('Going to next frame');
@@ -94,8 +96,6 @@ export default function Player({ replay }: { replay?: GameReplay }) {
       frameAnimatonsFinished(currentFrameIdx);
     }
   }, [frame, frameAnimatonsFinished]);
-
-  const maxTicks = replay && replay[0].game_state.max_ticks || 100;
 
   return (
     <Wrapper>
@@ -124,7 +124,7 @@ export default function Player({ replay }: { replay?: GameReplay }) {
           type="button"
           onClick={() => {
             setPlay(!play);
-            const newIdx = Math.min(currentFrameIdx + 1, maxTicks);
+            const newIdx = Math.min(currentFrameIdx + 1, tickCount - 1);
             setCurrentFrameIdx(newIdx);
             currentFrameIdxRef.current = newIdx;
           }}
@@ -133,7 +133,7 @@ export default function Player({ replay }: { replay?: GameReplay }) {
           {play ? <CgPlayPause /> : <CgPlayButton />}
         </LargeIconButton>
         <Range
-          max={maxTicks}
+          max={tickCount - 1}
           min={0}
           value={currentFrameIdx}
           onChange={(e) => {
