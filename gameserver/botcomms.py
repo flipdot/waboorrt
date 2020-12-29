@@ -141,7 +141,7 @@ class BotCommunicator:
             logger.warning(f"Not a valid JSON response from {bot.name}")
             return Action.noaction
         logger.debug(f"Response from bot {container.image.tags}: {response}")
-        result = response.get("result", Action.noaction)
+        result = resp_data.get("result", Action.noaction)
         schema = {
             "type": "object",
             "properties": {
