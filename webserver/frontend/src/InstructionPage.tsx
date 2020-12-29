@@ -39,6 +39,7 @@ const LoginButton = styled.a`
   margin-top: 20px;
 `;
 
+
 export default function InstructionPage({ username }: { username: string }) {
   return (
     <PageWrapper>
@@ -50,7 +51,7 @@ export default function InstructionPage({ username }: { username: string }) {
 
       <Pre>
         <Code>
-          git clone ssh://{username}@localhost:2222/git/{username}.git waboorrt-bot
+          git clone ssh://{username}@{window.location.hostname}:2222/git/{username}.git waboorrt-bot
           <br />
           cd waboorrt-bot/ # make your changes
           <br/>
