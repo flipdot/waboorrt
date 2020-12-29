@@ -54,10 +54,11 @@ def run_game(bot0_name: str, bot1_name: str):
         elif not all(containers_ready):
             score = {k: 1 for k in botcom.bot_names}
             for i, ready in enumerate(containers_ready):
-                logger.info(
-                    f"The bot {botcom.bot_names[i]} did not became ready. Loosing"
-                )
-                score[botcom.bot_names[i]] = 0
+                if not ready:
+                    logger.info(
+                        f"The bot {botcom.bot_names[i]} did not became ready. Loosing"
+                    )
+                    score[botcom.bot_names[i]] = 0
         else:
             while game_state.running:
                 actions: Tuple[dict, ...] = botcom.get_next_actions(game_state)
