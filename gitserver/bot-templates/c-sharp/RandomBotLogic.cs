@@ -9,6 +9,7 @@ namespace Wabooorrt
 	public class RandomBotLogic : IBotLogic
 	{
 		private readonly ILogger _logger;
+		private Random _rnd = new Random();
 
 		public RandomBotLogic(ILoggerFactory logger)
 		{
@@ -22,15 +23,13 @@ namespace Wabooorrt
 			_logger.LogInformation(JsonSerializer.Serialize(meta));
 			_logger.LogInformation(JsonSerializer.Serialize(entities));
 
-			var rnd = new Random();
-
 			var noop = new NoOp();
 			var walk = new WalkOp(Direction.North);
-			var throww = new ThrowOp(rnd.Next(0, 50), rnd.Next(0, 50));
-			var look = new LookOp(rnd.Next(0, 50));
+			var throww = new ThrowOp(_rnd.Next(0, 50), _rnd.Next(0, 50));
+			var look = new LookOp(_rnd.Next(0, 50));
 
 			var actions = new IOperation[] { noop, walk, throww, look };
-			var result = actions[rnd.Next(0, actions.Length)];
+			var result = actions[_rnd.Next(0, actions.Length)];
 
 			_logger.LogInformation("Sending reply: {Result}", JsonSerializer.Serialize(result));
 
