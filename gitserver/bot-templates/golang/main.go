@@ -18,7 +18,7 @@ func (b *Bot) NextAction(state *waboorrt.GameState) actions.Action {
 		actions.WalkSouth,
 		actions.WalkEast,
 	}
-	
+
 	switch rand.Intn(4) {
 	case 0:
 		return actions.NewWalkOp(dirs[rand.Intn(len(dirs))])
