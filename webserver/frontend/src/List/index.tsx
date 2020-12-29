@@ -1,10 +1,10 @@
 import { CgTrophy } from 'react-icons/cg';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
 import { Game } from '../api-types';
 
-const EntryWrapper = styled.li`
+const EntryWrapper = styled.li<{ $selected: boolean }>`
   border: 2px solid var(--plattform);
   background: linear-gradient(270deg, #100e23 0%, var(--plattform) 100%);
   padding: 0.5rem;
@@ -14,17 +14,37 @@ const EntryWrapper = styled.li`
   &:not(:last-child) {
     margin-bottom: 10px;
   }
+
+  ${(props) =>
+    props.$selected &&
+    css`
+      border-color: #02fae0;
+      background: linear-gradient(270deg, #100e23 0%, #018577 100%);
+    `}
 `;
 
-function Entry({ item, onClick }: { item: Game; onClick: () => void }) {
+function Entry({
+  item,
+  onClick,
+  selected,
+}: {
+  item: Game;
+  onClick: () => void;
+  selected: boolean;
+}) {
+  const scoreEntries = Object.entries(item.scores);
+
   return (
-    <EntryWrapper onClick={onClick}>
-      {Object.entries(item.scores).map(([name, score], i) => (
+    <EntryWrapper onClick={onClick} $selected={selected}>
+      {scoreEntries.map(([name, score], i) => (
         <span key={i}>
           {i !== 0 && ' vs '}
-          <span style={score > 0 ? { fontWeight: 'bold'}: {}}>{name}</span>
-          {score > 0 && <><CgTrophy style={{ verticalAlign: 'middle' }} /></>}
-          {' '}
+          <span style={score > 0 ? { fontWeight: 'bold' } : {}}>{name}</span>
+          {score > 0 && (
+            <>
+              <CgTrophy style={{ verticalAlign: 'middle' }} />
+            </>
+          )}{' '}
         </span>
       ))}
     </EntryWrapper>
@@ -42,8 +62,10 @@ const ListWrapper = styled.ul`
 
 export default function List({
   onItemSelect,
+  selectedId,
 }: {
   onItemSelect: (id: string) => void;
+  selectedId: string | null;
 }) {
   const { data: gameData } = useSWR<Game[]>('/api/games');
 
@@ -54,6 +76,7 @@ export default function List({
           key={item.id}
           item={item}
           onClick={() => onItemSelect(item.id)}
+          selected={selectedId === item.id}
         />
       ))}
     </ListWrapper>

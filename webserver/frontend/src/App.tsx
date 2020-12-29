@@ -120,7 +120,10 @@ export default function App() {
       <Navbar />
       <Columns>
         <Player replay={data} />
-        <List onItemSelect={(id) => setSelectedReplay(id)} />
+        <List
+          onItemSelect={(id) => setSelectedReplay(id)}
+          selectedId={selectedReplay}
+        />
       </Columns>
       <GlobalStyle />
     </>
