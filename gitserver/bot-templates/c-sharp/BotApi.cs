@@ -83,6 +83,7 @@ namespace Wabooorrt.BotApi
 		public int X { get; set; }
 		public int Y { get; set; }
 		public int Coins { get; set; }
+		public int Health { get; set; }
 
 		[JsonPropertyName("view_range")]
 		public double ViewRange { get; set; }
