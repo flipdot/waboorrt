@@ -70,6 +70,39 @@ class TestThrow(TestCase):
     def tearDown(self):
         pass
 
+    def test_throw_not_enough_coins(self):
+        self.game_state.bots[0].coins = 3
+        self.game_state.bots[1].coins = 5
+        game_state, executed = tick(
+            self.game_state,
+            (
+                {"name": Action.THROW, "x": 5, "y": 9},
+                {"name": Action.THROW, "x": 11, "y": 16},
+            ),
+        )
+        if executed[0]["bot_name"] == self.game_state.bots[0].name:
+            e0, e1 = executed
+        else:
+            e1, e0 = executed
+        self.assertFalse(e0["success"])
+        self.assertEqual(e0["reason"], "not enough coins to throw this far")
+        self.assertTrue(e1["success"])
+
+    def test_throw_costs_coins(self):
+        self.game_state.bots[0].coins = 4
+        self.game_state.bots[1].coins = 6
+        game_state, executed = tick(
+            self.game_state,
+            (
+                {"name": Action.THROW, "x": 5, "y": 10},
+                {"name": Action.THROW, "x": 11, "y": 16},
+            ),
+        )
+        # not successful, do not withdraw
+        self.assertEqual(game_state.bots[0].coins, 4)
+        # withdraw euclidean distance
+        self.assertEqual(game_state.bots[1].coins, 1)
+
     def test_throw_oob(self):
         game_state, _ = tick(
             self.game_state,
@@ -99,6 +132,8 @@ class TestThrow(TestCase):
         self.assertEqual(b1.health, 99)
 
     def test_throw_directly(self):
+        self.game_state.bots[0].coins = 10000
+        self.game_state.bots[1].coins = 10000
         game_state, _ = tick(
             self.game_state,
             (
@@ -113,6 +148,8 @@ class TestThrow(TestCase):
         self.assertEqual(b1.health, 100)
 
     def test_throw_close(self):
+        self.game_state.bots[0].coins = 10000
+        self.game_state.bots[1].coins = 10000
         game_state, _ = tick(
             self.game_state,
             (
@@ -125,3 +162,50 @@ class TestThrow(TestCase):
         self.assertEqual((b1.x, b1.y), (11, 11))
         self.assertEqual(b0.health, 93)  # =100-damage(1)-damage(sqrt(2))
         self.assertEqual(b1.health, 100)
+
+
+class TestLook(TestCase):
+    def setUp(self):
+        self.game_state = GameState.create()
+        bots = self.game_state.bots
+        bots[0].x, bots[0].y = 5, 5
+        bots[1].x, bots[1].y = 11, 11
+
+    def tearDown(self):
+        pass
+
+    def test_look_not_enough_coins(self):
+        self.game_state.bots[0].coins = 3
+        self.game_state.bots[1].coins = 5
+        game_state, executed = tick(
+            self.game_state,
+            (
+                {"name": Action.LOOK, "range": 4},
+                {"name": Action.LOOK, "range": 5},
+            ),
+        )
+        if executed[0]["bot_name"] == self.game_state.bots[0].name:
+            e0, e1 = executed
+        else:
+            e1, e0 = executed
+        self.assertFalse(e0["success"])
+        self.assertEqual(e0["reason"], "not enough coins to look this far")
+        self.assertTrue(e1["success"])
+
+class TestActionHistory(TestCase):
+    def setUp(self):
+        self.game_state = GameState.create()
+        bots = self.game_state.bots
+        bots[0].x, bots[0].y = 5, 5
+        bots[1].x, bots[1].y = 11, 11
+
+    def tearDown(self):
+        pass
+
+    # def test_no_internal_keys_in_history(self):
+    #     game_state, executed_actions = tick(self.game_state, (
+    #         {"name": Action.WALK, "direction": "south"},
+    #         {"name": Action.WALK, "direction": "north"},
+    #     ))
+    #
+    #

@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.INFO, format="[%(asctime)s] [%(levelname)s] %(
 
 class Action:
     NOOP = "NOOP"
-    WALK = "WALK_NORTH"
+    WALK = "WALK"
     THROW = "THROW"
     LOOK = "LOOK"
 
@@ -24,6 +24,8 @@ def next_action(me, meta, entities):
     x, y = me.get("x"), me.get("y")
     # How many coins do we have?
     coins = me.get("coins")
+    # What is our health level?
+    health = me.get("health")
     # How far can we currently look?
     # This will always be 1.0, or larger if we executed the "LOOK" action
     view_range = me.get("view_range")
