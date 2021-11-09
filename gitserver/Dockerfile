@@ -5,10 +5,10 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get -y update && apt-get install -y openssh-server
 RUN ssh-keygen -A
-################################################################################################
-# if you touch anything above everyone will get certificate warnings when when using git / ssh #
-#                                      think twice                                             #
-################################################################################################
+###########################################################################################
+# if you touch anything above everyone will get certificate warnings when using git / ssh #
+#                                      think twice                                        #
+###########################################################################################
 
 RUN apt-get install -y git sudo redis-tools
 RUN mkdir -p /run/sshd

@@ -8,6 +8,20 @@ Install docker compose. Create a network for the bots and run compose up
 WebUI: http://localhost
 Gameserver interface: http://localhost:5000
 
+If you want to work on the application, continue reading.
+
+## App components
+
+The subdirectories *gameserver*, *gitserver*, *scoreserver* and *webserver* are independent
+applications which serve different purposes. Please see README.md in each directory to
+learn how to set it up.
+
+- gameserver: RPC server. It allows to execute a single match between bots with an API call
+- gitserver: Contains a bare repo for each participant. Triggers builds when new software is pushed
+- botbuilder: Builds a docker image for a bot. Triggered by gitserver. Shares a docker volume with gitserver
+- scoreserver: Regularly triggers new matches. Stores the scores and calculates an ELO score
+- webserver: Provides auth to create new accounts. Contains frontend. Shows past games and scores.
+
 ## Development setup: gameserver
 
 Use pipenv (`pip install pipenv`).

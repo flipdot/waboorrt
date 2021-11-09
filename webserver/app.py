@@ -20,11 +20,11 @@ logging.basicConfig(
 VALID_REPO_TEMPLATES = ["python", "c-sharp", "golang"]
 
 
-AUTH_TOKEN_SECRET = os.environ["AUTH_TOKEN_SECRET"]
+AUTH_TOKEN_SECRET = os.environ.get("AUTH_TOKEN_SECRET", "CHANGE-ME")
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 db = redis.Redis(
-    host=os.environ.get("REDIS_HOST", "redis"), port=6379, db=0, decode_responses=True
+    host=os.environ.get("REDIS_HOST", "localhost"), port=6379, db=0, decode_responses=True
 )
 
 
