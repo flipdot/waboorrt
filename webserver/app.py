@@ -40,7 +40,7 @@ def game_list():
         num = min(int(request.args.get("n", 25)), 25)
     except ValueError:
         abort(400, description="n must be int")
-        return  # return is only for better ide linting ("num may not be defined")
+
     if ":" in from_id:
         abort(400, description="colons are invalid")
 
@@ -86,16 +86,16 @@ def login_failed():
     return render_template("login_failed.html")
 
 
-# @app.route("/login/local", methods=["POST"])
-# def login_local():
-#     username = request.form.get("username")
-#     template = request.form.get("template")
-#     pubkey = request.form.get("pubkey")
-#
-#     if create_user(username, template, pubkey):
-#         return redirect(url_for(".login_failed"))
-#
-#     return redirect(url_for(".login_success", username=username))
+@app.route("/login/local", methods=["POST"])
+def login_local():
+    username = request.form.get("username")
+    template = request.form.get("template")
+    pubkey = request.form.get("pubkey")
+
+    if create_user(username, template, pubkey):
+        return redirect(url_for(".login_failed"))
+
+    return redirect(f"/?login_success={username}")
 
 
 @app.route("/rc3/login", methods=["GET"])
@@ -159,10 +159,8 @@ def create_user(username, template, pubkey):
     pubkey = " ".join(pubkey.split(" ")[:2])
     if not re.match(r"^[a-zA-Z0-9_-]+$", username):
         abort(400, description="Invalid username")
-        return "Invalid username", 400
     if not re.match(r"^[a-zA-Z0-9+=/@ -]+$", pubkey):
         abort(400, description="Invalid ssh public key")
-        return "Invalid ssh public key", 400
     if template not in VALID_REPO_TEMPLATES:
         abort(
             400,
