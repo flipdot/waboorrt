@@ -20,11 +20,11 @@ cp -p /etc/passwd /opt/etc/passwd
 
 # init repository
 if [ ! -d "/git/$USERNAME.git" ]; then
+  # create repo
   mkdir -p "/git/$USERNAME.git"
-  chown "$USERNAME:$USERNAME" "/git/$USERNAME.git"
-  chmod 700 "/git/$USERNAME.git"
   cd "/git/$USERNAME.git"
-  sudo -u "$USERNAME" git init --bare
+  git init --bare
+
   # prepopulate repo
   TMP_DIR=$(mktemp -d)
   cd "$TMP_DIR"
@@ -39,6 +39,10 @@ if [ ! -d "/git/$USERNAME.git" ]; then
 
   # install hooks
   ln -s /app/post-receive.sh "/git/$USERNAME.git/hooks/post-receive"
+
+  # set permissions AFTER pushing with root, so that root does not own any objects
+  chown -R "$USERNAME:$USERNAME" "/git/$USERNAME.git"
+  chmod -R 700 "/git/$USERNAME.git"
 fi
 
 # everything ready; give the user access by adding their ssh key
