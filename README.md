@@ -52,8 +52,8 @@ Use pipenv (`pip install pipenv`).
 
 Build the "pyrandom" docker image:
 
-    cd bot-templates/python
-    docker build -t localhost/bot/$(printf %s "pyrandom" | sha256sum | head -c 32) .
+    cd gitserver/bot-templates/python
+    docker build -t localhost/bot/$(printf %s "pyrandom" | shasum -a 256 | head -c 32) .
 
 ## gitserver: adding new accounts
 
