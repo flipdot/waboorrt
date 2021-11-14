@@ -26,15 +26,15 @@ learn how to set it up.
 
 ### `webserver`
 
-<img width="216px" src="./docs/webserver.svg" alt="The frontend is intergrated in the webserver service. The webserver uses redis as datasource."/>
+<img src="./docs/webserver.svg" alt="The frontend is intergrated in the webserver service. The webserver uses redis as datasource."/>
 
 ### `scoreserver` and `gameserver`
 
-<img width="894px" src="./docs/scoreserver.svg" alt="The scoreserver triggers matches on gameserver which manages contianers of bots. The scoreserver uses redis as datastore."/>
+<img src="./docs/scoreserver.svg" alt="The scoreserver triggers matches on gameserver which manages contianers of bots. The scoreserver uses redis as datastore."/>
 
 ### `gitserver` and `botbuilder`
 
-<img width="872px" src="./docs/botbuilder.svg" alt="The gitserver requests a build at the botbuilder. The botbuilder builds the image for a bot."/>
+<img src="./docs/botbuilder.svg" alt="The gitserver requests a build at the botbuilder. The botbuilder builds the image for a bot."/>
 
 ## Development setup: gameserver
 
