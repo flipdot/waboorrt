@@ -22,7 +22,7 @@ learn how to set it up.
 - scoreserver: Regularly triggers new matches. Stores the scores and calculates an ELO score
 - webserver: Provides auth to create new accounts. Contains frontend. Shows past games and scores.
 
-## Achitecture overview
+## Architecture overview
 
 ### `webserver`
 
