@@ -2,9 +2,9 @@ import logging
 import random
 import copy
 import math
-
-from gameobjects import GameState, Bot, Action
 from typing import Tuple, Optional
+
+from gameobjects import GameState, Bot, RpcAction,  LookAction, NoopAction, ThrowAction, WalkAction
 
 logger = logging.getLogger(__name__)
 
@@ -55,28 +55,28 @@ def compute_damage(dist: float) -> int:
     return int(max(10 * math.pow(10, -(dist / radius)), 0))
 
 
-def action_noop(game_state, bot, action) -> Tuple[bool, Optional[str]]:
+def action_noop(game_state, bot, action: NoopAction) -> Tuple[bool, Optional[str]]:
     bot.coins += 1
     return True, None
 
 
-def action_walk(game_state, bot, action) -> Tuple[bool, Optional[str]]:
-    if action.get("direction") == "north":
+def action_walk(game_state, bot, action: WalkAction) -> Tuple[bool, Optional[str]]:
+    if action.direction == "north":
         if can_walk_north(game_state, bot):
             bot.y -= 1
             return True, None
 
-    elif action.get("direction") == "east":
+    elif action.direction == "east":
         if can_walk_east(game_state, bot):
             bot.x += 1
             return True, None
 
-    elif action.get("direction") == "south":
+    elif action.direction == "south":
         if can_walk_south(game_state, bot):
             bot.y += 1
             return True, None
 
-    elif action.get("direction") == "west":
+    elif action.direction == "west":
         if can_walk_west(game_state, bot):
             bot.x -= 1
             return True, None
@@ -84,16 +84,19 @@ def action_walk(game_state, bot, action) -> Tuple[bool, Optional[str]]:
     return False, "position was occupied or you walked out of the map"
 
 
-def action_throw(game_state, bot, action) -> Tuple[bool, Optional[str]]:
+def default(nonable, default_value):
+    return default_value if nonable is None else nonable
 
-    costs = round(dist((bot.x, bot.y), (action.get("x", 0), action.get("y", 0))))
+
+def action_throw(game_state, bot, action: ThrowAction) -> Tuple[bool, Optional[str]]:
+    costs = round(dist((bot.x, bot.y), (default(action.x, 0), default(action.y, 0))))
     if costs > bot.coins:
         return False, "not enough coins to throw this far"
     for other in game_state.bots:
         other.health -= compute_damage(
             dist(
                 (other.x, other.y),
-                (action.get("x", bot.x), action.get("y", bot.y)),
+                (default(action.x, bot.x), default(action.y, bot.y)),
             )
         )
         # don't allow negative health
@@ -102,10 +105,10 @@ def action_throw(game_state, bot, action) -> Tuple[bool, Optional[str]]:
     return True, None
 
 
-def action_look(game_state, bot, action) -> Tuple[bool, Optional[str]]:
+def action_look(game_state, bot, action: LookAction) -> Tuple[bool, Optional[str]]:
     view_price = 1.0
-    desired_range = int(action.get(
-        "range",
+    desired_range = int(default(
+        action.range,
         max(  # what it wants or the max necessary
             dist((bot.x, bot.y), (0, 0)),
             dist((bot.x, bot.y), (game_state.map_w, 0)),
@@ -121,8 +124,8 @@ def action_look(game_state, bot, action) -> Tuple[bool, Optional[str]]:
 
 
 def tick(
-    game_state: GameState, actions: Tuple[dict, ...]
-) -> (GameState, Tuple[dict, ...]):
+    game_state: GameState, actions: Tuple[RpcAction, ...]
+) -> Tuple[GameState, Tuple[dict, ...]]:
     if len(game_state.bots) != len(actions):
         raise ValueError("number of actions does not match number of bots")
 
@@ -134,30 +137,26 @@ def tick(
     action_list = random.sample(list(zip(game_state.bots, actions)), len(actions))
 
     action_execution_order = [
-        (Action.NOOP, action_noop),
-        (Action.THROW, action_throw),
-        (Action.WALK, action_walk),
-        (Action.LOOK, action_look),
+        (NoopAction, action_noop),
+        (ThrowAction, action_throw),
+        (WalkAction, action_walk),
+        (LookAction, action_look),
     ]
 
     for current_action_type, action_function in action_execution_order:
         for bot, action in action_list:
-            # for convenience for the bot authors: convert every action to lowercase
-            action = {
-                k.lower(): (v.lower() if isinstance(v, str) else v)
-                for k, v in action.items()
-            }
-            if action.get("name") == current_action_type:
+            if isinstance(action, current_action_type):
                 success, failure_reason = action_function(game_state, bot, action)
+                action_result = action.dict()
                 executed = {
                     "bot_name": bot.name,
-                    "intended_action": action,
+                    "intended_action": action_result,
                     "success": success,
                 }
                 if not success:
                     executed["reason"] = failure_reason
                 executed_actions.append(executed)
-                action["_was_handled"] = True
+                action_result["_was_handled"] = True
 
     # list unknown actions
     # for bot, action in action_list:

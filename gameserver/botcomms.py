@@ -4,23 +4,23 @@ import copy
 from json import JSONDecodeError
 from random import randint
 from typing import Tuple, Optional
+from pydantic.tools import parse_obj_as
 import requests
 
 import docker
 import docker.errors
 from docker.models.containers import Container
 
-from gameobjects import GameState, Action, Bot, EntityType
+from gameobjects import GameState, Bot, EntityType, RpcAction, NoopAction, action_name_map
 from gamefunctions import dist
 from time import sleep
 
 from network import GameStateEncoder
-from jsonschema import validate, ValidationError
+from pydantic import ValidationError
 
 import hashlib
 
 logger = logging.getLogger(__name__)
-
 
 def get_bot_view(game_state: GameState, bot_name: str):
     me: Optional[Bot] = None
@@ -131,7 +131,7 @@ class BotCommunicator:
             sleep(0.1)
         return self.containers_ready
 
-    def get_next_actions(self, game_state: GameState) -> Tuple[dict, ...]:
+    def get_next_actions(self, game_state: GameState) -> Tuple[RpcAction, ...]:
         actions = []
         for container, bot in zip(self.containers, game_state.bots):
             actions.append(self.get_next_action(game_state, container, bot))
@@ -139,7 +139,7 @@ class BotCommunicator:
 
     def get_next_action(
         self, game_state: GameState, container: Container, bot: Bot
-    ) -> dict:
+    ) -> RpcAction:
         url = f"http://{container.id[:12]}:4000/jsonrpc"
         payload = {
             "method": "next_action",
@@ -148,6 +148,7 @@ class BotCommunicator:
             "id": randint(0, 10000),
         }
         bot.view_range = Bot.DEFAULT_VIEW_RANGE
+
         try:
             # logger.debug(payload)
             response = requests.post(
@@ -157,31 +158,35 @@ class BotCommunicator:
             # logger.debug(response)
         except requests.exceptions.Timeout:
             logger.info(f"Bot {container.image.tags} took to long to respond")
-            return Action.noaction
+            return NoopAction()
         except requests.exceptions.RequestException:
             logger.warning(
                 f"Something went very wrong while talking to bot {container.image.tags}"
             )
-            return Action.noaction
+            return NoopAction()
+
         try:
             resp_data = response.json()
         except JSONDecodeError:
             logger.warning(f"Not a valid JSON response from {bot.name}: %s", response)
-            return Action.noaction
+            return NoopAction()
+
         logger.debug(f"Response from bot {container.image.tags}: {response}")
-        result = resp_data.get("result", Action.noaction)
-        schema = {
-            "type": "object",
-            "properties": {
-                "name": {"type": "string"},
-                "x": {"type": "number"},
-                "y": {"type": "number"},
-                "range": {"type": "number"},
-            }
-        }
+        result = resp_data.get("result")
+
+        if result is None:
+            logger.warning(f"No result from bot {container.image.tags}")
+            return NoopAction()
+
+        result['name'] = result['name'].lower()
+
+        if result['name'] not in action_name_map:
+            logger.warning(f"Unknown action type {result['name']}")
+            return NoopAction()
+
         try:
-            validate(instance=result, schema=schema)
-            return result
+            action = parse_obj_as(action_name_map[result['name']], result)
+            return action
         except ValidationError:
             logger.info("Invalid client action: %s", result)
-            return Action.noaction
+            return NoopAction()

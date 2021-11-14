@@ -4,11 +4,11 @@ from werkzeug.wrappers import Request, Response
 from werkzeug.serving import run_simple
 from jsonrpc import JSONRPCResponseManager, dispatcher
 
-from typing import Tuple, Dict
+from typing import Dict
 
 from botcomms import BotCommunicator
 from gamefunctions import tick
-from gameobjects import GameState, Bot
+from gameobjects import GameState
 import logging
 
 from network import GameStateEncoder
@@ -61,7 +61,7 @@ def run_game(bot0_name: str, bot1_name: str):
                     score[botcom.bot_names[i]] = 0
         else:
             while game_state.running:
-                actions: Tuple[dict, ...] = botcom.get_next_actions(game_state)
+                actions = botcom.get_next_actions(game_state)
                 game_state, executed_actions = tick(game_state, actions)
                 game_history.append(
                     {

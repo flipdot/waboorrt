@@ -1,28 +1,47 @@
 import random
 from enum import Enum, auto
-from typing import List
+from typing import Any, Dict, List, Literal
+
+from pydantic import BaseModel, Field
 
 
-class Action:
+class ActionName(str, Enum):
     NOOP = "noop"
     WALK = "walk"
     THROW = "throw"
     LOOK = "look"
-    noaction = {"name": NOOP}
 
+
+class RpcAction(BaseModel):
+    name: ActionName
+
+class NoopAction(RpcAction):
+    name: Literal[ActionName.NOOP] = ActionName.NOOP
+
+class WalkAction(RpcAction):
+    name: Literal[ActionName.WALK] = ActionName.WALK
+    direction: str
+
+class ThrowAction(RpcAction):
+    name: Literal[ActionName.THROW] = ActionName.THROW
+    x: int
+    y: int
+
+class LookAction(RpcAction):
+    name: Literal[ActionName.LOOK] = ActionName.LOOK
+    range: int
+
+
+action_name_map: Dict[ActionName, Any] = {
+    ActionName.NOOP: NoopAction,
+    ActionName.WALK: WalkAction,
+    ActionName.THROW: ThrowAction,
+    ActionName.LOOK: LookAction,
+}
 
 class EntityType(Enum):
     ENTITY = auto()
     BOT = auto()
-
-
-# class BotView:
-#     """
-#     Represents the object that gets send to the bots
-#     """
-#
-#     def __init__(self):
-#
 
 
 class GameState:
@@ -41,14 +60,14 @@ class GameState:
 
         margin = 1
 
-        def rndw() -> int:
+        def rnd_x() -> int:
             return random.randint(margin, game_state.map_w - 1 - margin)
 
-        def rndh() -> int:
+        def rnd_y() -> int:
             return random.randint(margin, game_state.map_h - 1 - margin)
 
-        bot0 = Bot(bot0_name, rndw(), rndh())
-        bot1 = Bot(bot1_name, rndw(), rndh())
+        bot0 = Bot(bot0_name, rnd_x(), rnd_y())
+        bot1 = Bot(bot1_name, rnd_x(), rnd_y())
         game_state.bots = [bot0, bot1]
         game_state.entities = [bot0, bot1]
         return game_state

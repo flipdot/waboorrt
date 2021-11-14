@@ -1,7 +1,7 @@
 from json import JSONEncoder
 from typing import Any
 
-from gameobjects import GameState, Bot, Action, EntityType
+from gameobjects import GameState, Bot, EntityType, RpcAction
 
 
 class GameStateEncoder(JSONEncoder):
@@ -16,8 +16,8 @@ class GameStateEncoder(JSONEncoder):
             }
         elif isinstance(o, Bot):
             return o.__dict__
-        elif isinstance(o, Action):
-            return o.name
+        elif isinstance(o, RpcAction):
+            return o.dict()
         elif isinstance(o, EntityType):
             return o.name
         else:
