@@ -25,8 +25,7 @@ logger = logging.getLogger(__name__)
 def get_bot_view(game_state: GameState, bot_name: str):
     me: Optional[Bot] = None
     for entity in game_state.entities:
-        if entity.type == EntityType.BOT:
-            entity: Bot
+        if isinstance(entity, Bot):
             if entity.name == bot_name:
                 me = entity
     if me is None:
@@ -140,6 +139,9 @@ class BotCommunicator:
     def get_next_action(
         self, game_state: GameState, container: Container, bot: Bot
     ) -> RpcAction:
+        if container.id is None or container.image is None:
+            raise ValueError("container has no id or image")
+
         url = f"http://{container.id[:12]}:4000/jsonrpc"
         payload = {
             "method": "next_action",

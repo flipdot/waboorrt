@@ -6,7 +6,7 @@ import logging
 import os
 from asyncio import sleep
 from json import JSONDecodeError
-from typing import Dict, Tuple
+from typing import Tuple
 from uuid import uuid1
 
 import redis as redis
@@ -74,7 +74,13 @@ async def main():
     while True:
         users = db.keys("user:*")
         for key_a, key_b in itertools.combinations(users, 2):
-            user_a, user_b = json.loads(db.get(key_a)), json.loads(db.get(key_b))
+            raw_user_a, raw_user_b = db.get(key_a), db.get(key_b)
+
+            if raw_user_a is None or raw_user_b is None:
+                logger.warning(f"Could not get user data for {key_a} or {key_b}")
+                continue
+
+            user_a, user_b = json.loads(raw_user_a), json.loads(raw_user_b)
             bot_a_name, bot_b_name = user_a["botname"], user_b["botname"]
             logging.debug(f"Next match: {bot_a_name} vs {bot_b_name}")
             # TODO: maybe parallelize it. gameserver can handle multiple requests
@@ -119,8 +125,8 @@ async def main():
             )
             db.set(key_a, json.dumps(user_a))
             db.set(key_b, json.dumps(user_b))
-        # logging.info("Sleeping, next matches will start soon")
-        # await sleep(10)
+        logging.info("Sleeping, next matches will start soon")
+        await sleep(10)
 
 
 if __name__ == "__main__":

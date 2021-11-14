@@ -1,4 +1,5 @@
 import json
+from jsonrpc.jsonrpc2 import JSONRPC20BatchResponse, JSONRPC20Response
 
 from werkzeug.wrappers import Request, Response
 from werkzeug.serving import run_simple
@@ -89,6 +90,11 @@ def application(request):
             mimetype="text/html",
         )
     response = JSONRPCResponseManager.handle(request.data, dispatcher)
+
+    if not (isinstance(response, JSONRPC20Response) or isinstance(response, JSONRPC20BatchResponse)):
+        logger.error(f"Invalid RPC response")
+        return Response(status=500, response=json.dumps({"error": "Internal server error"}))
+
     return Response(
         json.dumps(response.data, cls=GameStateEncoder), mimetype="application/json"
     )

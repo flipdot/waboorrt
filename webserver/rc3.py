@@ -50,7 +50,7 @@ def get_access_token(refresh_token):
     resp = requests.post("https://rc3.world/sso/token/", data=payload)
     resp_data = resp.json()
     if resp_data.get("error"):
-        raise f"failed to exchange refresh token for access token: {resp_data}"
+        raise Exception(f"failed to exchange refresh token for access token: {resp_data}")
 
     return resp_data["access_token"]
 
