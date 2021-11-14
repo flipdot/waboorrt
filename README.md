@@ -22,6 +22,20 @@ learn how to set it up.
 - scoreserver: Regularly triggers new matches. Stores the scores and calculates an ELO score
 - webserver: Provides auth to create new accounts. Contains frontend. Shows past games and scores.
 
+## Achitecture overview
+
+### `webserver`
+
+<img width="216px" src="./docs/webserver.png" alt="The frontend is intergrated in the webserver service. The webserver uses redis as datasource."/>
+
+### `scoreserver` and `gameserver`
+
+<img width="894px" src="./docs/scoreserver.png" alt="The scoreserver triggers matches on gameserver which manages contianers of bots. The scoreserver uses redis as datastore."/>
+
+### `gitserver` and `botbuilder`
+
+<img width="872px" src="./docs/botbuilder.png" alt="The gitserver requests a build at the botbuilder. The botbuilder builds the image for a bot."/>
+
 ## Development setup: gameserver
 
 Use pipenv (`pip install pipenv`).
@@ -40,7 +54,7 @@ Build the "pyrandom" docker image:
 
     cd bot-templates/python
     docker build -t localhost/bot/$(printf %s "pyrandom" | sha256sum | head -c 32) .
-    
+
 ## gitserver: adding new accounts
 
     docker-compose exec gitserver newbot username python "ssh-rsa AAAAB...."
