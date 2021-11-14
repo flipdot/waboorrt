@@ -2,11 +2,13 @@ import json
 import logging
 import os
 import subprocess
-from urllib.parse import urlparse
 import re
 
-
-from flask import Flask, render_template, request, redirect, jsonify, abort, url_for, Response, current_app
+import uvicorn
+from flask import render_template, request, redirect, jsonify, url_for, Response
+from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
 import redis
 from uuid import uuid4
 import rc3
@@ -22,33 +24,36 @@ VALID_REPO_TEMPLATES = ["python", "c-sharp", "golang"]
 
 AUTH_TOKEN_SECRET = os.environ.get("AUTH_TOKEN_SECRET", "CHANGE-ME")
 
-app = Flask(__name__, static_folder="static", template_folder="templates")
+# app = Flask(__name__, static_folder="static", template_folder="templates")
+app = FastAPI()
 db = redis.Redis(
     host=os.environ.get("REDIS_HOST", "localhost"), port=6379, db=0, decode_responses=True
 )
 
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
-@app.route("/")
+
+@app.get("/", response_class=HTMLResponse)
 def index():
-    return current_app.send_static_file('webapp/index.html')
+    with open("static/webapp/index.html") as f:
+        content = f.read()
+    return content
 
 
-@app.route("/api/games")
-def game_list():
-    from_id = request.args.get("from", "")
+@app.get("/api/games")
+def game_list(from_id: str = "", n: int = 25):
     try:
-        num = min(int(request.args.get("n", 25)), 25)
+        num = min(n, 25)
     except ValueError:
-        abort(400, description="n must be int")
-
+        raise HTTPException(status_code=400, detail="n must be int")
     if ":" in from_id:
-        abort(400, description="colons are invalid")
+        raise HTTPException(status_code=400, detail="colons are invalid")
 
     if from_id:
         from_key = f"game:{from_id}:summary"
         from_game_str = db.get(from_key)
         if not from_game_str:
-            abort(404, description="game not found")
+            raise HTTPException(status_code=404, detail="game not found")
         from_game = json.loads(from_game_str)
         max_range = float(from_game.get("timestamp"))
     else:
@@ -58,21 +63,21 @@ def game_list():
         db.zrevrangebyscore("matches_by_time", max_range, "-inf", start=0, num=num)
     ]
     games = [json.loads(db.get(k)) for k in game_keys]
-    return jsonify(games)
+    return games
 
 
-@app.route("/api/templates")
-def valid_repo_templates():
-    return jsonify(VALID_REPO_TEMPLATES)
-
-
-@app.route("/api/games/<game_id>")
-def game_history(game_id):
+@app.get("/api/games/{game_id}")
+def games_list(game_id: int):
     history = db.get(f"game:{game_id}:history")
     if not history:
-        abort(404)
+        raise HTTPException(status_code=404)
 
     return Response(history, mimetype='application/json')
+
+
+@app.get("/api/templates")
+def valid_repo_templates():
+    return VALID_REPO_TEMPLATES
 
 
 # @app.route("/login_success/<username>")
@@ -81,12 +86,12 @@ def game_history(game_id):
 #     return render_template("login_success.html", username=username, hostname=hostname)
 
 
-@app.route("/login_failed")
+@app.get("/login_failed")
 def login_failed():
     return render_template("login_failed.html")
 
 
-@app.route("/login/local", methods=["POST"])
+@app.post("/login/local")
 def login_local():
     username = request.form.get("username")
     template = request.form.get("template")
@@ -95,10 +100,10 @@ def login_local():
     if create_user(username, template, pubkey):
         return redirect(url_for(".login_failed"))
 
-    return redirect(f"/?login_success={username}")
+    return redirect(url_for(".login_success", username=username))
 
 
-@app.route("/rc3/login", methods=["GET"])
+@app.get("/rc3/login")
 def login_rc3():
     if "code" not in request.args:
         abort(400, "authorization code missing")
@@ -133,7 +138,7 @@ def login_rc3():
 AUTH_TIMEOUT = 15 * 60 * 1000
 
 
-@app.route("/auth-redirect", methods=["GET"])
+@app.get("/auth-redirect")
 def auth_redirect():
     template = request.args.get("template")
     pubkey = request.args.get("pubkey")
@@ -151,7 +156,8 @@ def auth_redirect():
         px=AUTH_TIMEOUT,
     )
 
-    return redirect(rc3.gen_login_redirect(state))
+    return redirect(url_for("login_local"))
+    # return redirect(rc3.gen_login_redirect(state))
 
 
 def create_user(username, template, pubkey):
@@ -159,8 +165,10 @@ def create_user(username, template, pubkey):
     pubkey = " ".join(pubkey.split(" ")[:2])
     if not re.match(r"^[a-zA-Z0-9_-]+$", username):
         abort(400, description="Invalid username")
+        return "Invalid username", 400
     if not re.match(r"^[a-zA-Z0-9+=/@ -]+$", pubkey):
         abort(400, description="Invalid ssh public key")
+        return "Invalid ssh public key", 400
     if template not in VALID_REPO_TEMPLATES:
         abort(
             400,
@@ -171,3 +179,7 @@ def create_user(username, template, pubkey):
         ["ssh", "root@gitserver", "newbot", f'"{username}" "{template}" "{pubkey}"']
     )
     return completed_process.returncode
+
+
+if __name__ == "__main__":
+    uvicorn.run("app:app", host="localhost", port=8080, reload=True)

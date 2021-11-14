@@ -14,4 +14,4 @@ touch "$KNOWN_HOSTS"
 while [ ! -s "$KNOWN_HOSTS" ]; do
   ssh-keyscan gitserver > "$KNOWN_HOSTS" 2> /dev/null
 done
-gunicorn -w 2 -b 0.0.0.0:80 app:app
+uvicorn --host 0.0.0.0 --port 80 app:app
