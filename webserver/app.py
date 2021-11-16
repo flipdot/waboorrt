@@ -3,15 +3,17 @@ import logging
 import os
 import subprocess
 import re
+from enum import Enum
 
 import uvicorn
-from flask import render_template, request, redirect, jsonify, url_for, Response
-from fastapi import FastAPI, HTTPException
+from flask import request, redirect, url_for
+from fastapi import FastAPI, HTTPException, Response, status
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 import redis
 from uuid import uuid4
 import rc3
+from pydantic import BaseModel
 
 import jwt
 
@@ -19,10 +21,24 @@ logging.basicConfig(
     level=logging.INFO, format="[%(asctime)s] [%(levelname)s] %(name)s: %(message)s"
 )
 
+# List of directories in gitserver/bot-templates
 VALID_REPO_TEMPLATES = ["python", "c-sharp", "golang"]
 
 
+class RepositoryTemplateName(str, Enum):
+    python = "python"
+    csharp = "c-sharp"
+    golang = "golang"
+
+
 AUTH_TOKEN_SECRET = os.environ.get("AUTH_TOKEN_SECRET", "CHANGE-ME")
+
+
+class UserAccount(BaseModel):
+    username: str
+    template: RepositoryTemplateName
+    pubkey: str
+
 
 # app = Flask(__name__, static_folder="static", template_folder="templates")
 app = FastAPI()
@@ -35,6 +51,9 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/", response_class=HTMLResponse)
 def index():
+    """
+    Serves *index.html* of the frontend from `static/webapp/index.html`
+    """
     with open("static/webapp/index.html") as f:
         content = f.read()
     return content
@@ -42,6 +61,9 @@ def index():
 
 @app.get("/api/games")
 def game_list(from_id: str = "", n: int = 25):
+    """
+    Returns a list of past games. Can be paginated by using `from_id` and `n`
+    """
     try:
         num = min(n, 25)
     except ValueError:
@@ -67,16 +89,24 @@ def game_list(from_id: str = "", n: int = 25):
 
 
 @app.get("/api/games/{game_id}")
-def games_list(game_id: int):
+def game_detail(game_id: str):
+    """
+    Returns the logfile of the requested game
+    """
     history = db.get(f"game:{game_id}:history")
     if not history:
         raise HTTPException(status_code=404)
 
-    return Response(history, mimetype='application/json')
+    return json.loads(history)
 
 
 @app.get("/api/templates")
 def valid_repo_templates():
+    """
+    List of available repository templates. Used by the frontend to offer the user a list of programming
+    languages to choose from. Their choice initiates a new repository which contains files from the
+    corresponding template directory.
+    """
     return VALID_REPO_TEMPLATES
 
 
@@ -85,22 +115,14 @@ def valid_repo_templates():
 #     hostname = urlparse(request.base_url).hostname
 #     return render_template("login_success.html", username=username, hostname=hostname)
 
+@app.post("/users")
+def login_local(user: UserAccount, response: Response):
 
-@app.get("/login_failed")
-def login_failed():
-    return render_template("login_failed.html")
+    if create_user(user):
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return {"msg": "Failed to create account"}
 
-
-@app.post("/login/local")
-def login_local():
-    username = request.form.get("username")
-    template = request.form.get("template")
-    pubkey = request.form.get("pubkey")
-
-    if create_user(username, template, pubkey):
-        return redirect(url_for(".login_failed"))
-
-    return redirect(url_for(".login_success", username=username))
+    return user
 
 
 @app.get("/rc3/login")
@@ -160,23 +182,19 @@ def auth_redirect():
     # return redirect(rc3.gen_login_redirect(state))
 
 
-def create_user(username, template, pubkey):
+def create_user(user: UserAccount):
+    # TODO those checks can probably be done with pydantic in an elegant way
+
     # Remove everything after the second space. Discards comments from ssh keys
-    pubkey = " ".join(pubkey.split(" ")[:2])
-    if not re.match(r"^[a-zA-Z0-9_-]+$", username):
-        abort(400, description="Invalid username")
-        return "Invalid username", 400
+    pubkey = " ".join(user.pubkey.split(" ")[:2])
+
+    if not re.match(r"^[a-zA-Z0-9_-]+$", user.username):
+        raise ValueError("Invalid username")
     if not re.match(r"^[a-zA-Z0-9+=/@ -]+$", pubkey):
-        abort(400, description="Invalid ssh public key")
-        return "Invalid ssh public key", 400
-    if template not in VALID_REPO_TEMPLATES:
-        abort(
-            400,
-            description=f"Invalid template, please choose from {VALID_REPO_TEMPLATES}",
-        )
+        raise ValueError("Invalid ssh public key")
 
     completed_process = subprocess.run(
-        ["ssh", "root@gitserver", "newbot", f'"{username}" "{template}" "{pubkey}"']
+        ["ssh", "root@gitserver", "newbot", f'"{user.username}" "{user.template}" "{pubkey}"']
     )
     return completed_process.returncode
 
