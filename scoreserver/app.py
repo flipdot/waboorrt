@@ -125,6 +125,7 @@ async def main():
             )
             db.set(key_a, json.dumps(user_a))
             db.set(key_b, json.dumps(user_b))
+
         logging.info("Sleeping, next matches will start soon")
         await sleep(10)
 

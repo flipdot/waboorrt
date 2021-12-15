@@ -35,8 +35,8 @@ services:
       - "2222:22"
     volumes:
       - botvolume:/git
-      - githome:/home/
-      - gitopt:/opt
+      # - githome:/home/
+      # - gitopt:/opt
       - botbuilder-notify:/botbuilder
     depends_on:
       - redis

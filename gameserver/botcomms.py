@@ -6,12 +6,14 @@ from random import randint
 from typing import Tuple, Optional
 from pydantic.tools import parse_obj_as
 import requests
+from signal import signal, SIGTERM, SIGKILL, SIGINT
+import sys
 
 import docker
 import docker.errors
 from docker.models.containers import Container
 
-from gameobjects import GameState, Bot, EntityType, RpcAction, NoopAction, action_name_map
+from gameobjects import GameState, Bot, RpcAction, NoopAction, action_name_map
 from gamefunctions import dist
 from time import sleep
 
@@ -21,6 +23,7 @@ from pydantic import ValidationError
 import hashlib
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 def get_bot_view(game_state: GameState, bot_name: str):
     me: Optional[Bot] = None
@@ -82,6 +85,8 @@ class BotCommunicator:
         self.containers_ready = []
 
     def __enter__(self):
+        # signal(SIGTERM, self._sigint_handler)
+        # signal(SIGINT, self._sigint_handler)
         cl = self.docker_client.containers
         self.containers_ready = [False] * len(self.bot_names)
         self.containers = []
@@ -100,7 +105,14 @@ class BotCommunicator:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        logger.info("BotCommunicator: __exit__")
         self._kill_containers()
+
+    def _sigint_handler(self, signal_received, frame):
+        logger.info('Ctrl + C handler called')
+
+        self.__exit__(None, None, None)
+        sys.exit(0)
 
     def _kill_containers(self):
         for c in self.containers:
@@ -122,8 +134,8 @@ class BotCommunicator:
                 try:
                     response = requests.post(url, json=payload, timeout=0.1).json()
                     self.containers_ready[i] = response.get("result")
-                except requests.exceptions.RequestException:
-                    logger.debug(f"Bot {c.image.tags} not yet ready")
+                except requests.exceptions.RequestException as e:
+                    logger.debug(f"Bot {c.image.tags} not yet ready: {e}")
             if all(self.containers_ready):
                 logger.debug("All bots are ready")
                 break

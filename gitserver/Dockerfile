@@ -10,9 +10,10 @@ RUN ssh-keygen -A
 #                                      think twice                                        #
 ###########################################################################################
 
-RUN apt-get install -y git sudo redis-tools
+RUN apt-get install -y sudo redis-tools
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y gitolite3
 RUN mkdir -p /run/sshd
-RUN git config --global user.email "com@flipdot.org"; git config --global user.name "flipbot"
+# RUN git config --global user.email "com@flipdot.org"; git config --global user.name "flipbot"
 
 COPY bot-templates /app/bot-templates
 COPY sshd_config /etc/ssh/sshd_config
@@ -24,7 +25,15 @@ RUN chmod +x /usr/local/bin/newbot
 RUN mkdir -p /botbuilder
 RUN chmod 777 /botbuilder
 
-WORKDIR /git
-VOLUME /git /home /opt
+# COPY gitolite.conf /app/post-receive.sh
+COPY gitolite.rc /app/gitolite.rc
+RUN sudo adduser --system --shell /bin/bash --group --disabled-password --home /home/git git
+
+# Volume used to store all Gitolite data (keys, config and repositories), initialized on first run
+VOLUME /home/git
+
+# Volume used to store SSH host keys, generated on first run
+VOLUME /etc/ssh/keys
+
 EXPOSE 22
 CMD ["sh", "/start.sh"]

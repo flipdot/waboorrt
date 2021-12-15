@@ -4,6 +4,7 @@ from jsonrpc.jsonrpc2 import JSONRPC20BatchResponse, JSONRPC20Response
 from werkzeug.wrappers import Request, Response
 from werkzeug.serving import run_simple
 from jsonrpc import JSONRPCResponseManager, dispatcher
+from signal import signal, SIGTERM, SIGKILL, SIGINT
 
 from typing import Dict
 
@@ -11,6 +12,7 @@ from botcomms import BotCommunicator
 from gamefunctions import tick
 from gameobjects import GameState
 import logging
+from time import sleep
 
 from network import GameStateEncoder
 
@@ -100,5 +102,15 @@ def application(request):
     )
 
 
+# def sigint_handler(signal_received, frame):
+#     logger.info(f"{signal_received} received")
+#     exit(0)
+
 if __name__ == "__main__":
+    # signal(SIGTERM, sigint_handler)
+    # signal(SIGINT, sigint_handler)
+
+    # while True:
+    #     logger.info("Running")
+    #     sleep(1)
     run_simple("0.0.0.0", 5000, application, processes=8)
