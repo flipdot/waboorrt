@@ -70,10 +70,22 @@ def calculate_new_elo_ranking(
     return new_r0, new_r1
 
 
+def matches(users_keys: List[str], k: int = 5) -> List[Tuple[str, str]]:
+    """Get matches from a list of users.
+
+    Each one plays k other users above him and k below him."""
+    sorted_users = sorted(users_keys, key=lambda u: json.loads(db.get(u)).get("elo_rank", 1200))
+    matches = []
+    for i in range(len(sorted_users)):
+        for j in range(i + 1, min(i + k + 1, len(sorted_users))):
+            matches.append((sorted_users[i], sorted_users[j]))
+    return matches
+
+
 async def main():
     while True:
         users = db.keys("user:*")
-        for key_a, key_b in itertools.combinations(users, 2):
+        for key_a, key_b in matches(users):
             user_a, user_b = json.loads(db.get(key_a)), json.loads(db.get(key_b))
             bot_a_name, bot_b_name = user_a["botname"], user_b["botname"]
             logging.debug(f"Next match: {bot_a_name} vs {bot_b_name}")
