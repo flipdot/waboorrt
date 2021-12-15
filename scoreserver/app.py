@@ -6,7 +6,7 @@ import logging
 import os
 from asyncio import sleep
 from json import JSONDecodeError
-from typing import Dict, Tuple
+from typing import List, Tuple
 from uuid import uuid1
 
 import redis as redis
