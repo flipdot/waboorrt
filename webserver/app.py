@@ -4,6 +4,7 @@ import os
 import subprocess
 import re
 from enum import Enum
+from pathlib import Path
 
 import uvicorn
 from flask import request, redirect, url_for
@@ -40,7 +41,6 @@ class UserAccount(BaseModel):
     pubkey: str
 
 
-# app = Flask(__name__, static_folder="static", template_folder="templates")
 app = FastAPI()
 db = redis.Redis(
     host=os.environ.get("REDIS_HOST", "localhost"), port=6379, db=0, decode_responses=True
@@ -52,9 +52,13 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 @app.get("/", response_class=HTMLResponse)
 def index():
     """
-    Serves *index.html* of the frontend from `static/webapp/index.html`
+    Serves *index.html* of the frontend from `static/webapp/index.html`.
+    If frontend hasn't been built, return a simple HTML page with instructions
     """
-    with open("static/webapp/index.html") as f:
+    index_file = Path("static/webapp/index.html")
+    if not index_file.exists():
+        index_file = "static/index.placeholder.html"
+    with open(index_file) as f:
         content = f.read()
     return content
 
