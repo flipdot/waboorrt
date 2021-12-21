@@ -11,7 +11,7 @@ from starlette.responses import RedirectResponse
 
 import rc3
 from constants import AUTH_TIMEOUT, AUTH_TOKEN_SECRET
-from database import db
+from database import redis_db
 from api.req_models import LegacyUserAccount
 
 router = APIRouter(
@@ -53,7 +53,7 @@ def login_rc3():
     code = request.args["code"]
     state = request.args["state"]
 
-    stored_state = db.get(f"webserver:oauth_states:{state}")
+    stored_state = redis_db.get(f"webserver:oauth_states:{state}")
 
     if not stored_state:
         abort(400, "invalid state")
@@ -70,7 +70,7 @@ def login_rc3():
         {"username": username}, AUTH_TOKEN_SECRET, algorithm="HS256"
     )
 
-    db.delete(f"webserver:oauth_states:{state}")
+    redis_db.delete(f"webserver:oauth_states:{state}")
 
     return redirect(f"/?login_success={username}")
 
@@ -84,7 +84,7 @@ def auth_redirect(template: str, pubkey: str):
     #     abort(400, "pubkey missing")
 
     state = uuid4()
-    db.set(
+    redis_db.set(
         f"webserver:oauth_states:{state}",
         json.dumps({"template": template, "pubkey": pubkey}),
         px=AUTH_TIMEOUT,

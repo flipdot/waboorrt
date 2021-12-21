@@ -8,7 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 
 from constants import VALID_REPO_TEMPLATES
-from database import db
+from database import redis_db
 from routers import auth, account
 
 logging.basicConfig(
@@ -58,7 +58,7 @@ def game_list(from_id: str = "", n: int = 25):
 
     if from_id:
         from_key = f"game:{from_id}:summary"
-        from_game_str = db.get(from_key)
+        from_game_str = redis_db.get(from_key)
         if not from_game_str:
             raise HTTPException(status_code=404, detail="game not found")
         from_game = json.loads(from_game_str)
@@ -67,9 +67,9 @@ def game_list(from_id: str = "", n: int = 25):
         max_range = "+inf"
     game_keys = [
         f"game:{x}:summary" for x in
-        db.zrevrangebyscore("matches_by_time", max_range, "-inf", start=0, num=num)
+        redis_db.zrevrangebyscore("matches_by_time", max_range, "-inf", start=0, num=num)
     ]
-    games = [json.loads(db.get(k)) for k in game_keys]
+    games = [json.loads(redis_db.get(k)) for k in game_keys]
     return games
 
 
@@ -78,7 +78,7 @@ def game_detail(game_id: str):
     """
     Returns the logfile of the requested game. `game_id` can be fetched from `/api/games`.
     """
-    history = db.get(f"game:{game_id}:history")
+    history = redis_db.get(f"game:{game_id}:history")
     if not history:
         raise HTTPException(status_code=404)
 
@@ -97,7 +97,6 @@ def valid_repo_templates():
 
 app.include_router(auth.router)
 app.include_router(account.router)
-
 
 
 if __name__ == "__main__":

@@ -30,6 +30,14 @@ services:
     restart: unless-stopped
     volumes:
       -  dbvolume:/data
+  postgres:
+    image: postgres
+    restart: unless-stopped
+    volumes:
+      - pgvolume:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=$POSTGRES_USER
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
   gameserver:
     build: gameserver
     restart: unless-stopped
@@ -47,6 +55,9 @@ services:
       - redis
     env_file:
       - webserver.env
+    environment:
+      - POSTGRES_USER=$POSTGRES_USER
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.webserver.rule=Host(`waboorrt.flipdot.org`)"
