@@ -4,7 +4,8 @@ import subprocess
 from uuid import uuid4
 
 import jwt
-from fastapi import APIRouter, Response, status
+from fastapi import APIRouter, Response, status, Depends
+from fastapi.security import OAuth2PasswordRequestForm
 
 from starlette.responses import RedirectResponse
 
@@ -13,9 +14,18 @@ from constants import AUTH_TIMEOUT, AUTH_TOKEN_SECRET
 from database import db
 from api.req_models import LegacyUserAccount
 
-router = APIRouter(prefix="/api/auth")
+router = APIRouter(
+    prefix="/api/auth",
+    tags=["Authentication"],
+)
 
 
+@router.post("/login")
+def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    return {
+        "access_token": 5,
+        "token_type": "bearer",
+    }
 
 # @app.route("/login_success/<username>")
 # def login_success(username):
@@ -23,7 +33,7 @@ router = APIRouter(prefix="/api/auth")
 #     return render_template("login_success.html", username=username, hostname=hostname)
 
 
-@router.post("/users")
+@router.post("/users", deprecated=True)
 def login_local(user: LegacyUserAccount, response: Response):
 
     if create_user(user):
@@ -33,7 +43,7 @@ def login_local(user: LegacyUserAccount, response: Response):
     return user
 
 
-@router.get("/rc3/login")
+@router.get("/rc3/login", deprecated=True)
 def login_rc3():
     if "code" not in request.args:
         abort(400, "authorization code missing")
@@ -65,7 +75,7 @@ def login_rc3():
     return redirect(f"/?login_success={username}")
 
 
-@router.get("/auth-redirect", status_code=302)
+@router.get("/auth-redirect", status_code=302, deprecated=True)
 def auth_redirect(template: str, pubkey: str):
     # if template not in VALID_REPO_TEMPLATES:
     #     abort(400, f"invalid template: {template}")

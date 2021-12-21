@@ -6,7 +6,8 @@ from api import req_models, res_models
 
 router = APIRouter(
     prefix="/api/account",
-    dependencies=[Depends(authentication_required)]
+    dependencies=[Depends(authentication_required)],
+    tags=["Account"]
 )
 
 

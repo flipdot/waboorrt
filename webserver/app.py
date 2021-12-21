@@ -1,9 +1,5 @@
 import json
 import logging
-import os
-import subprocess
-import re
-from enum import Enum
 from pathlib import Path
 
 import uvicorn
@@ -15,8 +11,6 @@ from constants import VALID_REPO_TEMPLATES
 from database import db
 from routers import auth, account
 
-import jwt
-
 logging.basicConfig(
     level=logging.INFO, format="[%(asctime)s] [%(levelname)s] %(name)s: %(message)s"
 )
@@ -25,12 +19,18 @@ logging.basicConfig(
 app = FastAPI(
     title="Waboorrt Web API Spec",
     version="0.1.0",
+    openapi_tags=[
+        {"name": "default"},
+        {"name": "Authentication", "description": "Perform authentication."},
+        {"name": "Account", "description": "Manage own user account. Requires authentication."},
+        {"name": "Non-API", "description": "Provided for convenience. Can be replaced by a stupid webserver."},
+    ]
 )
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
-@app.get("/", response_class=HTMLResponse)
+@app.get("/", tags=["Non-API"], response_class=HTMLResponse)
 def index():
     """
     Serves *index.html* of the frontend from `static/webapp/index.html`.
