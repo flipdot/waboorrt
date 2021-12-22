@@ -8,5 +8,4 @@ require (
 	golang.org/x/sys v0.0.0-20210423082822-04245dca01da // indirect
 )
 
-// replace github.com/sosedoff/gitkit v0.3.0 => github.com/phlmn/gitkit v0.3.0
-replace github.com/sosedoff/gitkit v0.3.0 => ../../gitkit
+replace github.com/sosedoff/gitkit v0.3.0 => github.com/phlmn/gitkit v0.3.1-0.20211221214802-1481c4662337
