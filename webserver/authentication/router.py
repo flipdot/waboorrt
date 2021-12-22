@@ -5,14 +5,17 @@ from uuid import uuid4
 
 import jwt
 from fastapi import APIRouter, Response, status, Depends
-from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session
 
 from starlette.responses import RedirectResponse
 
 import rc3
 from constants import AUTH_TIMEOUT, AUTH_TOKEN_SECRET
 from database import redis_db
-from api.req_models import LegacyUserAccount
+from dependencies import pg_session, current_user
+from schemas import UserSchema
+from .schemas import LegacyUserAccount
+from models import UserModel
 
 router = APIRouter(
     prefix="/api/auth",
@@ -21,11 +24,24 @@ router = APIRouter(
 
 
 @router.post("/login")
-def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    return {
-        "access_token": 5,
-        "token_type": "bearer",
-    }
+def login(username: str, db: Session = Depends(pg_session)):
+    """
+    Returns session for a given username.
+    If no user with the name exists, a new account will be created.
+    """
+    # TODO: check if rC3 is configured. If yes, don't allow this login
+    user = db.query(UserModel).filter(UserModel.username == username).first()
+    if not user:
+        user = UserModel(username=username)
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+    return user.id  # create session in redis and return token
+
+
+@router.post("/logout")
+def logout(user: UserSchema = Depends(current_user)):
+    pass  # delete session token in redis
 
 # @app.route("/login_success/<username>")
 # def login_success(username):
