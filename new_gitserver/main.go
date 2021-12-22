@@ -1,31 +1,100 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
+	"net/http"
 
 	"github.com/sosedoff/gitkit"
-	"golang.org/x/crypto/ssh"
 )
+
+type checkPublicKeyRequest struct {
+	PublicKey string `json:"publicKey"`
+}
+
+type checkPublicKeyResponse struct {
+	Id string `json:"id"`
+}
+
+func httpSuccess(statusCode int) bool {
+	return statusCode >= 200 && statusCode <= 299
+}
 
 // User-defined key lookup function. You can make a call to a database or
 // some sort of cache storage (redis/memcached) to speed things up.
 // Content is a string containing ssh public key of a user.
 func lookupKey(content string) (*gitkit.PublicKey, error) {
-	fmt.Println(content)
-	key, _, _, _, err := ssh.ParseAuthorizedKey([]byte(content))
+	body, err := json.Marshal(&checkPublicKeyRequest{PublicKey: content})
 	if err != nil {
-		fmt.Println(err)
+		return nil, err
+	}
+	resp, err := http.Post("webserver/git/check-public-key", "application/json", bytes.NewBuffer(body))
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode == http.StatusNotFound {
+		return nil, errors.New(fmt.Sprintf("public key not registered: %s", content))
+	}
+
+	if !httpSuccess(resp.StatusCode) {
+		return nil, errors.New(fmt.Sprintf("Checking public key failed with status code %d", resp.StatusCode))
+	}
+
+	var respBody []byte
+	_, err = resp.Body.Read(respBody)
+	if err != nil {
+		return nil, err
+	}
+	responseData := checkPublicKeyResponse{}
+	err = json.Unmarshal(respBody, &responseData)
+	if err != nil {
 		return nil, err
 	}
 
-	fingerprint := ssh.FingerprintSHA256(key)
-	return &gitkit.PublicKey{Id: fingerprint}, nil
+	return &gitkit.PublicKey{Id: responseData.Id}, nil
 }
 
-func authorize(keyId string, repo string) bool {
-	fmt.Printf("Trying to access repo '%s' with key '%s'\n", repo, keyId)
-	return true
+type checkAuthorizationRequest struct {
+	KeyId string `json:"keyId"`
+	Repo  string `json:"repo"`
+}
+
+type checkAuthorizationResponse struct {
+	Authorized bool `json:"authorized"`
+}
+
+func authorize(keyId string, repo string) (bool, error) {
+	body, err := json.Marshal(&checkAuthorizationRequest{KeyId: keyId, Repo: repo})
+	if err != nil {
+		return false, err
+	}
+	resp, err := http.Post("webserver/git/check-access", "application/json", bytes.NewBuffer(body))
+	if err != nil {
+		return false, err
+	}
+	defer resp.Body.Close()
+
+	if !httpSuccess(resp.StatusCode) {
+		return false, errors.New(fmt.Sprintf("Checking authorization key failed with status code %d\n", resp.StatusCode))
+	}
+
+	var respBody []byte
+	_, err = resp.Body.Read(respBody)
+	if err != nil {
+		return false, err
+	}
+	responseData := checkAuthorizationResponse{}
+	err = json.Unmarshal(respBody, &responseData)
+	if err != nil {
+		return false, err
+	}
+
+	return responseData.Authorized, nil
 }
 
 func main() {
