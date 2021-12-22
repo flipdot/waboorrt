@@ -31,7 +31,7 @@ func lookupKey(content string) (*gitkit.PublicKey, error) {
 	if err != nil {
 		return nil, err
 	}
-	resp, err := http.Post("webserver/git/check-public-key", "application/json", bytes.NewBuffer(body))
+	resp, err := http.Post("http://webserver/git/check-public-key", "application/json", bytes.NewBuffer(body))
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +73,7 @@ func authorize(keyId string, repo string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	resp, err := http.Post("webserver/git/check-access", "application/json", bytes.NewBuffer(body))
+	resp, err := http.Post("http://webserver/git/check-access", "application/json", bytes.NewBuffer(body))
 	if err != nil {
 		return false, err
 	}
