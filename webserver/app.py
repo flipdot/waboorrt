@@ -6,9 +6,9 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 
-from authentication import router as auth_app
-from account import router as account_app
-from legacy import router as legacy_app
+from authentication import views as auth_app
+from account import views as account_app
+from legacy import views as legacy_app
 
 logging.basicConfig(
     level=logging.INFO, format="[%(asctime)s] [%(levelname)s] %(name)s: %(message)s"

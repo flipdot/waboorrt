@@ -11,7 +11,7 @@ router = APIRouter(
 )
 
 
-@router.get("/api/games")
+@router.get("/games")
 def game_list(from_id: str = "", n: int = 25):
     """
     Returns a list of past games. Can be paginated by using `from_id` and `n`
@@ -40,7 +40,7 @@ def game_list(from_id: str = "", n: int = 25):
     return games
 
 
-@router.get("/api/games/{game_id}")
+@router.get("/games/{game_id}")
 def game_detail(game_id: str):
     """
     Returns the logfile of the requested game. `game_id` can be fetched from `/api/games`.
@@ -52,7 +52,7 @@ def game_detail(game_id: str):
     return json.loads(history)
 
 
-@router.get("/api/templates")
+@router.get("/templates")
 def valid_repo_templates():
     """
     List of available repository templates. Used by the frontend to offer the user a list of programming

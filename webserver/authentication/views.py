@@ -4,15 +4,15 @@ import subprocess
 from uuid import uuid4
 
 import jwt
-from fastapi import APIRouter, Response, status, Depends
+from fastapi import APIRouter, Response, status, Depends, HTTPException
+from redis import Redis
 from sqlalchemy.orm import Session
 
 from starlette.responses import RedirectResponse
 
 import rc3
-from constants import AUTH_TIMEOUT, AUTH_TOKEN_SECRET
-from database import redis_db
-from dependencies import pg_session, current_user
+from constants import AUTH_TIMEOUT, AUTH_TOKEN_SECRET, SESSION_EXPIRATION_TIME
+from dependencies import pg_session, redis_session, current_user, session_key
 from schemas import UserSchema
 from .schemas import LegacyUserAccount
 from models import UserModel
@@ -24,7 +24,11 @@ router = APIRouter(
 
 
 @router.post("/login")
-def login(username: str, db: Session = Depends(pg_session)):
+def login(
+        username: str,
+        db: Session = Depends(pg_session),
+        redis_db: Redis = Depends(redis_session),
+):
     """
     Returns session for a given username.
     If no user with the name exists, a new account will be created.
@@ -36,12 +40,22 @@ def login(username: str, db: Session = Depends(pg_session)):
         db.add(user)
         db.commit()
         db.refresh(user)
-    return user.id  # create session in redis and return token
+    session_id = uuid4()
+    redis_db.set(f"webserver:session:{session_id}", user.id, ex=SESSION_EXPIRATION_TIME)
+    return session_id
 
 
 @router.post("/logout")
-def logout(user: UserSchema = Depends(current_user)):
-    pass  # delete session token in redis
+def logout(
+        db_session_key: str = Depends(session_key),
+        redis_db: Redis = Depends(redis_session),
+):
+    deleted_keys = redis_db.delete(db_session_key)
+    if deleted_keys <= 0:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+    return "ok"
+
+
 
 # @app.route("/login_success/<username>")
 # def login_success(username):

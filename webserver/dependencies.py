@@ -1,11 +1,11 @@
 # FastAPI dependencies explained: https://fastapi.tiangolo.com/tutorial/dependencies/
 from fastapi import Depends, HTTPException, status
 from fastapi.security import APIKeyHeader
-from sqlalchemy.orm import Session
+from redis import Redis
 
-from database import SessionLocal
+from database import SessionLocal, redis_db
 from schemas import UserSchema
-from models import UserModel
+from constants import SESSION_EXPIRATION_TIME
 
 
 def pg_session():
@@ -16,17 +16,30 @@ def pg_session():
         db.close()
 
 
+def redis_session():
+    # yield something like in pg_session?
+    return redis_db
+
+
+def session_key(token: str = Depends(APIKeyHeader(name="X-Session-Key"))):
+    return f"webserver:session:{token}"
+
+
 def current_user(
-        token: str = Depends(APIKeyHeader(name="X-API-Key")),
-        db: Session = Depends(pg_session),
+        db_session_key: str = Depends(session_key),
+        cache_db: Redis = Depends(redis_session)
 ) -> UserSchema:
-    user_id = int(token or "-1")
-    user = db.query(UserModel).get(user_id)
-    if not user:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+    user_id = cache_db.get(db_session_key)
+    if user_id is not None:
+        try:
+            user_id = int(user_id)
+        except TypeError:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+        cache_db.expire(db_session_key, SESSION_EXPIRATION_TIME)
+    else:
+        user_id = -1
     return UserSchema(
         user_id=user_id,
-        user=user,
         is_anonymous=user_id < 0,
     )
 
