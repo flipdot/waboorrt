@@ -42,23 +42,19 @@ services:
       - POSTGRES_USER=$POSTGRES_USER
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
   gitserver:
-    build: gitserver
-    restart: unless-stopped
+    build: new_gitserver
+    restart: always
     ports:
-      - "2222:22"
+      - "2222:2222"
     volumes:
-      - botvolume:/git
-      - githome:/home/
-      - gitopt:/opt
-      - botbuilder-notify:/botbuilder
+      - git-repos:/app/repos
+      - git-keys:/app/keys
     depends_on:
-      - redis
+      - webserver
   botbuilder:
     build: botbuilder 
     restart: unless-stopped
     volumes:
-      - botbuilder-notify:/botbuilder
-      - botvolume:/git
       - /var/run/docker.sock:/var/run/docker.sock
   scoreserver:
     build: scoreserver
@@ -71,9 +67,7 @@ networks:
   gamenet:
     external: true
 volumes:
-  botvolume:
-  githome:
-  gitopt:
-  botbuilder-notify:
+  git-repos:
+  git-keys:
   dbvolume:
   pgvolume:

@@ -63,24 +63,20 @@ services:
       - "traefik.http.routers.webserver.rule=Host(`waboorrt.flipdot.org`)"
       - "traefik.http.routers.webserver.entrypoints=websecure"
       - "traefik.http.routers.webserver.tls.certresolver=myresolver"
-  gitserver:
-    build: gitserver
-    restart: unless-stopped
+   gitserver:
+    build: new_gitserver
+    restart: always
     ports:
       - "2222:22"
     volumes:
-      - botvolume:/git
-      - githome:/home/
-      - gitopt:/opt
-      - botbuilder-notify:/botbuilder
+      - git-repos:/app/repos
+      - git-keys:/app/keys
     depends_on:
-      - redis
+      - webserver
   botbuilder:
     build: botbuilder 
     restart: unless-stopped
     volumes:
-      - botbuilder-notify:/botbuilder
-      - botvolume:/git
       - /var/run/docker.sock:/var/run/docker.sock
   scoreserver:
     build: scoreserver
@@ -93,9 +89,7 @@ networks:
   gamenet:
     external: true
 volumes:
-  botvolume:
-  githome:
-  gitopt:
-  botbuilder-notify:
+  git-repos:
+  git-keys:
   dbvolume:
   letsencrypt:
