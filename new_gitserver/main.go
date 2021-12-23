@@ -168,12 +168,17 @@ func main() {
 		KeyDir:     "keys",
 		AutoCreate: true,
 		Auth:       true,
+		AutoHooks:  true,
+		Hooks: &gitkit.HookScripts{
+			PostReceive: `#!/bin/sh
+cat | /app/post-receive
+			`,
+		},
 	})
 
 	// User-defined key lookup function. All requests will be rejected if this function
 	// is not provider. SSH server only accepts key-based authentication.
 	server.PublicKeyLookupFunc = lookupKey
-
 	server.Authorize = authorize
 
 	// Specify host and port to run the server on.
