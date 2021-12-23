@@ -12,9 +12,8 @@ from starlette.responses import RedirectResponse
 
 import rc3
 from constants import AUTH_TIMEOUT, AUTH_TOKEN_SECRET, SESSION_EXPIRATION_TIME
-from dependencies import pg_session, redis_session, current_user, session_key
-from schemas import UserSchema
-from .schemas import LegacyUserAccount
+from dependencies import pg_session, redis_session, session_key
+from .schemas import LegacyUserAccount, LoginSchema
 from models import UserModel
 
 router = APIRouter(
@@ -25,7 +24,7 @@ router = APIRouter(
 
 @router.post("/login")
 def login(
-        username: str,
+        form: LoginSchema,
         db: Session = Depends(pg_session),
         redis_db: Redis = Depends(redis_session),
 ):
@@ -34,9 +33,9 @@ def login(
     If no user with the name exists, a new account will be created.
     """
     # TODO: check if rC3 is configured. If yes, don't allow this login
-    user = db.query(UserModel).filter(UserModel.username == username).first()
+    user = db.query(UserModel).filter(UserModel.username == form.username).first()
     if not user:
-        user = UserModel(username=username)
+        user = UserModel(username=form.username)
         db.add(user)
         db.commit()
         db.refresh(user)

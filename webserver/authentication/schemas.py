@@ -3,6 +3,10 @@ from enum import Enum
 from pydantic import BaseModel
 
 
+class LoginSchema(BaseModel):
+    username: str
+
+
 class RepositoryTemplateName(str, Enum):
     python = "python"
     csharp = "c-sharp"
