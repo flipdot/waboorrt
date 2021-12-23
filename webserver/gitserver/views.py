@@ -15,7 +15,7 @@ router = APIRouter(
 )
 
 
-@router.get("/users/by-ssh-key/{ssh_public_key}", response_model=UserSchema, responses={
+@router.get("/users/by-ssh-key/{ssh_public_key:path}", response_model=UserSchema, responses={
     status.HTTP_404_NOT_FOUND: {"model": HTTPErrorSchema}
 })
 def get_user_by_public_key(ssh_public_key: str, db: Session = Depends(pg_session)):
