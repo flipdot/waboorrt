@@ -7,3 +7,12 @@ class UserSchema(BaseModel):
     """
     user_id: int
     is_anonymous: bool
+
+
+class HTTPErrorSchema(BaseModel):
+    detail: str
+
+    class Config:
+        schema_extra = {
+            "example": {"detail": "HTTPException raised"},
+        }

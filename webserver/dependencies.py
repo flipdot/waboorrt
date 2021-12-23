@@ -47,3 +47,12 @@ def current_user(
 def authentication_required(user: UserSchema = Depends(current_user)):
     if user.is_anonymous:
         raise HTTPException(status_code=403, detail="Login required")
+
+
+class HasPermission:
+    def __init__(self, permission: str):
+        self.permission = permission
+
+    def __call__(self, user: UserSchema = Depends(current_user)):
+        # TODO
+        pass

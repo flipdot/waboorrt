@@ -9,6 +9,7 @@ from fastapi.responses import HTMLResponse
 from authentication import views as auth_app
 from account import views as account_app
 from legacy import views as legacy_app
+from gitserver import views as gitserver_app
 
 logging.basicConfig(
     level=logging.INFO, format="[%(asctime)s] [%(levelname)s] %(name)s: %(message)s"
@@ -21,6 +22,7 @@ app = FastAPI(
     openapi_tags=[
         {"name": "Authentication", "description": "Perform authentication."},
         {"name": "Account", "description": "Manage own user account. Requires authentication."},
+        {"name": "Internal", "description": "API for internal services to fetch user information"},
         {"name": "legacy"},
         {"name": "Non-API", "description": "Provided for convenience. Can be replaced by a stupid webserver."},
     ]
@@ -46,6 +48,7 @@ def index():
 app.include_router(legacy_app.router)
 app.include_router(auth_app.router)
 app.include_router(account_app.router)
+app.include_router(gitserver_app.router)
 
 
 if __name__ == "__main__":
