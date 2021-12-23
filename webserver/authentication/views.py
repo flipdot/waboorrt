@@ -4,15 +4,18 @@ import subprocess
 from uuid import uuid4
 
 import jwt
-from fastapi import APIRouter, Response, status, Depends
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import APIRouter, Response, status, Depends, HTTPException
+from redis import Redis
+from sqlalchemy.orm import Session
 
 from starlette.responses import RedirectResponse
 
 import rc3
-from constants import AUTH_TIMEOUT, AUTH_TOKEN_SECRET
-from database import db
-from api.req_models import LegacyUserAccount
+from constants import AUTH_TIMEOUT, AUTH_TOKEN_SECRET, SESSION_EXPIRATION_TIME
+from dependencies import pg_session, redis_session, current_user, session_key
+from schemas import UserSchema
+from .schemas import LegacyUserAccount
+from models import UserModel
 
 router = APIRouter(
     prefix="/api/auth",
@@ -21,11 +24,38 @@ router = APIRouter(
 
 
 @router.post("/login")
-def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    return {
-        "access_token": 5,
-        "token_type": "bearer",
-    }
+def login(
+        username: str,
+        db: Session = Depends(pg_session),
+        redis_db: Redis = Depends(redis_session),
+):
+    """
+    Returns session for a given username.
+    If no user with the name exists, a new account will be created.
+    """
+    # TODO: check if rC3 is configured. If yes, don't allow this login
+    user = db.query(UserModel).filter(UserModel.username == username).first()
+    if not user:
+        user = UserModel(username=username)
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+    session_id = uuid4()
+    redis_db.set(f"webserver:session:{session_id}", user.id, ex=SESSION_EXPIRATION_TIME)
+    return session_id
+
+
+@router.post("/logout")
+def logout(
+        db_session_key: str = Depends(session_key),
+        redis_db: Redis = Depends(redis_session),
+):
+    deleted_keys = redis_db.delete(db_session_key)
+    if deleted_keys <= 0:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+    return "ok"
+
+
 
 # @app.route("/login_success/<username>")
 # def login_success(username):
@@ -53,7 +83,7 @@ def login_rc3():
     code = request.args["code"]
     state = request.args["state"]
 
-    stored_state = db.get(f"webserver:oauth_states:{state}")
+    stored_state = redis_db.get(f"webserver:oauth_states:{state}")
 
     if not stored_state:
         abort(400, "invalid state")
@@ -70,7 +100,7 @@ def login_rc3():
         {"username": username}, AUTH_TOKEN_SECRET, algorithm="HS256"
     )
 
-    db.delete(f"webserver:oauth_states:{state}")
+    redis_db.delete(f"webserver:oauth_states:{state}")
 
     return redirect(f"/?login_success={username}")
 
@@ -84,7 +114,7 @@ def auth_redirect(template: str, pubkey: str):
     #     abort(400, "pubkey missing")
 
     state = uuid4()
-    db.set(
+    redis_db.set(
         f"webserver:oauth_states:{state}",
         json.dumps({"template": template, "pubkey": pubkey}),
         px=AUTH_TIMEOUT,

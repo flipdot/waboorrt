@@ -7,6 +7,16 @@ services:
       - "6379:6379" # remove me in prod
     volumes:
       -  dbvolume:/data
+  postgres:
+    image: postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432" # remove me in prod
+    volumes:
+      - pgvolume:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=$POSTGRES_USER
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
   gameserver:
     build: gameserver
     restart: unless-stopped
@@ -28,6 +38,9 @@ services:
       - "80:80"
     env_file:
       - webserver.env
+    environment:
+      - POSTGRES_USER=$POSTGRES_USER
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
   gitserver:
     build: gitserver
     restart: unless-stopped
@@ -63,3 +76,4 @@ volumes:
   gitopt:
   botbuilder-notify:
   dbvolume:
+  pgvolume:

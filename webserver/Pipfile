@@ -6,14 +6,16 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-flask = "*"
 gunicorn = "*"
 redis = "*"
 requests = "*"
 pyjwt = "*"
 fastapi = "*"
-uvicorn = {extras = ["standard"], version = "*"}
+uvicorn = {extras = ["standard"],version = "*"}
 python-multipart = "*"
+sqlalchemy = "*"
+alembic = "*"
+psycopg2-binary = "*"
 
 [requires]
 python_version = "3.8"

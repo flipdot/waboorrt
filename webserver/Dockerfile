@@ -23,6 +23,11 @@ COPY * ./
 COPY static/ static/
 COPY --from=frontend /app/dist static/webapp
 COPY templates/ templates/
+COPY account/ account/
+COPY authentication/ authentication/
+COPY gitserver/ gitserver/
+COPY legacy/ legacy/
+COPY migrations/ migrations/
 
 EXPOSE 80
 ENTRYPOINT ["pipenv", "run"]
