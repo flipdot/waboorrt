@@ -18,7 +18,7 @@ type createRepoBody struct {
 
 var ID_REGEX = regexp.MustCompile("^[a-zA-Z0-9_-]+$")
 
-func ServeApi(config gitkit.Config) {
+func ServeHttpApi(config gitkit.Config) {
 	http.HandleFunc("/repos", func(resp http.ResponseWriter, req *http.Request) {
 		defer req.Body.Close()
 

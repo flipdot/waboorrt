@@ -19,6 +19,6 @@ cat | /app/post-receive
 		},
 	}
 
-	go ServeApi(config)
+	go ServeHttpApi(config)
 	ServeGitSshServer(config)
 }
