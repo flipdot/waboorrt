@@ -64,7 +64,6 @@ func getSessionToken() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	fmt.Println(string(resBody))
 	return string(resBody), nil
 }
 
@@ -127,13 +126,16 @@ type checkAuthorizationResponse struct {
 	Authorized bool `json:"authorized"`
 }
 
-func authorize(keyId string, repo string) (bool, error) {
-	body, err := json.Marshal(&checkAuthorizationRequest{KeyId: keyId, Repo: repo})
+func authorize(userId string, repo string) (bool, error) {
+	//fmt.Println(userId)
+	//fmt.Println(repo)
+	//return false, nil
+	body, err := json.Marshal(&checkAuthorizationRequest{KeyId: userId, Repo: repo})
 	if err != nil {
 		return false, err
 	}
 
-	resp, err := http.Post(endpointUrl("/internal/user/by-ssh-key/"), "application/json", bytes.NewBuffer(body))
+	resp, err := http.Post(endpointUrl("/internal/repositories/OWNER/REPO_NAME/permissions"), "application/json", bytes.NewBuffer(body))
 	if err != nil {
 		return false, err
 	}
