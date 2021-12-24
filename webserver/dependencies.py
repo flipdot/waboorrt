@@ -1,4 +1,6 @@
 # FastAPI dependencies explained: https://fastapi.tiangolo.com/tutorial/dependencies/
+from uuid import UUID
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import APIKeyHeader
 from redis import Redis
@@ -31,16 +33,13 @@ def current_user(
 ) -> UserSchema:
     user_id = cache_db.get(db_session_key)
     if user_id is not None:
-        try:
-            user_id = int(user_id)
-        except TypeError:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+        user_id = UUID(user_id)
         cache_db.expire(db_session_key, SESSION_EXPIRATION_TIME)
     else:
         user_id = -1
     return UserSchema(
         user_id=user_id,
-        is_anonymous=user_id < 0,
+        is_anonymous=user_id is None,
     )
 
 

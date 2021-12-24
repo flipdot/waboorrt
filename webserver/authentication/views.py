@@ -40,7 +40,7 @@ def login(
         db.commit()
         db.refresh(user)
     session_id = uuid4()
-    redis_db.set(f"webserver:session:{session_id}", user.id, ex=SESSION_EXPIRATION_TIME)
+    redis_db.set(f"webserver:session:{session_id}", str(user.id), ex=SESSION_EXPIRATION_TIME)
     return session_id
 
 
