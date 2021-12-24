@@ -9,7 +9,7 @@ from fastapi.responses import HTMLResponse
 from authentication import views as auth_app
 from account import views as account_app
 from legacy import views as legacy_app
-from gitserver import views as gitserver_app
+from internal import views as gitserver_app
 
 logging.basicConfig(
     level=logging.INFO, format="[%(asctime)s] [%(levelname)s] %(name)s: %(message)s"

@@ -35,8 +35,6 @@ def current_user(
     if user_id is not None:
         user_id = UUID(user_id)
         cache_db.expire(db_session_key, SESSION_EXPIRATION_TIME)
-    else:
-        user_id = -1
     return UserSchema(
         user_id=user_id,
         is_anonymous=user_id is None,

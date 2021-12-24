@@ -1,3 +1,4 @@
+from typing import Optional
 from uuid import UUID
 
 from pydantic import BaseModel
@@ -7,7 +8,7 @@ class UserSchema(BaseModel):
     """
     Server side representation of the user from a web request.
     """
-    user_id: UUID
+    user_id: Optional[UUID]
     is_anonymous: bool
 
 

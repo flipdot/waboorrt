@@ -25,7 +25,7 @@ COPY --from=frontend /app/dist static/webapp
 COPY templates/ templates/
 COPY account/ account/
 COPY authentication/ authentication/
-COPY gitserver/ gitserver/
+COPY internal internal/
 COPY legacy/ legacy/
 COPY migrations/ migrations/
 
