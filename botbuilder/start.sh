@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# TODO: tell webserver to authorize botbuilder for all repos
+
 while true; do
   botname="$(redis-cli -h redis BZPOPMIN 'botbuilder:queue' 0 | head -n 2 | tail -n 1)"
   imageName=$(printf %s "$file" | sha1sum | head -c 32)
