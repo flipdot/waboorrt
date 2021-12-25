@@ -134,7 +134,8 @@ def create_user(user: LegacyUserAccount):
     if not re.match(r"^[a-zA-Z0-9+=/@ -]+$", pubkey):
         raise ValueError("Invalid ssh public key")
 
-    completed_process = subprocess.run(
-        ["ssh", "root@gitserver", "newbot", f'"{user.username}" "{user.template}" "{pubkey}"']
-    )
+    # TODO: new way of creating users and repos
+    # completed_process = subprocess.run(
+    #     ["ssh", "root@gitserver", "newbot", f'"{user.username}" "{user.template}" "{pubkey}"']
+    # )
     return completed_process.returncode

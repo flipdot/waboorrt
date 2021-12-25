@@ -42,7 +42,7 @@ services:
       - POSTGRES_USER=$POSTGRES_USER
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
   gitserver:
-    build: new_gitserver
+    build: gitserver
     restart: always
     ports:
       - "2222:2222"

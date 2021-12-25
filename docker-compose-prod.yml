@@ -64,7 +64,7 @@ services:
       - "traefik.http.routers.webserver.entrypoints=websecure"
       - "traefik.http.routers.webserver.tls.certresolver=myresolver"
    gitserver:
-    build: new_gitserver
+    build: gitserver
     restart: always
     ports:
       - "2222:22"
