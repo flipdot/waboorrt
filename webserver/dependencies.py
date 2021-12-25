@@ -2,7 +2,7 @@
 from uuid import UUID
 
 from fastapi import Depends, HTTPException, status
-from fastapi.security import APIKeyHeader
+from fastapi.security import APIKeyHeader, HTTPBearer, HTTPAuthorizationCredentials
 from redis import Redis
 
 from database import SessionLocal, redis_db
@@ -23,7 +23,8 @@ def redis_session():
     return redis_db
 
 
-def session_key(token: str = Depends(APIKeyHeader(name="X-Session-Key"))):
+def session_key(bearer: HTTPAuthorizationCredentials = Depends(HTTPBearer())):
+    token = bearer.credentials
     return f"webserver:session:{token}"
 
 
@@ -44,6 +45,10 @@ def current_user(
 def authentication_required(user: UserSchema = Depends(current_user)):
     if user.is_anonymous:
         raise HTTPException(status_code=403, detail="Login required")
+
+
+def api_authentication_required(token: str = Depends(APIKeyHeader(name="X-API-Key"))):
+    pass
 
 
 class HasPermission:

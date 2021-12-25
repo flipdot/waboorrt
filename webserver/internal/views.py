@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from starlette import status
 
-from dependencies import current_user, authentication_required, pg_session, HasPermission
+from dependencies import pg_session, api_authentication_required
 from fastapi import APIRouter, Depends, HTTPException
 
 from models import UserModel
@@ -10,7 +10,7 @@ from .schemas import UserSchema
 
 router = APIRouter(
     prefix="/api/internal",
-    dependencies=[Depends(HasPermission("internal"))],
+    dependencies=[Depends(api_authentication_required)],
     tags=["Internal"]
 )
 
