@@ -3,7 +3,7 @@ services:
   traefik:
     image: "traefik:v2.3"
     container_name: "traefik"
-    restart: unless-stopped
+    restart: always
     command:
       #- "--log.level=DEBUG"
       #- "--api.insecure=true"
@@ -27,12 +27,12 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
   redis:
     image: redis
-    restart: unless-stopped
+    restart: always
     volumes:
       -  dbvolume:/data
   postgres:
     image: postgres
-    restart: unless-stopped
+    restart: always
     volumes:
       - pgvolume:/var/lib/postgresql/data
     environment:
@@ -40,7 +40,7 @@ services:
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
   gameserver:
     build: gameserver
-    restart: unless-stopped
+    restart: always
     depends_on:
       - redis
     volumes:
@@ -50,7 +50,7 @@ services:
       - gamenet
   webserver:
     build: webserver
-    restart: unless-stopped
+    restart: always
     depends_on:
       - redis
     env_file:
@@ -75,14 +75,14 @@ services:
       - webserver
   botbuilder:
     build: botbuilder 
-    restart: unless-stopped
+    restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - redis
   scoreserver:
     build: scoreserver
-    restart: unless-stopped
+    restart: always
     depends_on:
       - gameserver
       - redis

@@ -2,14 +2,14 @@ version: "3.9"
 services:
   redis:
     image: redis
-    restart: unless-stopped
+    restart: always
     ports:
       - "6379:6379" # remove me in prod
     volumes:
       -  dbvolume:/data
   postgres:
     image: postgres
-    restart: unless-stopped
+    restart: always
     ports:
       - "5432:5432" # remove me in prod
     volumes:
@@ -19,7 +19,7 @@ services:
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
   gameserver:
     build: gameserver
-    restart: unless-stopped
+    restart: always
     ports:
       - "5000:5000" # remove me in prod
     depends_on:
@@ -31,7 +31,7 @@ services:
       - gamenet
   webserver:
     build: webserver
-    restart: unless-stopped
+    restart: always
     depends_on:
       - redis
     ports:
@@ -53,14 +53,14 @@ services:
       - webserver
   botbuilder:
     build: botbuilder 
-    restart: unless-stopped
+    restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - redis
   scoreserver:
     build: scoreserver
-    restart: unless-stopped
+    restart: always
     depends_on:
       - gameserver
       - redis
