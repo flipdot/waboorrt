@@ -78,6 +78,8 @@ services:
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - redis
   scoreserver:
     build: scoreserver
     restart: unless-stopped
