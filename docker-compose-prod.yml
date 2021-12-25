@@ -95,3 +95,4 @@ volumes:
   git-keys:
   dbvolume:
   letsencrypt:
+  pgvolume:
