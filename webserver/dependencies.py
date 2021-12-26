@@ -4,8 +4,10 @@ from uuid import UUID
 from fastapi import Depends, HTTPException, status
 from fastapi.security import APIKeyHeader, HTTPBearer, HTTPAuthorizationCredentials
 from redis import Redis
+from sqlalchemy.orm import Session
 
 from database import SessionLocal, redis_db
+from models import APIKeyModel
 from schemas import UserSchema
 from constants import SESSION_EXPIRATION_TIME
 
@@ -44,11 +46,20 @@ def current_user(
 
 def authentication_required(user: UserSchema = Depends(current_user)):
     if user.is_anonymous:
-        raise HTTPException(status_code=403, detail="Login required")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Login required")
 
 
-def api_authentication_required(token: str = Depends(APIKeyHeader(name="X-API-Key"))):
-    pass
+def api_authentication_required(
+        raw_token: str = Depends(APIKeyHeader(name="X-API-Key")),
+        db: Session = Depends(pg_session)
+):
+    try:
+        token = UUID(raw_token)
+    except ValueError:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid Token")
+    key_exists = db.query(db.query(APIKeyModel).filter(APIKeyModel.id == token).exists()).scalar()
+    if not key_exists:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unknown API Key")
 
 
 class HasPermission:

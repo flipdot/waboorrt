@@ -4,7 +4,7 @@ from pathlib import Path
 import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, PlainTextResponse
 
 from authentication import views as auth_app
 from account import views as account_app
@@ -23,6 +23,7 @@ app = FastAPI(
         {"name": "Authentication", "description": "Perform authentication."},
         {"name": "Account", "description": "Manage own user account. Requires authentication."},
         {"name": "Internal", "description": "API for internal services to fetch user information"},
+        {"name": "default"},
         {"name": "legacy"},
         {"name": "Non-API", "description": "Provided for convenience. Can be replaced by a stupid webserver."},
     ]
@@ -43,6 +44,14 @@ def index():
     with open(index_file) as f:
         content = f.read()
     return content
+
+
+@app.get("/api/health", response_class=PlainTextResponse)
+def health_check():
+    """
+    Always returns "ok". Can be used to check if application is ready to accept requests.
+    """
+    return "ok"
 
 
 app.include_router(legacy_app.router)

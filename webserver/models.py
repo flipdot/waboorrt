@@ -20,3 +20,8 @@ class RepositoryModel(Base):
     id = Column(Integer, primary_key=True, index=True)
     owner_id = Column(UUID(as_uuid=True), ForeignKey("users.id"))
     owner = relationship("UserModel", back_populates="repository", uselist=False)
+
+
+class APIKeyModel(Base):
+    __tablename__ = "api-keys"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4, index=True, unique=True)
