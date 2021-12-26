@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"time"
 
 	"github.com/sosedoff/gitkit"
 )
@@ -17,7 +18,7 @@ import (
 // Defaults suitable for local development if webserver is started via compose
 var WEBSERVER_HOST = getenv("WEBSERVER_HOST", "localhost")
 var WEBSERVER_PORT = getenv("WEBSERVER_PORT", "80")
-var sessionToken string
+var apiKey string
 
 func getenv(key, defaultValue string) string {
 	value, exists := os.LookupEnv(key)
@@ -43,23 +44,6 @@ func endpointUrl(endpoint string) string {
 	return baseUrl + "/api" + endpoint
 }
 
-func getSessionToken() (string, error) {
-	reqBody, err := json.Marshal(&loginRequest{Username: "gitserver"})
-	if err != nil {
-		return "", err
-	}
-	// TODO: this endpoint is currently only available for local development since it doesn't check credentials
-	resp, err := http.Post(endpointUrl("/auth/login"), "application/json", bytes.NewBuffer(reqBody))
-	if err != nil {
-		return "", err
-	}
-	resBody, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-	return string(resBody), nil
-}
-
 type checkPublicKeyRequest struct {
 	PublicKey string `json:"publicKey"`
 }
@@ -77,25 +61,17 @@ func httpSuccess(statusCode int) bool {
 // Content is a string containing ssh public key of a user.
 func lookupKey(content string) (*gitkit.PublicKey, error) {
 	httpClient := &http.Client{}
-	if sessionToken == "" {
-		var err error
-		sessionToken, err = getSessionToken()
-		if err != nil {
-			return nil, err
-		}
-	}
 	apiUrl := endpointUrl("/internal/users/by-ssh-key/" + url.PathEscape(content))
 	req, err := http.NewRequest("GET", apiUrl, nil)
-	req.Header.Add("X-Session-Key", sessionToken)
+	req.Header.Add("X-API-Key", apiKey)
 	resp, err := httpClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode == http.StatusForbidden {
-		sessionToken = ""
-		return nil, errors.New("API returned 403 forbidden. Session expired? Try again")
+	if resp.StatusCode == http.StatusUnauthorized {
+		return nil, errors.New("API returned 401 unauthorized. Invalid API key?")
 	}
 
 	if resp.StatusCode == http.StatusNotFound {
@@ -157,7 +133,8 @@ func authorize(userId string, repo string) (bool, error) {
 	return responseData.Authorized, nil
 }
 
-func ServeGitSshServer(config gitkit.Config) {
+func ServeGitSshServer(config gitkit.Config, webserverApiKey string) {
+	apiKey = webserverApiKey
 	// In the example below you need to specify a full path to a directory that
 	// contains all git repositories, and also a directory that has a gitkit specific
 	// ssh private and public key pair that used to run ssh server.
@@ -168,9 +145,29 @@ func ServeGitSshServer(config gitkit.Config) {
 	server.PublicKeyLookupFunc = lookupKey
 	server.Authorize = authorize
 
+	for {
+		resp, err := http.Get(endpointUrl("/health"))
+		if err == nil && resp.StatusCode == http.StatusOK {
+			break
+		}
+		log.Println("Waiting for webserver at " + endpointUrl("") + " to become ready.")
+		time.Sleep(3 * time.Second)
+	}
+	httpClient := &http.Client{}
+	apiUrl := endpointUrl("/internal/auth_test")
+	req, err := http.NewRequest("GET", apiUrl, nil)
+	req.Header.Add("X-API-Key", apiKey)
+	resp, err := httpClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if resp.StatusCode != http.StatusOK {
+		log.Fatal("Can't authorize to webserver. Please check your API-Key")
+	}
+
 	// Specify host and port to run the server on.
-	log.Print("SSH server listening on port 2222")
-	err := server.ListenAndServe(":2222")
+	log.Println("SSH server listening on port 2222")
+	err = server.ListenAndServe(":2222")
 	if err != nil {
 		log.Fatal(err)
 	}
