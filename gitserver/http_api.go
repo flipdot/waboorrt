@@ -46,12 +46,6 @@ func ServeHttpApi(config gitkit.Config) {
 			return
 		}
 
-		if reqBody.Template == "" {
-			resp.WriteHeader(400)
-			resp.Write([]byte("Parameter 'template' is required."))
-			return
-		}
-
 		// prevent weird repo names and path traversal
 		if !ID_REGEX.MatchString(reqBody.Id) {
 			resp.WriteHeader(400)
