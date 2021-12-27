@@ -1,16 +1,21 @@
 #!/bin/bash
+set -euo pipefail
 
 # TODO: tell webserver to authorize botbuilder for all repos
 
-while true; do
-  botname="$(redis-cli -h redis BZPOPMIN 'botbuilder:queue' 0 | head -n 2 | tail -n 1)"
-  imageName=$(printf %s "$file" | sha1sum | head -c 32)
+build () {
+  imageName=$(printf %s "$1" | sha1sum | head -c 32)
 
   TMP_DIR=$(mktemp -d)
-  cd "$TMP_DIR" || exit
-  echo "Building bot $botname"
-  git clone "ssh://git@gitserver:2222/$botname.git" .
-  docker build -t "localhost/bot/$imageName" .
-  redis-cli -h redis set "user:$botname" "{\"botname\": \"$botname\"}"
-  cd "$HOME" || exit
+  cd "$TMP_DIR"
+  echo "Building bot $1"
+  git clone "ssh://git@gitserver:2222/$1.git" . || return 1
+  docker build -t "localhost/bot/$imageName" . || return 1
+  redis-cli -h redis set "user:$1" "{\"botname\": \"$1\"}"
+  cd "$HOME"
+}
+
+while true; do
+  botname="$(redis-cli -h redis BZPOPMIN 'botbuilder:queue' 0 | head -n 2 | tail -n 1)"
+  build $botname || echo "Warning: Failed to build bot $botname"
 done
