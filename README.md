@@ -4,6 +4,8 @@ Install docker compose. Create a network for the bots and run compose up
 
     docker network create --internal gamenet
     docker-compose up --build
+    # Production:
+    docker-compose -f docker-compose-prod.yml up -d
 
 WebUI: http://localhost
 Gameserver interface: http://localhost:5000
