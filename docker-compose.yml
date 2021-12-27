@@ -39,6 +39,7 @@ services:
     env_file:
       - webserver.env
     environment:
+      WEBSERVER_API_KEY: $WEBSERVER_API_KEY
       POSTGRES_USER: $POSTGRES_USER
       POSTGRES_PASSWORD: $POSTGRES_PASSWORD
   gitserver:
