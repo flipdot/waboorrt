@@ -1,20 +1,17 @@
-import json
 import re
-import subprocess
 from typing import Optional
 from uuid import uuid4
 
-import jwt
-from fastapi import APIRouter, Response, status, Depends, HTTPException
+from fastapi import APIRouter, status, Depends, HTTPException
 from redis import Redis
 from sqlalchemy.orm import Session
 
-from starlette.responses import RedirectResponse, PlainTextResponse
+from starlette.responses import RedirectResponse
 
 import rc3
-from constants import AUTH_TIMEOUT, AUTH_TOKEN_SECRET, SESSION_EXPIRATION_TIME
+from constants import AUTH_TIMEOUT, SESSION_EXPIRATION_TIME
 from dependencies import pg_session, redis_session, session_key
-from .schemas import LegacyUserAccount, LoginResponse, LoginSchema
+from .schemas import LoginResponse, LoginSchema
 from models import UserModel, RepositoryModel
 
 router = APIRouter(

@@ -14,10 +14,5 @@ class RepositoryTemplateName(str, Enum):
     golang = "golang"
 
 
-class LegacyUserAccount(BaseModel):
-    username: str
-    template: RepositoryTemplateName
-    pubkey: str
-
 class LoginResponse(BaseModel):
     session_id: UUID
