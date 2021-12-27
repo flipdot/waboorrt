@@ -11,8 +11,8 @@ import (
 )
 
 func receive(hook *gitkit.HookInfo, tmpPath string) error {
-	if hook.Action == gitkit.BranchPushAction && hook.RefName == "master" {
-		// pushing to master -> trigger botbuilder
+	if hook.Action == gitkit.BranchPushAction && hook.RefName == "main" {
+		// pushing to main -> trigger botbuilder
 		ctx := context.Background()
 
 		rdb := redis.NewClient(&redis.Options{
@@ -27,7 +27,7 @@ func receive(hook *gitkit.HookInfo, tmpPath string) error {
 
 func main() {
 	receiver := gitkit.Receiver{
-		MasterOnly:  false,
+		MainOnly:    false,
 		TmpDir:      "/tmp/gitkit",
 		HandlerFunc: receive,
 	}

@@ -47,6 +47,7 @@ services:
     restart: always
     ports:
       - "2222:2222"
+      - "2223:2223"
     volumes:
       - git-repos:/app/repos
       - git-keys:/app/keys
