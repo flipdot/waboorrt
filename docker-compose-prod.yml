@@ -93,7 +93,7 @@ services:
 
 networks:
   gamenet:
-    external: true
+    internal: true
 volumes:
   git-repos:
   git-keys:
