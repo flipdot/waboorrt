@@ -24,4 +24,4 @@ COPY --from=frontend /app/dist static/webapp
 
 EXPOSE 80
 ENTRYPOINT ["pipenv", "run"]
-CMD ["sh", "start.sh"]
+CMD ["./start.sh"]
