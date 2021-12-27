@@ -10,6 +10,11 @@ Install docker compose. Create a network for the bots and run compose up
 WebUI: http://localhost
 Gameserver interface: http://localhost:5000
 
+Related repositories:
+- https://github.com/flipdot/waboorrt-template-csharp
+- https://github.com/flipdot/waboorrt-template-golang
+- https://github.com/flipdot/waboorrt-template-python
+
 If you want to work on the application, continue reading.
 
 ## App components
