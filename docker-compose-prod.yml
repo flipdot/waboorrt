@@ -94,6 +94,7 @@ services:
 networks:
   gamenet:
     internal: true
+
 volumes:
   git-repos:
   git-keys:
