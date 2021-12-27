@@ -9,7 +9,7 @@ class LoginSchema(BaseModel):
 
 class RepositoryTemplateName(str, Enum):
     python = "python"
-    csharp = "c-sharp"
+    csharp = "csharp"
     golang = "golang"
 
 

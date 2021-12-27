@@ -2,7 +2,7 @@ import os
 
 # List of directories in gitserver/bot-templates
 # Deprecated. Use RepositoryTemplateName
-VALID_REPO_TEMPLATES = ["python", "c-sharp", "golang"]
+VALID_REPO_TEMPLATES = ["python", "csharp", "golang"]
 
 # Timeout for OAuth flow
 AUTH_TIMEOUT = 15 * 60 * 1000
