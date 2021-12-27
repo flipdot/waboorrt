@@ -1,4 +1,7 @@
 import argparse
+import sys
+
+from sqlalchemy.exc import IntegrityError
 
 from database import SessionLocal
 from models import APIKeyModel
@@ -16,7 +19,14 @@ if __name__ == "__main__":
         else:
             key = APIKeyModel()
         db.add(key)
-        db.commit()
+        try:
+            db.commit()
+        except IntegrityError:
+            print("IntegrityError. Seems like API key already exists")
+            db.close()
+            sys.exit()
+        finally:
+            db.close()
         db.refresh(key)
         db.close()
         print(key.id)
