@@ -11,13 +11,14 @@ class UserModel(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4, index=True, unique=True)
     username = Column(String, index=True, unique=True)
     rc3_identity = Column(String, index=True, unique=True, nullable=True)
-    ssh_public_key = Column(String)
+    ssh_public_key = Column(String, unique=True)
     repository = relationship("RepositoryModel", back_populates="owner", uselist=False)
 
 
 class RepositoryModel(Base):
     __tablename__ = "repositories"
     id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True, unique=True)
     owner_id = Column(UUID(as_uuid=True), ForeignKey("users.id"))
     owner = relationship("UserModel", back_populates="repository", uselist=False)
 

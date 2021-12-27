@@ -8,13 +8,13 @@ from fastapi import APIRouter, Response, status, Depends, HTTPException
 from redis import Redis
 from sqlalchemy.orm import Session
 
-from starlette.responses import RedirectResponse
+from starlette.responses import RedirectResponse, PlainTextResponse
 
 import rc3
 from constants import AUTH_TIMEOUT, AUTH_TOKEN_SECRET, SESSION_EXPIRATION_TIME
 from dependencies import pg_session, redis_session, session_key
 from .schemas import LegacyUserAccount, LoginSchema
-from models import UserModel
+from models import UserModel, RepositoryModel
 
 router = APIRouter(
     prefix="/api/auth",
@@ -22,7 +22,18 @@ router = APIRouter(
 )
 
 
-@router.post("/login")
+def create_account(db: Session, username) -> UserModel:
+    user = UserModel(username=username)
+    repository = RepositoryModel(name=f"{username}.git", owner=user)
+    db.add(user)
+    db.add(repository)
+    db.commit()
+    db.refresh(user)
+    db.refresh(repository)
+    return user
+
+
+@router.post("/login", response_class=PlainTextResponse)
 def login(
         form: LoginSchema,
         db: Session = Depends(pg_session),
@@ -35,10 +46,7 @@ def login(
     # TODO: check if rC3 is configured. If yes, don't allow this login
     user = db.query(UserModel).filter(UserModel.username == form.username).first()
     if not user:
-        user = UserModel(username=form.username)
-        db.add(user)
-        db.commit()
-        db.refresh(user)
+        user = create_account(db, form.username)
     session_id = uuid4()
     redis_db.set(f"webserver:session:{session_id}", str(user.id), ex=SESSION_EXPIRATION_TIME)
     return session_id
@@ -124,6 +132,7 @@ def auth_redirect(template: str, pubkey: str):
 
 
 def create_user(user: LegacyUserAccount):
+    """LEGACY"""
     # TODO those checks can probably be done with pydantic in an elegant way
 
     # Remove everything after the second space. Discards comments from ssh keys

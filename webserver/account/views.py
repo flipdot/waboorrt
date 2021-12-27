@@ -1,8 +1,9 @@
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 import schemas
 from dependencies import current_user, authentication_required, pg_session
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from models import UserModel
 
 from .schemas import UserProfile, ChangeUserProfile
@@ -35,7 +36,13 @@ def update_profile(
 ):
     user_profile: UserModel = db.query(UserModel).filter(UserModel.id == user.user_id).one()
     user_profile.ssh_public_key = profile.ssh_public_key
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError as e:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Couldn't save data. SSH Key might already be assigned to another account."
+        )
     db.refresh(user_profile)
     return UserProfile(
         ssh_public_key=user_profile.ssh_public_key,
