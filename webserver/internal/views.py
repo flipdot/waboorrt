@@ -1,6 +1,6 @@
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
-from sqlalchemy import and_
+from sqlalchemy import and_, or_
 from starlette import status
 import randomname
 
@@ -60,14 +60,22 @@ def create_super_user(form: CreateSuperuserSchema, db: Session = Depends(pg_sess
 
 @router.post("/query/check-repository-permissions", response_model=RepositoryPermissionsSchema)
 def get_repo_permissions(form: CheckRepositoryPermissionSchema, db: Session = Depends(pg_session)):
-    has_access = db.query(db.query(RepositoryModel).filter(
-        and_(RepositoryModel.name == form.repository_name,
-             RepositoryModel.owner_id == form.user_id)
-    ).exists()).scalar()
+    has_access = db.query(
+        db.query(RepositoryModel, UserModel).filter(
+            and_(
+                RepositoryModel.name == form.repository_name,
+                or_(
+                     RepositoryModel.owner_id == form.user_id,
+                     db.query(UserModel).with_entities(UserModel.is_superuser).filter(UserModel.id == form.user_id)
+                )
+            )
+        ).exists()
+    ).scalar()
     return RepositoryPermissionsSchema(
         read=has_access,
         write=has_access,
     )
+
 
 @router.get("/auth_test", response_class=PlainTextResponse)
 def auth_test():
