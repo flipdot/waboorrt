@@ -19,16 +19,7 @@ COPY Pipfile Pipfile.lock ./
 
 RUN pipenv sync
 
-COPY * ./
-COPY static/ static/
-COPY --from=frontend /app/dist static/webapp
-COPY templates/ templates/
-COPY account/ account/
-COPY repositories/ repositories/
-COPY authentication/ authentication/
-COPY internal internal/
-COPY legacy/ legacy/
-COPY migrations/ migrations/
+COPY ./ ./
 
 EXPOSE 80
 ENTRYPOINT ["pipenv", "run"]
