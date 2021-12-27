@@ -95,21 +95,27 @@ func lookupKey(content string) (*gitkit.PublicKey, error) {
 }
 
 type checkAuthorizationRequest struct {
-	KeyId string `json:"keyId"`
-	Repo  string `json:"repo"`
+	UserId string `json:"user_id"`
+	Repo   string `json:"repository_name"`
 }
 
 type checkAuthorizationResponse struct {
-	Authorized bool `json:"authorized"`
+	Read  bool `json:"read"`
+	Write bool `json:"write"`
 }
 
 func authorize(userId string, repo string) (bool, error) {
-	body, err := json.Marshal(&checkAuthorizationRequest{KeyId: userId, Repo: repo})
+	body, err := json.Marshal(&checkAuthorizationRequest{UserId: userId, Repo: repo})
 	if err != nil {
 		return false, err
 	}
 
-	resp, err := http.Post(endpointUrl("/internal/repositories/OWNER/REPO_NAME/permissions"), "application/json", bytes.NewBuffer(body))
+	httpClient := &http.Client{}
+	apiUrl := endpointUrl("/internal/query/check-repository-permissions")
+	req, err := http.NewRequest("POST", apiUrl, bytes.NewBuffer(body))
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("X-API-Key", apiKey)
+	resp, err := httpClient.Do(req)
 	if err != nil {
 		return false, err
 	}
@@ -119,8 +125,7 @@ func authorize(userId string, repo string) (bool, error) {
 		return false, errors.New(fmt.Sprintf("Checking authorization key failed with status code %d\n", resp.StatusCode))
 	}
 
-	var respBody []byte
-	_, err = resp.Body.Read(respBody)
+	respBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return false, err
 	}
@@ -130,7 +135,7 @@ func authorize(userId string, repo string) (bool, error) {
 		return false, err
 	}
 
-	return responseData.Authorized, nil
+	return responseData.Write, nil
 }
 
 func ServeGitSshServer(config gitkit.Config, webserverApiKey string) {
