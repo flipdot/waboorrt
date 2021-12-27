@@ -63,11 +63,11 @@ services:
       - "traefik.http.routers.webserver.rule=Host(`waboorrt.flipdot.org`)"
       - "traefik.http.routers.webserver.entrypoints=websecure"
       - "traefik.http.routers.webserver.tls.certresolver=myresolver"
-   gitserver:
+  gitserver:
     build: gitserver
     restart: always
     ports:
-      - "2222:22"
+      - "2222:2222"
     volumes:
       - git-repos:/app/repos
       - git-keys:/app/keys
