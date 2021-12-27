@@ -20,6 +20,7 @@ COPY Pipfile Pipfile.lock ./
 RUN pipenv sync
 
 COPY ./ ./
+COPY --from=frontend /app/dist static/webapp
 
 EXPOSE 80
 ENTRYPOINT ["pipenv", "run"]
