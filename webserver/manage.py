@@ -25,8 +25,6 @@ if __name__ == "__main__":
             print("IntegrityError. Seems like API key already exists")
             db.close()
             sys.exit()
-        finally:
-            db.close()
         db.refresh(key)
         db.close()
         print(key.id)
