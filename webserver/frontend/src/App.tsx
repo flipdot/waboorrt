@@ -8,6 +8,11 @@ import Player from './Player';
 import { GameReplay } from './api-types';
 import { GlobalStyle } from './styles';
 
+const Logo = styled.img`
+  height: 40px;
+  filter: drop-shadow(0 0 5px rgba(255,255,255,0.5));
+`;
+
 const Columns = styled.div`
   display: flex;
   max-width: 1200px;
@@ -20,8 +25,9 @@ const Columns = styled.div`
 const NavbarWrapper = styled.nav`
   height: 60px;
   position: fixed;
-  background: var(--plattform-dark);
+  background: #211132;
   width: 100%;
+  border-bottom: 1px solid #3d1f5c;
 `;
 
 const NavbarInner = styled.div`
@@ -44,12 +50,17 @@ const HorizontalFormGroup = styled.form`
 
 const LoginButton = styled.button`
   padding: 5px 20px;
+  height: 40px;
   color: #fff;
   border: 0;
-  background-color: var(--plattform);
+  background-color: var(--primary);
   box-shadow: inset 0px 0px 15px rgba(32, 29, 71, 0.5);
   cursor: pointer;
   font-size: 1.125rem;
+
+  &:hover {
+    filter: brightness(120%);
+  }
 `;
 
 const Input = styled.input`
@@ -82,16 +93,17 @@ function Navbar() {
   return (
     <NavbarWrapper>
       <NavbarInner>
-        <HorizontalFormGroup method="GET" action="/auth-redirect">
-          <Input as="select" placeholder="Template" name="template" required>
+        <Logo alt="waboorrt" src={require("./logo.svg")}/>
+        <HorizontalFormGroup method="GET" action="/api/auth/auth-redirect">
+          {/* <Input as="select" placeholder="Template" name="template" required>
             {templateData.map((item: string) => (
               <option key={item} value={item}>
                 {item}
               </option>
-            ))}
-          </Input>
-          <Input placeholder="SSH Pub Key" type="text" name="pubkey" required />
-          <LoginButton>Create Repository</LoginButton>
+            ))} */}
+          {/* </Input>
+          <Input placeholder="SSH Pub Key" type="text" name="pubkey" required /> */}
+          <LoginButton>Join the game!</LoginButton>
         </HorizontalFormGroup>
       </NavbarInner>
     </NavbarWrapper>
