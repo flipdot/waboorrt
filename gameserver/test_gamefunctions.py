@@ -1,10 +1,11 @@
-from gamefunctions import tick, GameState, Action
+from gamefunctions import tick, GameState
+from gameobjects import ActionName, ThrowAction, LookAction, NoopAction, WalkAction
 from unittest import TestCase
 
-WALK_NORTH = {"name": Action.WALK, "direction": "north"}
-WALK_EAST = {"name": Action.WALK, "direction": "east"}
-WALK_SOUTH = {"name": Action.WALK, "direction": "south"}
-WALK_WEST = {"name": Action.WALK, "direction": "west"}
+WALK_NORTH = WalkAction(direction="north")
+WALK_EAST = WalkAction(direction="east")
+WALK_SOUTH = WalkAction(direction="south")
+WALK_WEST = WalkAction(direction="west")
 
 
 class TestWalk(TestCase):
@@ -76,8 +77,8 @@ class TestThrow(TestCase):
         game_state, executed = tick(
             self.game_state,
             (
-                {"name": Action.THROW, "x": 5, "y": 9},
-                {"name": Action.THROW, "x": 11, "y": 16},
+                ThrowAction(x=5, y=9),
+                ThrowAction(x=11, y=16),
             ),
         )
         if executed[0]["bot_name"] == self.game_state.bots[0].name:
@@ -94,8 +95,8 @@ class TestThrow(TestCase):
         game_state, executed = tick(
             self.game_state,
             (
-                {"name": Action.THROW, "x": 5, "y": 10},
-                {"name": Action.THROW, "x": 11, "y": 16},
+                ThrowAction(x=5, y=10),
+                ThrowAction(x=11, y=16),
             ),
         )
         # not successful, do not withdraw
@@ -107,8 +108,8 @@ class TestThrow(TestCase):
         game_state, _ = tick(
             self.game_state,
             (
-                {"name": Action.THROW, "x": -10, "y": -10},
-                {"name": Action.THROW, "x": 100, "y": 100},
+                ThrowAction(x=-10, y=-10),
+                ThrowAction(x=100, y=100),
             ),
         )
         b0, b1 = game_state.bots
@@ -121,8 +122,8 @@ class TestThrow(TestCase):
         game_state, _ = tick(
             self.game_state,
             (
-                {"name": Action.THROW, "x": 8, "y": 8},
-                {"name": Action.THROW, "x": 9, "y": 9},
+                ThrowAction(x=8, y=8),
+                ThrowAction(x=9, y=9),
             ),
         )
         b0, b1 = game_state.bots
@@ -137,8 +138,8 @@ class TestThrow(TestCase):
         game_state, _ = tick(
             self.game_state,
             (
-                {"name": Action.THROW},  # should default to (5,5)
-                {"name": Action.THROW, "x": 5, "y": 5},
+                ThrowAction(x=5, y=5),
+                ThrowAction(x=5, y=5),
             ),
         )
         b0, b1 = game_state.bots
@@ -153,8 +154,8 @@ class TestThrow(TestCase):
         game_state, _ = tick(
             self.game_state,
             (
-                {"name": Action.THROW, "x": 5, "y": 4},
-                {"name": Action.THROW, "x": 6, "y": 6},
+                ThrowAction(x=5, y=4),
+                ThrowAction(x=6, y=6),
             ),
         )
         b0, b1 = game_state.bots
@@ -180,8 +181,8 @@ class TestLook(TestCase):
         game_state, executed = tick(
             self.game_state,
             (
-                {"name": Action.LOOK, "range": 4},
-                {"name": Action.LOOK, "range": 5},
+                LookAction(range=4),
+                LookAction(range=5),
             ),
         )
         if executed[0]["bot_name"] == self.game_state.bots[0].name:
@@ -223,7 +224,7 @@ class TestTick(TestCase):
         self.game_state.bots[0].health = 0
         self.game_state.bots[1].health = 50
         game_state, _ = tick(self.game_state, (
-            {"name": Action.NOOP},
-            {"name": Action.NOOP}
+            NoopAction(),
+            NoopAction(),
         ))
         self.assertFalse(game_state.running)
