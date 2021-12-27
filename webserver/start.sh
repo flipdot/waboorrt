@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 alembic upgrade head
 
 if [ -n "$WEBSERVER_API_KEY" ]; then
