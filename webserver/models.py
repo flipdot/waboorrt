@@ -18,7 +18,7 @@ class UserModel(Base):
 
 class RepositoryModel(Base):
     __tablename__ = "repositories"
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(UUID(as_uuid=True), default=uuid4, primary_key=True, index=True)
     name = Column(String, index=True, unique=True)
     owner_id = Column(UUID(as_uuid=True), ForeignKey("users.id"))
     owner = relationship("UserModel", back_populates="repository", uselist=False)

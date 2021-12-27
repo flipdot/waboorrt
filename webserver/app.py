@@ -10,6 +10,7 @@ from authentication import views as auth_app
 from account import views as account_app
 from legacy import views as legacy_app
 from internal import views as gitserver_app
+from repositories import views as repositories_app
 
 logging.basicConfig(
     level=logging.INFO, format="[%(asctime)s] [%(levelname)s] %(name)s: %(message)s"
@@ -22,6 +23,7 @@ app = FastAPI(
     openapi_tags=[
         {"name": "Authentication", "description": "Perform authentication."},
         {"name": "Account", "description": "Manage own user account. Requires authentication."},
+        {"name": "Repositories", "description": "Manage own user account. Requires authentication."},
         {"name": "Internal", "description": "API for internal services to fetch user information"},
         {"name": "default"},
         {"name": "legacy"},
@@ -57,6 +59,7 @@ def health_check():
 app.include_router(legacy_app.router)
 app.include_router(auth_app.router)
 app.include_router(account_app.router)
+app.include_router(repositories_app.router)
 app.include_router(gitserver_app.router)
 
 
