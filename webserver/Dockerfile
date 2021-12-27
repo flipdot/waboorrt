@@ -24,6 +24,7 @@ COPY static/ static/
 COPY --from=frontend /app/dist static/webapp
 COPY templates/ templates/
 COPY account/ account/
+COPY repositories/ repositories/
 COPY authentication/ authentication/
 COPY internal internal/
 COPY legacy/ legacy/
