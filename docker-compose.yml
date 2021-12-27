@@ -51,6 +51,9 @@ services:
       - git-keys:/app/keys
     depends_on:
       - webserver
+    environment:
+      WEBSERVER_API_KEY: $WEBSERVER_API_KEY
+      WEBSERVER_HOST: webserver
   botbuilder:
     build: botbuilder 
     restart: always
