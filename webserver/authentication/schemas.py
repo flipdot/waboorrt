@@ -1,4 +1,5 @@
 from enum import Enum
+from uuid import UUID
 
 from pydantic import BaseModel
 
@@ -17,3 +18,6 @@ class LegacyUserAccount(BaseModel):
     username: str
     template: RepositoryTemplateName
     pubkey: str
+
+class LoginResponse(BaseModel):
+    session_id: UUID

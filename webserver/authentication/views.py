@@ -1,6 +1,7 @@
 import json
 import re
 import subprocess
+from typing import Optional
 from uuid import uuid4
 
 import jwt
@@ -13,7 +14,7 @@ from starlette.responses import RedirectResponse, PlainTextResponse
 import rc3
 from constants import AUTH_TIMEOUT, AUTH_TOKEN_SECRET, SESSION_EXPIRATION_TIME
 from dependencies import pg_session, redis_session, session_key
-from .schemas import LegacyUserAccount, LoginSchema
+from .schemas import LegacyUserAccount, LoginResponse, LoginSchema
 from models import UserModel, RepositoryModel
 
 router = APIRouter(
@@ -21,9 +22,13 @@ router = APIRouter(
     tags=["Authentication"],
 )
 
+def create_account(db: Session, username: str, rc3_identity: Optional[str] = None) -> UserModel:
+    username = username.lower()
 
-def create_account(db: Session, username) -> UserModel:
-    user = UserModel(username=username)
+    if not re.match(r"^[a-zA-Z0-9_-]+$", username):
+        raise ValueError("Invalid username")
+
+    user = UserModel(username=username, rc3_identity=rc3_identity)
     repository = RepositoryModel(name=f"{username}.git", owner=user)
     db.add(user)
     db.add(repository)
@@ -33,7 +38,7 @@ def create_account(db: Session, username) -> UserModel:
     return user
 
 
-@router.post("/login", response_class=PlainTextResponse)
+@router.post("/login", response_model=LoginResponse)
 def login(
         form: LoginSchema,
         db: Session = Depends(pg_session),
@@ -49,7 +54,7 @@ def login(
         user = create_account(db, form.username)
     session_id = uuid4()
     redis_db.set(f"webserver:session:{session_id}", str(user.id), ex=SESSION_EXPIRATION_TIME)
-    return session_id
+    return LoginResponse(session_id=session_id)
 
 
 @router.post("/logout")
@@ -63,88 +68,41 @@ def logout(
     return "ok"
 
 
-
-# @app.route("/login_success/<username>")
-# def login_success(username):
-#     hostname = urlparse(request.base_url).hostname
-#     return render_template("login_success.html", username=username, hostname=hostname)
-
-
-@router.post("/users", deprecated=True)
-def login_local(user: LegacyUserAccount, response: Response):
-
-    if create_user(user):
-        response.status_code = status.HTTP_400_BAD_REQUEST
-        return {"msg": "Failed to create account"}
-
-    return user
-
-
-@router.get("/rc3/login", deprecated=True)
-def login_rc3():
-    if "code" not in request.args:
-        abort(400, "authorization code missing")
-    if "state" not in request.args:
-        abort(400, "state missing")
-
-    code = request.args["code"]
-    state = request.args["state"]
-
-    stored_state = redis_db.get(f"webserver:oauth_states:{state}")
+@router.get("/rc3/login", response_model=LoginResponse)
+def login_rc3(code: str, state: str, redis_db: Redis = Depends(redis_session), db: Session = Depends(pg_session)):
+    stored_state = redis_db.exists(f"webserver:oauth_states:{state}")
 
     if not stored_state:
-        abort(400, "invalid state")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
 
     refresh_token = rc3.get_refresh_token(code)
     username = rc3.get_username(refresh_token)
+    rc3_identity = username # TODO: should we use username as rc3 identity?
 
-    stored_state = json.loads(stored_state)
+    user = db.query(UserModel).filter(UserModel.rc3_identity == rc3_identity).first()
 
-    if create_user(username, stored_state["template"], stored_state["pubkey"]):
-        return redirect(url_for(".login_failed"))
-
-    auth_token = jwt.encode(
-        {"username": username}, AUTH_TOKEN_SECRET, algorithm="HS256"
-    )
-
+    # create new account if required
+    if user is None:
+        try:
+            user = create_account(db, username, rc3_identity)
+        except ValueError as e:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    
     redis_db.delete(f"webserver:oauth_states:{state}")
 
-    return redirect(f"/?login_success={username}")
+    session_id = uuid4()
+    redis_db.set(f"webserver:session:{session_id}", str(user.id), ex=SESSION_EXPIRATION_TIME)
+    return LoginResponse(session_id=session_id)
 
 
 @router.get("/auth-redirect", status_code=302, deprecated=True)
-def auth_redirect(template: str, pubkey: str):
-    # if template not in VALID_REPO_TEMPLATES:
-    #     abort(400, f"invalid template: {template}")
-
-    # if not pubkey:
-    #     abort(400, "pubkey missing")
-
+def auth_redirect(redis_db: Redis = Depends(redis_session),):
     state = uuid4()
     redis_db.set(
         f"webserver:oauth_states:{state}",
-        json.dumps({"template": template, "pubkey": pubkey}),
+        "",
         px=AUTH_TIMEOUT,
     )
 
-    return RedirectResponse(url="/login_local")
-    # return redirect(rc3.gen_login_redirect(state))
 
-
-def create_user(user: LegacyUserAccount):
-    """LEGACY"""
-    # TODO those checks can probably be done with pydantic in an elegant way
-
-    # Remove everything after the second space. Discards comments from ssh keys
-    pubkey = " ".join(user.pubkey.split(" ")[:2])
-
-    if not re.match(r"^[a-zA-Z0-9_-]+$", user.username):
-        raise ValueError("Invalid username")
-    if not re.match(r"^[a-zA-Z0-9+=/@ -]+$", pubkey):
-        raise ValueError("Invalid ssh public key")
-
-    # TODO: new way of creating users and repos
-    # completed_process = subprocess.run(
-    #     ["ssh", "root@gitserver", "newbot", f'"{user.username}" "{user.template}" "{pubkey}"']
-    # )
-    return completed_process.returncode
+    return RedirectResponse(url=rc3.gen_login_redirect(state))
