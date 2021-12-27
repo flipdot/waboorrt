@@ -16,6 +16,7 @@ python-multipart = "*"
 sqlalchemy = "*"
 alembic = "*"
 psycopg2 = "*"
+randomname = "*"
 
 [requires]
 python_version = "3.8"

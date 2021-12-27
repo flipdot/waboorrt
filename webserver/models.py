@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from uuid import uuid4
@@ -13,6 +13,7 @@ class UserModel(Base):
     rc3_identity = Column(String, index=True, unique=True, nullable=True)
     ssh_public_key = Column(String, unique=True)
     repository = relationship("RepositoryModel", back_populates="owner", uselist=False)
+    is_superuser = Column(Boolean, default=False)
 
 
 class RepositoryModel(Base):
