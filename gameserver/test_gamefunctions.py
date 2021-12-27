@@ -71,9 +71,9 @@ class TestThrow(TestCase):
     def tearDown(self):
         pass
 
-    def test_throw_not_enough_coins(self):
-        self.game_state.bots[0].coins = 3
-        self.game_state.bots[1].coins = 5
+    def test_throw_not_enough_energy(self):
+        self.game_state.bots[0].energy = 3
+        self.game_state.bots[1].energy = 5
         game_state, executed = tick(
             self.game_state,
             (
@@ -86,12 +86,12 @@ class TestThrow(TestCase):
         else:
             e1, e0 = executed
         self.assertFalse(e0["success"])
-        self.assertEqual(e0["reason"], "not enough coins to throw this far")
+        self.assertEqual(e0["reason"], "not enough energy to throw this far")
         self.assertTrue(e1["success"])
 
-    def test_throw_costs_coins(self):
-        self.game_state.bots[0].coins = 4
-        self.game_state.bots[1].coins = 6
+    def test_throw_costs_energy(self):
+        self.game_state.bots[0].energy = 4
+        self.game_state.bots[1].energy = 6
         game_state, executed = tick(
             self.game_state,
             (
@@ -100,9 +100,9 @@ class TestThrow(TestCase):
             ),
         )
         # not successful, do not withdraw
-        self.assertEqual(game_state.bots[0].coins, 4)
+        self.assertEqual(game_state.bots[0].energy, 4)
         # withdraw euclidean distance
-        self.assertEqual(game_state.bots[1].coins, 1)
+        self.assertEqual(game_state.bots[1].energy, 1)
 
     def test_throw_oob(self):
         game_state, _ = tick(
@@ -133,8 +133,8 @@ class TestThrow(TestCase):
         self.assertEqual(b1.health, 99)
 
     def test_throw_directly(self):
-        self.game_state.bots[0].coins = 10000
-        self.game_state.bots[1].coins = 10000
+        self.game_state.bots[0].energy = 10000
+        self.game_state.bots[1].energy = 10000
         game_state, _ = tick(
             self.game_state,
             (
@@ -149,8 +149,8 @@ class TestThrow(TestCase):
         self.assertEqual(b1.health, 100)
 
     def test_throw_close(self):
-        self.game_state.bots[0].coins = 10000
-        self.game_state.bots[1].coins = 10000
+        self.game_state.bots[0].energy = 10000
+        self.game_state.bots[1].energy = 10000
         game_state, _ = tick(
             self.game_state,
             (
@@ -175,9 +175,9 @@ class TestLook(TestCase):
     def tearDown(self):
         pass
 
-    def test_look_not_enough_coins(self):
-        self.game_state.bots[0].coins = 3
-        self.game_state.bots[1].coins = 5
+    def test_look_not_enough_energy(self):
+        self.game_state.bots[0].energy = 3
+        self.game_state.bots[1].energy = 5
         game_state, executed = tick(
             self.game_state,
             (
@@ -190,7 +190,7 @@ class TestLook(TestCase):
         else:
             e1, e0 = executed
         self.assertFalse(e0["success"])
-        self.assertEqual(e0["reason"], "not enough coins to look this far")
+        self.assertEqual(e0["reason"], "not enough energy to look this far")
         self.assertTrue(e1["success"])
 
 

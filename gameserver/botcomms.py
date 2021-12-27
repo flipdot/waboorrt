@@ -48,7 +48,7 @@ def get_bot_view(game_state: GameState, bot_name: str):
             "x": me.x,
             "y": me.y,
             "name": me.name,
-            "coins": me.coins,
+            "energy": me.energy,
             "view_range": me.view_range,
             "health": me.health,
         },

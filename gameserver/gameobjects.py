@@ -89,5 +89,5 @@ class Bot(Entity):
         self.type: EntityType = EntityType.BOT
         self.health: int = 100
         self.name: str = name
-        self.coins: int = 5
+        self.energy: int = 5
         self.view_range: float = Bot.DEFAULT_VIEW_RANGE

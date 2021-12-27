@@ -56,7 +56,7 @@ def compute_damage(dist: float) -> int:
 
 
 def action_noop(game_state, bot, action: NoopAction) -> Tuple[bool, Optional[str]]:
-    bot.coins += 1
+    bot.energy += 1
     return True, None
 
 
@@ -90,8 +90,8 @@ def default(nonable, default_value):
 
 def action_throw(game_state, bot, action: ThrowAction) -> Tuple[bool, Optional[str]]:
     costs = round(dist((bot.x, bot.y), (default(action.x, 0), default(action.y, 0))))
-    if costs > bot.coins:
-        return False, "not enough coins to throw this far"
+    if costs > bot.energy:
+        return False, "not enough energy to throw this far"
     for other in game_state.bots:
         other.health -= compute_damage(
             dist(
@@ -101,7 +101,7 @@ def action_throw(game_state, bot, action: ThrowAction) -> Tuple[bool, Optional[s
         )
         # don't allow negative health
         other.health = max(other.health, 0)
-    bot.coins -= costs
+    bot.energy -= costs
     return True, None
 
 
@@ -116,10 +116,10 @@ def action_look(game_state, bot, action: LookAction) -> Tuple[bool, Optional[str
             dist((bot.x, bot.y), (game_state.map_w, game_state.map_h)),
         ),
     ))
-    if desired_range > (bot.coins / view_price):
-        return False, "not enough coins to look this far"
+    if desired_range > (bot.energy / view_price):
+        return False, "not enough energy to look this far"
     bot.view_range = desired_range
-    bot.coins -= int(bot.view_range * view_price)
+    bot.energy -= int(bot.view_range * view_price)
     return True, None
 
 
