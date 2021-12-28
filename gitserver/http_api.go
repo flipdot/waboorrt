@@ -55,17 +55,17 @@ func ServeHttpApi(config gitkit.Config) {
 
 		log.Printf("Initializing repo %s with template %s\n", reqBody.Id, reqBody.Template)
 
-		//if reqBody.Template != "" {
-		//	// clone from template
-		//	err = gitkit.CloneRepo(
-		//		fmt.Sprintf("%s.git", reqBody.Id),
-		//		&config,
-		//		fmt.Sprintf("https://github.com/flipdot/waboorrt-template-%s.git", reqBody.Template),
-		//	)
-		//} else {
-		// init without template
-		err = gitkit.InitRepo(fmt.Sprintf("%s.git", reqBody.Id), &config)
-		//}
+		if reqBody.Template != "" {
+			// clone from template
+			err = gitkit.CloneRepo(
+				fmt.Sprintf("%s.git", reqBody.Id),
+				&config,
+				fmt.Sprintf("https://github.com/flipdot/waboorrt-template-%s.git", reqBody.Template),
+			)
+		} else {
+			// init without template
+			err = gitkit.InitRepo(fmt.Sprintf("%s.git", reqBody.Id), &config)
+		}
 
 		if err != nil {
 			log.Println("Could not init repo:", err)
