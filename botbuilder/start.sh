@@ -1,6 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 
+mkdir -p /root/.ssh
+
+ssh-keyscan -p $GITSERVER_PORT $GITSERVER_HOST > /root/.ssh/known_hosts
+
 if [ ! -f /root/.ssh/id_rsa ]; then
   ssh-keygen -b 2048 -t rsa -f /root/.ssh/id_rsa -q -N ""
 fi
@@ -19,7 +23,7 @@ build () {
   TMP_DIR=$(mktemp -d)
   cd "$TMP_DIR"
   echo "Building bot $1"
-  git clone "ssh://git@gitserver:2222/$1.git" . || return 1
+  git clone "ssh://git@$GITSERVER_PORT:$GITSERVER_HOST/$1.git" . || return 1
   docker build -t "localhost/bot/$imageName" . || return 1
   redis-cli -h redis set "user:$1" "{\"botname\": \"$1\"}"
   cd "$HOME"

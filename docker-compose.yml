@@ -66,6 +66,8 @@ services:
     environment:
       WEBSERVER_API_KEY: $WEBSERVER_API_KEY
       WEBSERVER_HOST: webserver
+      GITSERVER_HOST: gitserver
+      GITSERVER_PORT: 2222
   scoreserver:
     build: scoreserver
     restart: always
