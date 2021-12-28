@@ -117,17 +117,19 @@ export default function App() {
   );
 
   const searchParams = new URLSearchParams(window.location.search);
+  const pathname = window.location.pathname;
 
   useEffect(() => {
     const code = searchParams.get('code');
     const state = searchParams.get('state');
-  
-    if (code && state) {
+
+    if (pathname.startsWith("/oauth") && code && state) {
       const params = new URLSearchParams();
       params.set('code', code);
       params.set('state', state);
+      const provider = pathname.split("/")[2];
 
-      fetch(`/api/auth/oauth/rc3?${params}`, {
+      fetch(`/api/auth/oauth/${provider}?${params}`, {
         method: 'GET',
       }).then((res) => res.json()).then(body => {
         const { session_id } = body;
