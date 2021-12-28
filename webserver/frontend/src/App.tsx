@@ -5,12 +5,13 @@ import useSWR from 'swr';
 import InstructionPage from './InstructionPage';
 import List from './List';
 import Player from './Player';
+import LatestGamePlayer from './Player/LatestGamePlayer';
 import { GameReplay } from './api-types';
 import { GlobalStyle } from './styles';
 
 const Logo = styled.img`
   height: 40px;
-  filter: drop-shadow(0 0 5px rgba(255,255,255,0.5));
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
 `;
 
 const Columns = styled.div`
@@ -93,7 +94,7 @@ function Navbar() {
   return (
     <NavbarWrapper>
       <NavbarInner>
-        <Logo alt="waboorrt" src={require("./logo.svg")}/>
+        <Logo alt="waboorrt" src={require('./logo.svg')} />
         <HorizontalFormGroup method="GET" action="/api/auth/auth-redirect">
           {/* <Input as="select" placeholder="Template" name="template" required>
             {templateData.map((item: string) => (
@@ -122,6 +123,16 @@ export default function App() {
     return (
       <>
         <InstructionPage username={loggedInUser} />
+        <GlobalStyle />
+      </>
+    );
+  }
+
+  const fullScreen = searchParams.get('fullscreen');
+  if (fullScreen == 'true') {
+    return (
+      <>
+        <LatestGamePlayer />
         <GlobalStyle />
       </>
     );

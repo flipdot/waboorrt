@@ -41,23 +41,33 @@ const LargeIconButton = styled(IconButton)`
   margin: -4px;
 `;
 
-export default function Player({ replay }: { replay?: GameReplay }) {
+export default function Player({
+  replay,
+  onReplayComplete,
+  fullScreen,
+}: {
+  replay?: GameReplay;
+  onReplayComplete?: () => void;
+  fullScreen?: boolean;
+}) {
   const [currentFrameIdx, setCurrentFrameIdx] = useState(0);
   const [play, setPlay] = useState(true);
   const currentFrameIdxRef = useRef(currentFrameIdx);
 
   const unfinishedActions = useRef<number[]>([]);
 
-  const frame: GameReplay[number] = replay ? replay[currentFrameIdx] : {
-    actions: [],
-    game_state: {
-      entities: [],
-      map_h: 16,
-      map_w: 16,
-      tick: 0,
-      max_ticks: 100,
-    }
-  };
+  const frame: GameReplay[number] = replay
+    ? replay[currentFrameIdx]
+    : {
+        actions: [],
+        game_state: {
+          entities: [],
+          map_h: 16,
+          map_w: 16,
+          tick: 0,
+          max_ticks: 100,
+        },
+      };
 
   const tickCount = replay?.length || 100;
 
@@ -74,7 +84,8 @@ export default function Player({ replay }: { replay?: GameReplay }) {
         console.log('Animations finished!', frameIdx);
 
         if (play) {
-          if (!replay || currentFrameIdx === (tickCount - 1)) {
+          if (!replay || currentFrameIdx === tickCount - 1) {
+            onReplayComplete ? onReplayComplete() : null;
             setPlay(false);
           } else {
             console.log('Going to next frame');
@@ -119,46 +130,48 @@ export default function Player({ replay }: { replay?: GameReplay }) {
         ))}
       </Map>
 
-      <PlayBar>
-        <LargeIconButton
-          type="button"
-          onClick={() => {
-            setPlay(!play);
-            const newIdx = Math.min(currentFrameIdx + 1, tickCount - 1);
-            setCurrentFrameIdx(newIdx);
-            currentFrameIdxRef.current = newIdx;
-          }}
-          disabled={!replay}
-          title={play ? 'Pause' : 'Play'}
-        >
-          {play ? <CgPlayPause /> : <CgPlayButton />}
-        </LargeIconButton>
-        <Range
-          max={tickCount - 1}
-          min={0}
-          value={currentFrameIdx}
-          onChange={(e) => {
-            setPlay(false);
-            const newIdx = Number(e.currentTarget.value);
-            setCurrentFrameIdx(newIdx);
-            currentFrameIdxRef.current = newIdx;
-          }}
-        />
-        <IconButton
-          type="button"
-          onClick={() => {
-            setPlay(true);
-            const newIdx = 0;
-            setCurrentFrameIdx(newIdx);
-            currentFrameIdxRef.current = newIdx;
-          }}
-          title="Replay"
-        >
-          <CgUndo />
-        </IconButton>
-      </PlayBar>
+      {fullScreen && (
+        <PlayBar>
+          <LargeIconButton
+            type="button"
+            onClick={() => {
+              setPlay(!play);
+              const newIdx = Math.min(currentFrameIdx + 1, tickCount - 1);
+              setCurrentFrameIdx(newIdx);
+              currentFrameIdxRef.current = newIdx;
+            }}
+            disabled={!replay}
+            title={play ? 'Pause' : 'Play'}
+          >
+            {play ? <CgPlayPause /> : <CgPlayButton />}
+          </LargeIconButton>
+          <Range
+            max={tickCount - 1}
+            min={0}
+            value={currentFrameIdx}
+            onChange={(e) => {
+              setPlay(false);
+              const newIdx = Number(e.currentTarget.value);
+              setCurrentFrameIdx(newIdx);
+              currentFrameIdxRef.current = newIdx;
+            }}
+          />
+          <IconButton
+            type="button"
+            onClick={() => {
+              setPlay(true);
+              const newIdx = 0;
+              setCurrentFrameIdx(newIdx);
+              currentFrameIdxRef.current = newIdx;
+            }}
+            title="Replay"
+          >
+            <CgUndo />
+          </IconButton>
+        </PlayBar>
+      )}
 
-      <DebugInfo value={JSON.stringify(frame, null, 2)} />
+      {fullScreen && <DebugInfo value={JSON.stringify(frame, null, 2)} />}
     </Wrapper>
   );
 }
