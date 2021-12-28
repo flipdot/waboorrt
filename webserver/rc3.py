@@ -1,10 +1,12 @@
 import requests
-import os
+from constants import OAUTH_PROVIDERS
 
-RC3_CLIENT_ID = os.environ.get("RC3_CLIENT_ID")
-RC3_REDIRECT_URI = os.environ.get("RC3_REDIRECT_URI")
-RC3_TOKEN_URI = os.environ.get("RC3_TOKEN_URI")
-RC3_CLIENT_SECRET = os.environ.get("RC3_CLIENT_SECRET")
+RC3 = OAUTH_PROVIDERS["RC3"]
+
+RC3_REDIRECT_URI = RC3["redirect_uri"]
+RC3_TOKEN_URI = RC3["token_uri"]
+RC3_CLIENT_ID = RC3["client_id"]
+RC3_CLIENT_SECRET = RC3["client_secret"]
 
 
 def get_username(refresh_token):
