@@ -1,6 +1,6 @@
 FROM docker:20.10
 
-RUN apk add inotify-tools git redis
+RUN apk add inotify-tools git redis curl
 
 WORKDIR /app
 COPY start.sh /app/start.sh

@@ -1,7 +1,17 @@
 #!/bin/bash
 set -euo pipefail
 
-# TODO: tell webserver to authorize botbuilder for all repos
+if [ ! -f /root/.ssh/id_rsa ]; then
+  ssh-keygen -b 2048 -t rsa -f /root/.ssh/id_rsa -q -N ""
+fi
+
+SSH_PUBLIC_KEY=$(cat /root/.ssh/id_rsa.pub)
+
+echo "Copying SSH key to http://$WEBSERVER_HOST/api/internal/users"
+curl -s -X POST "http://$WEBSERVER_HOST/api/internal/users" \
+        -H "Content-Type: application/json" \
+        -H "X-API-Key: $WEBSERVER_API_KEY" \
+        --data "{\"ssh_public_key\": \"$SSH_PUBLIC_KEY\"}"
 
 build () {
   imageName=$(printf %s "$1" | sha1sum | head -c 32)

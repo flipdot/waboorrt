@@ -63,6 +63,9 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - redis
+    environment:
+      WEBSERVER_API_KEY: $WEBSERVER_API_KEY
+      WEBSERVER_HOST: webserver
   scoreserver:
     build: scoreserver
     restart: always
