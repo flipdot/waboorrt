@@ -129,7 +129,8 @@ def auth_redirect(request: Request, redis_db: Redis = Depends(redis_session)):
         px=AUTH_TIMEOUT,
     )
     if OAUTH_PROVIDERS["RC3"]["CLIENT_ID"]:
-        url = rc3.gen_login_redirect(state)
+        redirect_uri = request.url_for("index", arbitrary="oauth/rc3")
+        url = rc3.gen_login_redirect(state, redirect_uri)
     else:
         url = request.url_for("fake_oauth_provider") + f"?state={state}"
     return RedirectResponse(url=url)

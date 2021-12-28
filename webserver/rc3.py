@@ -1,9 +1,11 @@
+from typing import Union
+from uuid import UUID
+
 import requests
 from constants import OAUTH_PROVIDERS
 
 RC3 = OAUTH_PROVIDERS["RC3"]
 
-RC3_REDIRECT_URI = RC3["REDIRECT_URI"]
 RC3_TOKEN_URI = RC3["TOKEN_URI"]
 RC3_CLIENT_ID = RC3["CLIENT_ID"]
 RC3_CLIENT_SECRET = RC3["CLIENT_SECRET"]
@@ -57,5 +59,5 @@ def get_access_token(refresh_token):
     return resp_data["access_token"]
 
 
-def gen_login_redirect(state):
-    return f"https://rc3.world/sso/authorize?response_type=code&client_id={RC3_CLIENT_ID}&redirect_uri={RC3_REDIRECT_URI}&scopes=username&state={state}"
+def gen_login_redirect(state: Union[UUID, str], redirect_uri: str):
+    return f"https://rc3.world/sso/authorize?response_type=code&client_id={RC3_CLIENT_ID}&redirect_uri={redirect_uri}&scopes=username&state={state}"
