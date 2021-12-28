@@ -132,6 +132,7 @@ export default function App() {
       }).then((res) => res.json()).then(body => {
         const { session_id } = body;
         localStorage.setItem("session_id", session_id);
+        window.location.replace("/");
       });
     }
   }, []);
