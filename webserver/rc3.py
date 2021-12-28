@@ -29,7 +29,7 @@ def get_refresh_token(authoziation_code):
     payload = {
         "grant_type": "authorization_code",
         "code": authoziation_code,
-        "redirect_uri": RC3_REDIRECT_URI,
+        # "redirect_uri": RC3_REDIRECT_URI,
         "client_id": RC3_CLIENT_ID,
         "client_secret": RC3_CLIENT_SECRET,
     }

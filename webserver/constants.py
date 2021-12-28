@@ -22,7 +22,7 @@ SQL_DATABASE_URL = f"postgresql://{PG_USER}:{PG_PASSWORD}@{PG_HOST}/{PG_DB_NAME}
 OAUTH_PROVIDERS = {
     "RC3": {
         "CLIENT_ID": os.environ.get("RC3_CLIENT_ID"),
-        "REDIRECT_URI": os.environ.get("RC3_REDIRECT_URI"),
+        # "REDIRECT_URI": os.environ.get("RC3_REDIRECT_URI"),
         "TOKEN_URI": os.environ.get("RC3_TOKEN_URI"),
         "CLIENT_SECRET": os.environ.get("RC3_CLIENT_SECRET"),
     }
