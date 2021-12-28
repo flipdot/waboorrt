@@ -3,10 +3,10 @@ from constants import OAUTH_PROVIDERS
 
 RC3 = OAUTH_PROVIDERS["RC3"]
 
-RC3_REDIRECT_URI = RC3["redirect_uri"]
-RC3_TOKEN_URI = RC3["token_uri"]
-RC3_CLIENT_ID = RC3["client_id"]
-RC3_CLIENT_SECRET = RC3["client_secret"]
+RC3_REDIRECT_URI = RC3["REDIRECT_URI"]
+RC3_TOKEN_URI = RC3["TOKEN_URI"]
+RC3_CLIENT_ID = RC3["CLIENT_ID"]
+RC3_CLIENT_SECRET = RC3["CLIENT_SECRET"]
 
 
 def get_username(refresh_token):

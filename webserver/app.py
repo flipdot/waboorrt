@@ -34,20 +34,6 @@ app = FastAPI(
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
-@app.get("/", tags=["Non-API"], response_class=HTMLResponse)
-def index():
-    """
-    Serves *index.html* of the frontend from `static/webapp/index.html`.
-    If frontend hasn't been built, return a simple HTML page with instructions
-    """
-    index_file = Path("static/webapp/index.html")
-    if not index_file.exists():
-        index_file = "static/index.placeholder.html"
-    with open(index_file) as f:
-        content = f.read()
-    return content
-
-
 @app.get("/api/health", response_class=PlainTextResponse)
 def health_check():
     """
@@ -61,6 +47,20 @@ app.include_router(auth_app.router)
 app.include_router(account_app.router)
 app.include_router(repositories_app.router)
 app.include_router(gitserver_app.router)
+
+
+@app.get("/{arbitrary:path}", tags=["Non-API"], response_class=HTMLResponse)
+def index():
+    """
+    Serves *index.html* of the frontend from `static/webapp/index.html`.
+    If frontend hasn't been built, return a simple HTML page with instructions
+    """
+    index_file = Path("static/webapp/index.html")
+    if not index_file.exists():
+        index_file = "static/index.placeholder.html"
+    with open(index_file) as f:
+        content = f.read()
+    return content
 
 
 if __name__ == "__main__":

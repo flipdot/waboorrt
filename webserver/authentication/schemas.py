@@ -16,3 +16,8 @@ class RepositoryTemplateName(str, Enum):
 
 class LoginResponse(BaseModel):
     session_id: UUID
+
+
+class OAuthProvider(str, Enum):
+    rc3 = "rc3"
+    local = "local"
