@@ -167,7 +167,7 @@ func ServeGitSshServer(config gitkit.Config, webserverApiKey string) {
 		log.Fatal(err)
 	}
 	if resp.StatusCode != http.StatusOK {
-		log.Fatal("Can't authorize to webserver. Please check your API-Key")
+		log.Fatal("Can't authorize to webserver at " + apiUrl + ". Please check your API-Key")
 	}
 
 	// Specify host and port to run the server on.
