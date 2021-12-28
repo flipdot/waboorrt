@@ -128,6 +128,7 @@ export default function Player({ replay }: { replay?: GameReplay }) {
             setCurrentFrameIdx(newIdx);
             currentFrameIdxRef.current = newIdx;
           }}
+          disabled={!replay}
           title={play ? 'Pause' : 'Play'}
         >
           {play ? <CgPlayPause /> : <CgPlayButton />}
