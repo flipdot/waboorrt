@@ -51,7 +51,7 @@ export default function InstructionPage({ username }: { username: string }) {
 
       <Pre>
         <Code>
-          git clone ssh://{username}@{window.location.hostname}:2222/git/{username}.git waboorrt-bot
+          git clone ssh://git@{window.location.hostname}:2222/{username}.git waboorrt-bot
           <br />
           cd waboorrt-bot/
           <br />

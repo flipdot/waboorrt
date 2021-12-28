@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import useSWR from 'swr';
 
@@ -117,6 +117,25 @@ export default function App() {
   );
 
   const searchParams = new URLSearchParams(window.location.search);
+
+  useEffect(() => {
+    const code = searchParams.get('code');
+    const state = searchParams.get('state');
+  
+    if (code && state) {
+      const params = new URLSearchParams();
+      params.set('code', code);
+      params.set('state', state);
+
+      fetch(`/api/auth/rc3/login?${params}`, {
+        method: 'POST',
+      }).then((res) => res.json()).then(body => {
+        const { session_id } = body;
+        localStorage.setItem("session_id", session_id);
+      });
+    }
+  }, []);
+
   const loggedInUser = searchParams.get('login_success');
   if (loggedInUser) {
     return (
