@@ -89,8 +89,14 @@ def login_oauth(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid state provided")
 
     if provider == OAuthProvider.rc3:
-        refresh_token = rc3.get_refresh_token(code)
-        username = rc3.get_username(refresh_token)
+        try:
+            refresh_token = rc3.get_refresh_token(code)
+            username = rc3.get_username(refresh_token)
+        except ValueError:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid tokens provided, can't get credentials from rC3"
+            )
         rc3_identity = username  # TODO: should we use username as rc3 identity?
 
         user = db.query(UserModel).filter(UserModel.rc3_identity == rc3_identity).first()

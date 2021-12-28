@@ -20,7 +20,7 @@ def get_username(refresh_token):
 
     resp_data = resp.json()
     if not resp_data["authenticated"]:
-        raise Exception(f"user not authenticated: {resp_data}")
+        raise ValueError(f"user not authenticated: {resp_data}")
 
     return resp_data["username"]
 
@@ -37,7 +37,7 @@ def get_refresh_token(authoziation_code):
     resp = requests.post("https://rc3.world/sso/token/", data=payload)
     resp_data = resp.json()
     if resp_data.get("error"):
-        raise Exception(f"failed to exchange auth code for refresh token: {resp_data}")
+        raise ValueError(f"failed to exchange auth code for refresh token: {resp_data}")
 
     return resp_data["refresh_token"]
 
