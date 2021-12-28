@@ -127,8 +127,8 @@ export default function App() {
       params.set('code', code);
       params.set('state', state);
 
-      fetch(`/api/auth/rc3/login?${params}`, {
-        method: 'POST',
+      fetch(`/api/auth/oauth/rc3?${params}`, {
+        method: 'GET',
       }).then((res) => res.json()).then(body => {
         const { session_id } = body;
         localStorage.setItem("session_id", session_id);

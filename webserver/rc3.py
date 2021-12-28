@@ -60,4 +60,4 @@ def get_access_token(refresh_token):
 
 
 def gen_login_redirect(state: Union[UUID, str], redirect_uri: str):
-    return f"https://rc3.world/sso/authorize?response_type=code&client_id={RC3_CLIENT_ID}&redirect_uri={redirect_uri}&scopes=username&state={state}"
+    return f"https://rc3.world/sso/authorize?response_type=code&client_id={RC3_CLIENT_ID}&redirect_uri={redirect_uri}&scopes=rc3_21_attendee&state={state}"
