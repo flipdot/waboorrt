@@ -11,9 +11,21 @@ import Input from '../Input';
 import { List, ListEntry } from '../List';
 import PageWrapper from '../PageWrapper';
 
-const Code = styled.code`
+const GitCmd = styled.code`
   background: rgba(0, 0, 0, 0.4);
   padding: 5px 10px;
+`;
+
+const RepoEntry = styled(ListEntry)`
+  flex-direction: column;
+  align-items: start;
+`;
+
+const RepoName = styled.div`
+  font-weight: bold;
+  margin-bottom: 10px;
+  margin-top: 5px;
+  margin-left: 5px;
 `;
 
 const Wrapper = styled.div`
@@ -83,7 +95,10 @@ export default function BotsPage() {
     '/api/repositories/',
     authenticatedSWRFetcher
   );
-  const { data: accountData } = useSWR('/api/account/', authenticatedSWRFetcher);
+  const { data: accountData } = useSWR(
+    '/api/account/',
+    authenticatedSWRFetcher
+  );
 
   const navigate = useNavigate();
 
@@ -99,12 +114,13 @@ export default function BotsPage() {
       {reposData && (
         <List style={{ marginBottom: '20px' }}>
           {reposData.map((repo) => (
-            <ListEntry>
-              {repo.name}
-              <Code>
+            <RepoEntry>
+              <RepoName>{repo.name}</RepoName>
+              <GitCmd>
                 git clone ssh://git@{window.location.hostname}:2222/{repo.name}
-              </Code>
-            </ListEntry>
+                .git
+              </GitCmd>
+            </RepoEntry>
           ))}
         </List>
       )}
