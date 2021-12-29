@@ -2,12 +2,19 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
+	"path"
 
 	"github.com/sosedoff/gitkit"
 )
 
 func main() {
+	dir, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	config := gitkit.Config{
 		Dir:        "repos",
 		KeyDir:     "keys",
@@ -16,9 +23,13 @@ func main() {
 		Auth:       true,
 		AutoHooks:  true,
 		Hooks: &gitkit.HookScripts{
-			PostReceive: `#!/bin/sh
+			PostReceive: fmt.Sprintf(
+				`#!/bin/sh
+export REPOS_FOLDER="%s"
 cat | /app/post-receive
-			`,
+`,
+				path.Join(dir, "repos"),
+			),
 		},
 	}
 

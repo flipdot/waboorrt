@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -19,7 +20,9 @@ func receive(hook *gitkit.HookInfo, tmpPath string) error {
 			Addr: "redis:6379",
 		})
 
-		rdb.ZAdd(ctx, "botbuilder:queue", &redis.Z{Score: float64(time.Now().Unix()), Member: hook.RepoName})
+		repoPath := strings.TrimPrefix(hook.RepoPath, os.Getenv("REPOS_FOLDER"))
+
+		rdb.ZAdd(ctx, "botbuilder:queue", &redis.Z{Score: float64(time.Now().Unix()), Member: repoPath})
 	}
 
 	return nil
