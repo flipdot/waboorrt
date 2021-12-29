@@ -13,6 +13,12 @@ class CheckRepositoryPermissionSchema(BaseModel):
     repository_name: str
     user_id: UUID
 
+    @validator("repository_name")
+    def strip_dot_git(cls, v: str):
+        if v.endswith(".git"):
+            return v[:-4]
+        return v
+
 
 class RepositoryPermissionsSchema(BaseModel):
     read: bool
