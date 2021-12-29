@@ -100,6 +100,7 @@ services:
 
 networks:
   gamenet:
+    name: gamenet # needs to have an explicit name to attach the bot containers
     internal: true
 
 volumes:
