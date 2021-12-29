@@ -83,6 +83,7 @@ export default function BotsPage() {
     '/api/repositories/',
     authenticatedSWRFetcher
   );
+  const { data: accountData } = useSWR('/api/account/', authenticatedSWRFetcher);
 
   const navigate = useNavigate();
 
@@ -114,6 +115,7 @@ export default function BotsPage() {
         <FormWrapper>
           <Label>SSH Public Key</Label>
           <PublicKeyInput
+            value={accountData?.ssh_public_key}
             as="textarea"
             placeholder="Begins with 'ssh-rsa' or 'ssh-ed25519'"
             name="pubkey"
