@@ -38,7 +38,7 @@ def update_profile(
     user_profile.ssh_public_key = profile.ssh_public_key
     try:
         db.commit()
-    except IntegrityError as e:
+    except IntegrityError:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="Couldn't save data. SSH Key might already be assigned to another account."

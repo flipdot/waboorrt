@@ -17,6 +17,9 @@ PG_USER = os.environ.get("POSTGRES_USER", "waboorrt")
 PG_PASSWORD = os.environ.get("POSTGRES_PASSWORD", "change-me-in-production")
 PG_DB_NAME = os.environ.get("POSTGRES_DB_NAME", PG_USER)
 
+GITSERVER_HOST = os.environ.get("GITSERVER_HOST", "localhost")
+GITSERVER_HTTP_PORT = os.environ.get("GITSERVER_HTTP_PORT", "2223")
+
 SQL_DATABASE_URL = f"postgresql://{PG_USER}:{PG_PASSWORD}@{PG_HOST}/{PG_DB_NAME}"
 
 OAUTH_PROVIDERS = {

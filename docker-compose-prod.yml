@@ -59,6 +59,8 @@ services:
       WEBSERVER_API_KEY: $WEBSERVER_API_KEY
       POSTGRES_USER: $POSTGRES_USER
       POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+      GITSERVER_HOST: gitserver
+      GITSERVER_HTTP_PORT: 2223
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.webserver.rule=Host(`waboorrt.flipdot.org`)"

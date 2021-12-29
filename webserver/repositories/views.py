@@ -1,16 +1,21 @@
+import logging
 from typing import List
 from uuid import UUID
 
+import requests
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 
+from constants import GITSERVER_HOST, GITSERVER_HTTP_PORT
 from dependencies import current_user, authentication_required, pg_session
 from fastapi import APIRouter, Depends, HTTPException, status
 from models import RepositoryModel, UserModel
 from schemas import UserSchema
 
 from .schemas import RepositorySchema, CreateRepositorySchema
+
+logger = logging.getLogger(__name__)
 
 MAX_REPOS = 3
 
@@ -43,16 +48,28 @@ def create_repository(form: CreateRepositorySchema, db: Session = Depends(pg_ses
             detail=f"You may not create more than {MAX_REPOS} repositories!"
         )
     user_profile: UserModel = db.query(UserModel).filter(UserModel.id == user.user_id).one()
-    repo = RepositoryModel(owner_id=user.user_id, name=f"{user_profile.username}/{form.name}.git")
+    repo = RepositoryModel(owner_id=user.user_id, name=f"{user_profile.username}/{form.name}")
     db.add(repo)
     try:
-        db.commit()
+        db.flush()
     except IntegrityError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Unable to create repo. Duplicate name?"
         )
     db.refresh(repo)
+    res = requests.post(f"http://{GITSERVER_HOST}:{GITSERVER_HTTP_PORT}/repos", json={
+        "id": repo.name,
+        "template": form.template,
+    })
+    if res.status_code != status.HTTP_200_OK:
+        logger.warning(res.content)
+        logger.error(f"Bad response {res.status_code} from {GITSERVER_HOST}:{GITSERVER_HTTP_PORT}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Unable to create git repo."
+            )
+    db.commit()
     return RepositorySchema(id=repo.id, name=repo.name)
 
 
