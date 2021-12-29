@@ -35,6 +35,11 @@ const Divider = styled.div`
   }
 `;
 
+const StyledList = styled(List)`
+  margin-left: 60px;
+  padding-right: 15px;
+`;
+
 function Entry({
   item,
   onClick,
@@ -79,7 +84,7 @@ export default function MatchList({
   const { data: gameData } = useSWR<Game[]>('/api/games');
 
   return (
-    <List>
+    <StyledList>
       {(gameData || []).map((item) => (
         <Entry
           key={item.id}
@@ -88,6 +93,6 @@ export default function MatchList({
           selected={selectedId === item.id}
         />
       ))}
-    </List>
+    </StyledList>
   );
 }
