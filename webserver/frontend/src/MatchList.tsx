@@ -49,15 +49,20 @@ const AnimatedWrapper = styled.li`
   overflow: hidden;
   margin-bottom: 10px;
 
-  &.enter {
+  &.enter,  &&.exit-active {
     height: 0px;
     opacity: 0;
+    margin-bottom: 0;
   }
 
-  &.enter-active {
-    transition: all .3s ease;
+  &.exit, &&.enter-active {
     height: 38px;
     opacity: 1;
+    margin-bottom: 10px;
+  }
+
+  &.enter-active, &.exit-active {
+    transition: all .3s ease;
   }
 `;
 
