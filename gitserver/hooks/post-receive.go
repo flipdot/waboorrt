@@ -20,9 +20,10 @@ func receive(hook *gitkit.HookInfo, tmpPath string) error {
 			Addr: "redis:6379",
 		})
 
-		repoPath := strings.TrimPrefix(hook.RepoPath, os.Getenv("REPOS_FOLDER"))
+		botname := strings.TrimPrefix(hook.RepoPath, os.Getenv("REPOS_FOLDER")+"/")
+		botname = strings.TrimSuffix(botname, ".git")
 
-		rdb.ZAdd(ctx, "botbuilder:queue", &redis.Z{Score: float64(time.Now().Unix()), Member: repoPath})
+		rdb.ZAdd(ctx, "botbuilder:queue", &redis.Z{Score: float64(time.Now().Unix()), Member: botname})
 	}
 
 	return nil
