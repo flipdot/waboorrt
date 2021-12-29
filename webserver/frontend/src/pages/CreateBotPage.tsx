@@ -1,28 +1,11 @@
 import { FormEvent } from 'react';
-import styled from 'styled-components';
 import useSWR from 'swr';
 import Button from '../Button';
+import { FormWrapper, Label } from '../Form';
 import Headline from '../Headline';
 import Input from '../Input';
 
 import PageWrapper from '../PageWrapper';
-
-const Label = styled.span`
-  display: block;
-  padding-right: 20px;
-  margin-bottom: 5px;
-`;
-
-const FormWrapper = styled.label`
-  display: block;
-  align-items: center;
-  margin-bottom: 20px;
-`;
-
-const PublicKeyInput = styled(Input)`
-  resize: none;
-  height: 100px;
-`;
 
 export default function NewBotPage() {
   const { data: templateData } = useSWR('/api/templates');
@@ -38,7 +21,6 @@ export default function NewBotPage() {
     const body = {
       name: formData.get('name'),
       template: formData.get('template'),
-      pubkey: formData.get('pubkey'),
     };
 
     console.log(body);
@@ -64,17 +46,6 @@ export default function NewBotPage() {
             </Input>
           </FormWrapper>
         </div>
-        <FormWrapper>
-          <Label>SSH Public Key</Label>
-          <PublicKeyInput
-            as="textarea"
-            placeholder="Begins with 'ssh-rsa' or 'ssh-ed25519'"
-            name="pubkey"
-            required
-            $fullWidth
-            style={{}}
-          />
-        </FormWrapper>
         <Button>Create</Button>
       </form>
     </PageWrapper>

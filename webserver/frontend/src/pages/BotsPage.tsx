@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { FormEvent } from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import useSWR from 'swr';
-import { authenticatedSWRFetcher } from '../backend';
+import { authenticatedFetch, authenticatedSWRFetcher } from '../backend';
 import Button from '../Button';
+import { FormWrapper, Label } from '../Form';
 import Headline from '../Headline';
+import Input from '../Input';
 
 import { List, ListEntry } from '../List';
 import PageWrapper from '../PageWrapper';
@@ -51,8 +53,36 @@ type Repo = {
   name: string;
 };
 
+const PublicKeyInput = styled(Input)`
+  resize: none;
+  height: 100px;
+`;
+
+function onSubmit(event: FormEvent<HTMLFormElement>) {
+  event.preventDefault();
+  const formData = new FormData(event.currentTarget);
+
+  const body = {
+    ssh_public_key: formData.get('pubkey'),
+  };
+
+  authenticatedFetch('/api/account/', {
+    method: 'PUT',
+    body: JSON.stringify(body),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then(() => {
+    // TODO: nice feedback
+    window.location.reload();
+  });
+}
+
 export default function BotsPage() {
-  const { data: reposData } = useSWR<Repo[]>('/api/repositories/', authenticatedSWRFetcher);
+  const { data: reposData } = useSWR<Repo[]>(
+    '/api/repositories/',
+    authenticatedSWRFetcher
+  );
 
   const navigate = useNavigate();
 
@@ -78,6 +108,22 @@ export default function BotsPage() {
         </List>
       )}
       {reposData && reposData.length == 0 && <p>No Bots.</p>}
+
+      <Headline>Account Settings</Headline>
+      <form onSubmit={onSubmit}>
+        <FormWrapper>
+          <Label>SSH Public Key</Label>
+          <PublicKeyInput
+            as="textarea"
+            placeholder="Begins with 'ssh-rsa' or 'ssh-ed25519'"
+            name="pubkey"
+            required
+            $fullWidth
+            style={{}}
+          />
+        </FormWrapper>
+        <Button>Update Settings</Button>
+      </form>
     </PageWrapper>
   );
 }

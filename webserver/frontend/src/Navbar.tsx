@@ -13,6 +13,7 @@ const Logo = styled.img`
 const NavbarWrapper = styled.nav`
   height: 60px;
   position: fixed;
+  z-index: 1000;
   background: #211132;
   width: 100%;
   border-bottom: 1px solid #3d1f5c;
