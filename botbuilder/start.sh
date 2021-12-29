@@ -23,7 +23,7 @@ build () {
   TMP_DIR=$(mktemp -d)
   cd "$TMP_DIR"
   echo "Building bot $1" >&2
-  git clone "ssh://git@$GITSERVER_HOST:$GITSERVER_PORT/$1" . || return 1
+  git clone "ssh://git@$GITSERVER_HOST:$GITSERVER_PORT/$1.git" . || return 1
   docker build -t "localhost/bot/$imageName" . || return 1
   redis-cli -h redis set "user:$1" "{\"botname\": \"$1\"}"
   cd "$HOME"
