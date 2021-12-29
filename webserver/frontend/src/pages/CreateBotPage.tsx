@@ -39,7 +39,7 @@ export default function NewBotPage() {
 
   return (
     <PageWrapper>
-      <Headline>Create Bot</Headline>
+      <Headline>Create a new bot</Headline>
       <form onSubmit={onSubmit}>
         <div style={{ display: 'flex' }}>
           <FormWrapper style={{ flex: '1 1 auto', marginRight: '20px' }}>

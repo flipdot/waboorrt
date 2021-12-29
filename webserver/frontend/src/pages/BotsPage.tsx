@@ -106,10 +106,10 @@ export default function BotsPage() {
     <PageWrapper>
       <HeadlineWithAction
         action={
-          <Button onClick={() => navigate('/bots/new')}>Create Bot</Button>
+          <Button onClick={() => navigate('/bots/new')}>New</Button>
         }
       >
-        My Bots
+        Bots
       </HeadlineWithAction>
       {reposData && (
         <List style={{ marginBottom: '20px' }}>
