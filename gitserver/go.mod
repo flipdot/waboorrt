@@ -7,4 +7,4 @@ require (
 	github.com/sosedoff/gitkit v0.3.0
 )
 
-replace github.com/sosedoff/gitkit v0.3.0 => github.com/phlmn/gitkit v0.3.1-0.20211229021500-60bc433ffb8b
+replace github.com/sosedoff/gitkit v0.3.0 => github.com/phlmn/gitkit v0.3.1-0.20211229025701-4d0f2ac42414
