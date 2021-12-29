@@ -111,7 +111,7 @@ export default function MatchList({
 
   useEffect(() => {
     // select first entry when data was loaded initially
-    if (gameData) {
+    if (gameData && gameData.length > 0) {
       onItemSelect(gameData[0].id);
     }
   }, [gameData == null])
