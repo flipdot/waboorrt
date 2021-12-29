@@ -25,7 +25,11 @@ function getSessionId() {
 }
 
 export function setSessionId(session_id: string) {
-  return localStorage.setItem("session_id", session_id);
+  localStorage.setItem("session_id", session_id);
+}
+
+export function clearSession() {
+  localStorage.removeItem("session_id");
 }
 
 export function isLoggedIn() {
