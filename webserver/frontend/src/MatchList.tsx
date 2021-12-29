@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import {
   CgChevronDoubleDown,
   CgChevronDoubleUp,
@@ -5,6 +6,10 @@ import {
 } from 'react-icons/cg';
 import styled from 'styled-components';
 import useSWR from 'swr';
+import {
+  TransitionGroup,
+  CSSTransition,
+} from 'react-transition-group';
 
 import { List, ListEntry } from './List';
 import { Game } from './api-types';
@@ -40,6 +45,22 @@ const StyledList = styled(List)`
   padding-right: 15px;
 `;
 
+const AnimatedWrapper = styled.li`
+  overflow: hidden;
+  margin-bottom: 10px;
+
+  &.enter {
+    height: 0px;
+    opacity: 0;
+  }
+
+  &.enter-active {
+    transition: all .3s ease;
+    height: 38px;
+    opacity: 1;
+  }
+`;
+
 function Entry({
   item,
   onClick,
@@ -52,7 +73,10 @@ function Entry({
   const scoreEntries = Object.entries(item.scores);
 
   return (
-    <ListEntry onClick={onClick} $selected={selected}>
+    <ListEntry
+      onClick={onClick}
+      $selected={selected}
+    >
       {scoreEntries.map(([label, score], i) => (
         <>
           {i !== 0 && <Divider>/</Divider>}
@@ -81,18 +105,34 @@ export default function MatchList({
   onItemSelect: (id: string) => void;
   selectedId: string | null;
 }) {
-  const { data: gameData } = useSWR<Game[]>('/api/games');
+  const { data: gameData } = useSWR<Game[]>('/api/games', undefined, {
+    refreshInterval: 5000,
+  });
+
+  useEffect(() => {
+    // select first entry when data was loaded initially
+    if (gameData) {
+      onItemSelect(gameData[0].id);
+    }
+  }, [gameData == null])
+
+  if (!gameData) {
+    return null;
+  }
 
   return (
-    <StyledList>
-      {(gameData || []).map((item) => (
-        <Entry
-          key={item.id}
-          item={item}
-          onClick={() => onItemSelect(item.id)}
-          selected={selectedId === item.id}
-        />
+    <TransitionGroup component={StyledList} appear={false}>
+      {gameData.map((item) => (
+        <CSSTransition key={item.id} timeout={1000}>
+          <AnimatedWrapper>
+            <Entry
+              item={item}
+              onClick={() => onItemSelect(item.id)}
+              selected={selectedId === item.id}
+            />
+          </AnimatedWrapper>
+        </CSSTransition>
       ))}
-    </StyledList>
+    </TransitionGroup>
   );
 }
