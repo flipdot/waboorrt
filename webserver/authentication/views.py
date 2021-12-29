@@ -28,12 +28,9 @@ def create_account(db: Session, username: str, rc3_identity: Optional[str] = Non
         raise ValueError("Invalid username")
 
     user = UserModel(username=username, rc3_identity=rc3_identity)
-    repository = RepositoryModel(name=f"{username}.git", owner=user)
     db.add(user)
-    db.add(repository)
     db.commit()
     db.refresh(user)
-    db.refresh(repository)
     return user
 
 
@@ -128,6 +125,9 @@ def login_oauth(
 
 @router.get("/auth-redirect", status_code=302)
 def auth_redirect(request: Request, redis_db: Redis = Depends(redis_session)):
+    """
+    Redirects to configured OAuth provider.
+    """
     state = uuid4()
     redis_db.set(
         f"webserver:oauth_states:{state}",
