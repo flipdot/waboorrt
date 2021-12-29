@@ -10,7 +10,7 @@ const Columns = styled.div`
   display: flex;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 0;
+  padding: 40px 20px;
   padding-top: 100px;
   height: 100vh;
 `;
@@ -33,6 +33,3 @@ export default function HomePage() {
     </>
   );
 }
-
-// margin-left: 60px;
-// padding-right: 15px;

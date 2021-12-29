@@ -22,6 +22,7 @@ const NavbarWrapper = styled.nav`
 const NavbarInner = styled.div`
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0 20px;
   display: flex;
   align-items: center;
   height: 100%;
