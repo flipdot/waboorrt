@@ -71,13 +71,10 @@ export default function Player({ replay }: { replay?: GameReplay }) {
   const frameAnimatonsFinished = useCallback(
     (frameIdx: number) => {
       if (frameIdx === currentFrameIdxRef.current) {
-        console.log('Animations finished!', frameIdx);
-
         if (play) {
           if (!replay || currentFrameIdx === (tickCount - 1)) {
             setPlay(false);
           } else {
-            console.log('Going to next frame');
             setCurrentFrameIdx(frameIdx + 1);
             currentFrameIdxRef.current = frameIdx + 1;
           }
@@ -113,7 +110,6 @@ export default function Player({ replay }: { replay?: GameReplay }) {
               if (unfinishedActions.current.length === 0) {
                 frameAnimatonsFinished(currentFrameIdx);
               }
-              console.log(unfinishedActions.current);
             }}
           />
         ))}
