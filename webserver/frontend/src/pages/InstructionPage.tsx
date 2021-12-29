@@ -1,10 +1,5 @@
 import styled from 'styled-components';
-
-const PageWrapper = styled.div`
-  max-width: 640px;
-  margin: 60px auto;
-  color: var(--white);
-`;
+import PageWrapper from '../PageWrapper';
 
 const Headline = styled.h2`
   margin-bottom: 20px;
@@ -39,7 +34,6 @@ const LoginButton = styled.a`
   margin-top: 20px;
 `;
 
-
 export default function InstructionPage({ username }: { username: string }) {
   return (
     <PageWrapper>
@@ -51,14 +45,15 @@ export default function InstructionPage({ username }: { username: string }) {
 
       <Pre>
         <Code>
-          git clone ssh://git@{window.location.hostname}:2222/{username}.git waboorrt-bot
+          git clone ssh://git@{window.location.hostname}:2222/{username}.git
+          waboorrt-bot
           <br />
           cd waboorrt-bot/
           <br />
           # make your changes
-          <br/>
+          <br />
           git add .
-          <br/>
+          <br />
           git commit -m &quot;Do all the things&quot;
           <br />
           git push

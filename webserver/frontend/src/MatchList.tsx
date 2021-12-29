@@ -3,37 +3,11 @@ import {
   CgChevronDoubleUp,
   CgTrophy,
 } from 'react-icons/cg';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import useSWR from 'swr';
 
-import { Game } from '../api-types';
-
-const EntryWrapper = styled.li<{ $selected: boolean }>`
-  border: 2px solid var(--plattform);
-  background: linear-gradient(270deg, #100e23 0%, var(--plattform) 100%);
-  padding: 0.5rem;
-  color: #ffffffbb;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-around;
-
-  &:not(:last-child) {
-    margin-bottom: 10px;
-  }
-
-  ${(props) =>
-    props.$selected &&
-    css`
-      border-color: #02fae0;
-      background: linear-gradient(270deg, #100e23 0%, #018577 100%);
-    `}
-
-  > div {
-    flex: 1 1 0%;
-
-    text-align: center;
-  }
-`;
+import { List, ListEntry } from './List';
+import { Game } from './api-types';
 
 const Trophy = styled(CgTrophy)`
   vertical-align: middle;
@@ -73,7 +47,7 @@ function Entry({
   const scoreEntries = Object.entries(item.scores);
 
   return (
-    <EntryWrapper onClick={onClick} $selected={selected}>
+    <ListEntry onClick={onClick} $selected={selected}>
       {scoreEntries.map(([label, score], i) => (
         <>
           {i !== 0 && <Divider>/</Divider>}
@@ -91,20 +65,11 @@ function Entry({
           </div>
         </>
       ))}
-    </EntryWrapper>
+    </ListEntry>
   );
 }
 
-const ListWrapper = styled.ul`
-  list-style: none;
-  flex: 1 1 0%;
-  margin-left: 60px;
-  overflow: auto;
-  background: var(--dark);
-  padding-right: 15px;
-`;
-
-export default function List({
+export default function MatchList({
   onItemSelect,
   selectedId,
 }: {
@@ -114,7 +79,7 @@ export default function List({
   const { data: gameData } = useSWR<Game[]>('/api/games');
 
   return (
-    <ListWrapper>
+    <List>
       {(gameData || []).map((item) => (
         <Entry
           key={item.id}
@@ -123,6 +88,6 @@ export default function List({
           selected={selectedId === item.id}
         />
       ))}
-    </ListWrapper>
+    </List>
   );
 }
