@@ -22,6 +22,7 @@ import hashlib
 
 logger = logging.getLogger(__name__)
 
+
 def get_bot_view(game_state: GameState, bot_name: str):
     me: Optional[Bot] = None
     for entity in game_state.entities:

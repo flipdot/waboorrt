@@ -4,7 +4,7 @@ import copy
 import math
 from typing import Tuple, Optional
 
-from gameobjects import GameState, Bot, RpcAction,  LookAction, NoopAction, ThrowAction, WalkAction
+from gameobjects import GameState, Bot, RpcAction, LookAction, NoopAction, ThrowAction, WalkAction, ChargeAction
 
 logger = logging.getLogger(__name__)
 
@@ -55,7 +55,7 @@ def compute_damage(dist: float) -> int:
     return int(max(10 * math.pow(10, -(dist / radius)), 0))
 
 
-def action_noop(game_state, bot, action: NoopAction) -> Tuple[bool, Optional[str]]:
+def action_charge(game_state, bot, action: NoopAction) -> Tuple[bool, Optional[str]]:
     bot.energy += 1
     return True, None
 
@@ -137,7 +137,8 @@ def tick(
     action_list = random.sample(list(zip(game_state.bots, actions)), len(actions))
 
     action_execution_order = [
-        (NoopAction, action_noop),
+        (NoopAction, action_charge),  # For compatibility, still call charge when noop is issued
+        (ChargeAction, action_charge),
         (ThrowAction, action_throw),
         (WalkAction, action_walk),
         (LookAction, action_look),

@@ -1,5 +1,5 @@
 from gamefunctions import tick, GameState
-from gameobjects import ActionName, ThrowAction, LookAction, NoopAction, WalkAction
+from gameobjects import ThrowAction, LookAction, NoopAction, WalkAction, ChargeAction
 from unittest import TestCase
 
 WALK_NORTH = WalkAction(direction="north")
@@ -192,6 +192,53 @@ class TestLook(TestCase):
         self.assertFalse(e0["success"])
         self.assertEqual(e0["reason"], "not enough energy to look this far")
         self.assertTrue(e1["success"])
+
+
+class TestCharge(TestCase):
+    def setUp(self):
+        self.game_state = GameState.create()
+        bots = self.game_state.bots
+        bots[0].x, bots[0].y = 5, 5
+        bots[1].x, bots[1].y = 11, 11
+
+    def test_charge_energy(self):
+        self.game_state.bots[0].energy = 5
+        self.game_state.bots[1].energy = 10
+        game_state, executed = tick(
+            self.game_state,
+            (
+                ChargeAction(),
+                ChargeAction(),
+            ),
+        )
+        bot0, bot1 = game_state.bots
+        self.assertEqual(bot0.energy, 6)
+        self.assertEqual(bot1.energy, 11)
+
+
+class TestNoop(TestCase):
+    def setUp(self):
+        self.game_state = GameState.create()
+        bots = self.game_state.bots
+        bots[0].x, bots[0].y = 5, 5
+        bots[1].x, bots[1].y = 11, 11
+
+    def test_noop(self):
+        """
+        For compatibility, executing noop should charge energy
+        """
+        self.game_state.bots[0].energy = 5
+        self.game_state.bots[1].energy = 10
+        game_state, executed = tick(
+            self.game_state,
+            (
+                NoopAction(),
+                NoopAction(),
+            ),
+        )
+        bot0, bot1 = game_state.bots
+        self.assertEqual(bot0.energy, 6)
+        self.assertEqual(bot1.energy, 11)
 
 
 class TestActionHistory(TestCase):

@@ -10,22 +10,31 @@ class ActionName(str, Enum):
     WALK = "walk"
     THROW = "throw"
     LOOK = "look"
+    CHARGE = "charge"
 
 
 class RpcAction(BaseModel):
     name: ActionName
 
+
 class NoopAction(RpcAction):
     name: Literal[ActionName.NOOP] = ActionName.NOOP
+
+
+class ChargeAction(RpcAction):
+    name: Literal[ActionName.CHARGE] = ActionName.CHARGE
+
 
 class WalkAction(RpcAction):
     name: Literal[ActionName.WALK] = ActionName.WALK
     direction: str
 
+
 class ThrowAction(RpcAction):
     name: Literal[ActionName.THROW] = ActionName.THROW
     x: int
     y: int
+
 
 class LookAction(RpcAction):
     name: Literal[ActionName.LOOK] = ActionName.LOOK
@@ -38,6 +47,7 @@ action_name_map: Dict[ActionName, Any] = {
     ActionName.THROW: ThrowAction,
     ActionName.LOOK: LookAction,
 }
+
 
 class EntityType(Enum):
     ENTITY = auto()
