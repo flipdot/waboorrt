@@ -2,12 +2,13 @@ import React, { FormEvent } from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import useSWR from 'swr';
+
 import { authenticatedFetch, authenticatedSWRFetcher } from '../backend';
 import Button from '../Button';
 import { FormWrapper, Label } from '../Form';
 import Headline from '../Headline';
+import HeadlineWithAction from '../HeadlineWithAction';
 import Input from '../Input';
-
 import { List, ListEntry } from '../List';
 import PageWrapper from '../PageWrapper';
 
@@ -27,38 +28,6 @@ const RepoName = styled.div`
   margin-top: 5px;
   margin-left: 5px;
 `;
-
-const Wrapper = styled.div`
-  display: flex;
-  margin-top: 30px;
-  align-items: center;
-  margin-bottom: 15px;
-`;
-
-const Left = styled(Headline)`
-  margin-top: 0;
-  margin-bottom: 0;
-  flex: 1 1 auto;
-`;
-
-const Right = styled.div`
-  flex: 0 0 auto;
-`;
-
-function HeadlineWithAction({
-  children,
-  action,
-}: {
-  children: React.ReactNode;
-  action: React.ReactNode;
-}) {
-  return (
-    <Wrapper>
-      <Left>{children}</Left>
-      <Right>{action}</Right>
-    </Wrapper>
-  );
-}
 
 type Repo = {
   id: string;
@@ -105,9 +74,7 @@ export default function BotsPage() {
   return (
     <PageWrapper>
       <HeadlineWithAction
-        action={
-          <Button onClick={() => navigate('/bots/new')}>New</Button>
-        }
+        action={<Button onClick={() => navigate('/bots/new')}>New</Button>}
       >
         Bots
       </HeadlineWithAction>
