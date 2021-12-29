@@ -8,12 +8,6 @@ class LoginSchema(BaseModel):
     username: str
 
 
-class RepositoryTemplateName(str, Enum):
-    python = "python"
-    csharp = "csharp"
-    golang = "golang"
-
-
 class LoginResponse(BaseModel):
     session_id: UUID
 
