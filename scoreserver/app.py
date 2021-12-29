@@ -6,7 +6,7 @@ import logging
 import os
 from asyncio import sleep
 from json import JSONDecodeError
-from typing import List, Tuple
+from typing import List, Tuple, Any
 from uuid import uuid1
 
 import redis as redis
@@ -70,29 +70,29 @@ def calculate_new_elo_ranking(
     return new_r0, new_r1
 
 
-def matches(users_keys: List[str], k: int = 5) -> List[Tuple[str, str]]:
+def matches(users_keys: List[str], matchers_per_user: int = 5) -> List[Tuple[Tuple[str, Any], Tuple[str, Any]]]:
     """Get matches from a list of users.
 
-    Each one plays k other users above him and k below him."""
-    sorted_users = sorted(users_keys, key=lambda u: json.loads(db.get(u)).get("elo_rank", 1200))
-    matches = []
+    `matches_per_user` is the number of users above and below a user to play against.
+    """
+
+    users = [(u, user) for u in users_keys if (user := db.get(u)) is not None]
+
+    sorted_users = sorted(users, key=lambda k, u: json.loads(u).get("elo_rank", 1200))
+    match_list = []
     for i in range(len(sorted_users)):
-        for j in range(i + 1, min(i + k + 1, len(sorted_users))):
-            matches.append((sorted_users[i], sorted_users[j]))
-    return matches
+        for j in range(i + 1, min(i + matchers_per_user + 1, len(sorted_users))):
+            match_list.append((sorted_users[i], sorted_users[j]))
+    return match_list
 
 
 async def main():
     while True:
         users = db.keys("user:*")
-        for key_a, key_b in matches(users):
-            raw_user_a, raw_user_b = db.get(key_a), db.get(key_b)
+        for a, b in matches(users):
+            key_a, user_a = a
+            key_b, user_b = b
 
-            if raw_user_a is None or raw_user_b is None:
-                logger.warning(f"Could not get user data for {key_a} or {key_b}")
-                continue
-
-            user_a, user_b = json.loads(raw_user_a), json.loads(raw_user_b)
             bot_a_name, bot_b_name = user_a["botname"], user_b["botname"]
             logging.debug(f"Next match: {bot_a_name} vs {bot_b_name}")
             # TODO: maybe parallelize it. gameserver can handle multiple requests
