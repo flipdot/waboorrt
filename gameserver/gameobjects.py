@@ -46,6 +46,7 @@ action_name_map: Dict[ActionName, Any] = {
     ActionName.WALK: WalkAction,
     ActionName.THROW: ThrowAction,
     ActionName.LOOK: LookAction,
+    ActionName.CHARGE: ChargeAction,
 }
 
 
