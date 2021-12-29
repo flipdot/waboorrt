@@ -4,7 +4,7 @@ from pathlib import Path
 import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse, PlainTextResponse
+from fastapi.responses import HTMLResponse, PlainTextResponse, FileResponse
 
 from authentication import views as auth_app
 from account import views as account_app
@@ -47,6 +47,13 @@ app.include_router(auth_app.router)
 app.include_router(account_app.router)
 app.include_router(repositories_app.router)
 app.include_router(gitserver_app.router)
+
+
+@app.get("/favicon.ico", response_class=FileResponse)
+def favicon():
+    return FileResponse(
+        Path("static/favicon.ico")
+    )
 
 
 @app.get("/{arbitrary:path}", tags=["Non-API"], response_class=HTMLResponse)
