@@ -16,7 +16,7 @@ type createRepoBody struct {
 	Template string `json:"template"`
 }
 
-var ID_REGEX = regexp.MustCompile("^[a-zA-Z0-9_\\-/]+$")
+var ID_REGEX = regexp.MustCompile("^[a-zA-Z0-9_\\-/\\.]+$")
 
 func ServeHttpApi(config gitkit.Config) {
 	http.HandleFunc("/repos", func(resp http.ResponseWriter, req *http.Request) {
@@ -58,13 +58,13 @@ func ServeHttpApi(config gitkit.Config) {
 		if reqBody.Template != "" {
 			// clone from template
 			err = gitkit.CloneRepo(
-				fmt.Sprintf("%s.git", reqBody.Id),
+				reqBody.Id,
 				&config,
 				fmt.Sprintf("https://github.com/flipdot/waboorrt-template-%s.git", reqBody.Template),
 			)
 		} else {
 			// init without template
-			err = gitkit.InitRepo(fmt.Sprintf("%s.git", reqBody.Id), &config)
+			err = gitkit.InitRepo(reqBody.Id, &config)
 		}
 
 		if err != nil {
