@@ -76,9 +76,9 @@ def matches(users_keys: List[str], matchers_per_user: int = 5) -> List[Tuple[Tup
     `matches_per_user` is the number of users above and below a user to play against.
     """
 
-    users = [(u, user) for u in users_keys if (user := db.get(u)) is not None]
+    users = [(u, json.loads(user)) for u in users_keys if (user := db.get(u)) is not None]
 
-    sorted_users = sorted(users, key=lambda u: json.loads(u[1]).get("elo_rank", 1200))
+    sorted_users = sorted(users, key=lambda u: u[1].get("elo_rank", 1200))
     match_list = []
     for i in range(len(sorted_users)):
         for j in range(i + 1, min(i + matchers_per_user + 1, len(sorted_users))):
