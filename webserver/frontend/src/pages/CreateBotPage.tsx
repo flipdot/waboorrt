@@ -1,5 +1,7 @@
 import { FormEvent } from 'react';
+import { useNavigate } from 'react-router';
 import useSWR from 'swr';
+import { authenticatedFetch } from '../backend';
 import Button from '../Button';
 import { FormWrapper, Label } from '../Form';
 import Headline from '../Headline';
@@ -9,6 +11,7 @@ import PageWrapper from '../PageWrapper';
 
 export default function NewBotPage() {
   const { data: templateData } = useSWR('/api/templates');
+  const navigate = useNavigate();
 
   if (!templateData) {
     return null;
@@ -23,7 +26,15 @@ export default function NewBotPage() {
       template: formData.get('template'),
     };
 
-    console.log(body);
+    authenticatedFetch('/api/repositories/', {
+      method: 'POST',
+      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then(() => {
+      navigate("/bots");
+    })
   }
 
   return (
