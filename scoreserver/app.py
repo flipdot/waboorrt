@@ -89,7 +89,8 @@ def matches(users_keys: List[str], matchers_per_user: int = 5) -> List[Tuple[Tup
 async def main():
     while True:
         users = db.keys("user:*")
-        for a, b in matches(users):
+        match_list = matches(users)
+        for a, b in match_list:
             key_a, user_a = a
             key_b, user_b = b
 
@@ -137,8 +138,9 @@ async def main():
             )
             db.set(key_a, json.dumps(user_a))
             db.set(key_b, json.dumps(user_b))
-        logging.info("Sleeping, next matches will start soon")
-        await sleep(10)
+        if not match_list:
+            logging.info("Sleeping, next matches will start soon")
+            await sleep(10)
 
 
 if __name__ == "__main__":

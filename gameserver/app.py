@@ -50,7 +50,7 @@ def run_game(bot0_name: str, bot1_name: str):
     with BotCommunicator(bot0_name, bot1_name) as botcom:
         containers_ready = botcom.wait_for_container_ready()
         if not any(containers_ready):
-            container_ids = [x.id[:12] for x in botcom.containers]
+            container_ids = [(x.id[:12] if x else None) for x in botcom.containers]
             logger.warning(f"No container (ids: {container_ids}) became ready (bots: {botcom.bot_names})")
         elif not all(containers_ready):
             score = {k: 1 for k in botcom.bot_names}
