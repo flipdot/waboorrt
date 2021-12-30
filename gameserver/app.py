@@ -95,7 +95,7 @@ def application(request):
         logger.error(f"Invalid RPC response")
         return Response(status=500, response=json.dumps({"error": "Internal server error"}))
 
-    if response.data["error"]:
+    if "error" in response.data:
         logger.warning(f"RPC Server returned error {response.data['error']}")
         return Response(
             json.dumps({"message": "RPC Server returned error"}),
