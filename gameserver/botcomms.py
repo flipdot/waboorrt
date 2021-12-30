@@ -181,7 +181,7 @@ class BotCommunicator:
             logger.warning(f"No result from bot {container.image.tags}")
             return NoopAction()
 
-        if type(result['name']) != dict:
+        if type(result) != dict:
             logger.warning(f"Bot {container.image} returned result of type {type(result)}, expected dict")
             return NoopAction()
 
