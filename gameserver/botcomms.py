@@ -104,9 +104,13 @@ class BotCommunicator:
         self._kill_containers()
 
     def _kill_containers(self):
-        for c in self.containers:
+        for i, c in enumerate(self.containers):
             if c is not None:
-                c.kill()
+                try:
+                    c.kill()
+                except docker.errors.NotFound:
+                    bot = self.bot_names[i]
+                    logger.warning(f"Tried to kill non-existing container {c.id} (image: {c.image}, bot_name: {bot})")
         self.containers = []
 
     def wait_for_container_ready(self):
