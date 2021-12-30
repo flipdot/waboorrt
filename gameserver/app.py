@@ -95,6 +95,13 @@ def application(request):
         logger.error(f"Invalid RPC response")
         return Response(status=500, response=json.dumps({"error": "Internal server error"}))
 
+    if response.data["error"]:
+        logger.warning(f"RPC Server returned error {response.data['error']}")
+        return Response(
+            json.dumps({"message": "RPC Server returned error"}),
+            mimetype="application/json",
+        )
+
     try:
         res_data = json.dumps(response.data, cls=GameStateEncoder)
     except TypeError as e:
