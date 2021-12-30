@@ -14,7 +14,8 @@ router = APIRouter(
 @router.get("/games")
 def game_list(from_id: str = "", n: int = 25):
     """
-    Returns a list of past games. Can be paginated by using `from_id` and `n`
+    Returns a list of past games. Can be paginated by using `from_id` and `n`.
+    Maximum for n is 25.
     """
     try:
         num = min(n, 25)
