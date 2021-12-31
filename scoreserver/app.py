@@ -62,7 +62,7 @@ def calculate_new_elo_ranking(
     # current ranks
     r0, r1 = current_rank
     # if elo difference is >=400 and result is the expected one => don't count
-    if ((points[0] > 0 and r0 >= 400 + r1) or (points[1] > 0 and r1 >= 400 + r0)):
+    if ((points[0] == 1 and r0 >= 400 + r1) or (points[1] == 1 and r1 >= 400 + r0)):
         return r0, r1
     rdiff = max(min(r1 - r0, 400), -400)  # rdiff in [-400, 400]
     # expected values
