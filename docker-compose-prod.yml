@@ -53,6 +53,7 @@ services:
     restart: always
     depends_on:
       - redis
+      - postgres
     env_file:
       - webserver.env
     environment:
