@@ -6,17 +6,13 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-gunicorn = "*"
 redis = "*"
 requests = "*"
 pyjwt = "*"
-fastapi = "*"
 uvicorn = {extras = ["standard"],version = "*"}
 python-multipart = "*"
-sqlalchemy = "*"
-alembic = "*"
 psycopg2 = "*"
-randomname = "*"
+starlette = "*"
 
 [requires]
 python_version = "3.8"
