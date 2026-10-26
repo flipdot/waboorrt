@@ -1,14 +1,14 @@
 version: 2
 updates:
-  - package-ecosystem: "pip"
+  - package-ecosystem: "uv"
     directory: "/gameserver"
     schedule:
       interval: "monthly"
-  - package-ecosystem: "pip"
+  - package-ecosystem: "uv"
     directory: "/scoreserver"
     schedule:
       interval: "monthly"
-  - package-ecosystem: "pip"
+  - package-ecosystem: "uv"
     directory: "/webserver"
     schedule:
       interval: "monthly"

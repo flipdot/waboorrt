@@ -1,0 +1,21 @@
+[project]
+name = "webserver"
+version = "0.1.0"
+description = "WabOoRRt webserver"
+requires-python = ">=3.8"
+dependencies = [
+    "alembic==1.7.5",
+    "fastapi==0.70.1",
+    "gunicorn==20.1.0",
+    "psycopg2==2.9.2",
+    "pyjwt==2.3.0",
+    "python-multipart==0.0.5",
+    "randomname==0.1.5",
+    "redis==4.1.0",
+    "requests==2.26.0",
+    "sqlalchemy==1.4.29",
+    "uvicorn[standard]==0.16.0",
+]
+
+[tool.uv]
+package = false

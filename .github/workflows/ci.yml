@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [gameserver, scoreserver, webserver]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - uses: astral-sh/setup-uv@v10
+        with:
+          enable-cache: true
+      - name: Install dependencies (fails if uv.lock is out of date)
+        working-directory: ${{ matrix.service }}
+        run: uv sync --frozen
+      - name: Compile
+        working-directory: ${{ matrix.service }}
+        run: uv run python -m compileall -q app.py
+
+  docker:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [gameserver, scoreserver, webserver]
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build image (validates Dockerfile and uv.lock on the deployed python:3.8)
+        run: docker build -t waboorrt/${{ matrix.service }}-test ${{ matrix.service }}

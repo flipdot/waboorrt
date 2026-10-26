@@ -44,17 +44,17 @@ learn how to set it up.
 
 ## Development setup: gameserver
 
-Use pipenv (`pip install pipenv`).
+Use [uv](https://docs.astral.sh/uv/).
 
     cd gameserver/
     # install dependencies
-    pipenv sync
+    uv sync
     # run tests
-    pipenv run nosetests
+    uv run nosetests
     # format code
-    pipenv run black .
+    uv run black .
     # check style
-    pipenv run flake8
+    uv run flake8
 
 Build the "pyrandom" docker image:
 

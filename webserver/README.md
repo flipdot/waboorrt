@@ -1,7 +1,7 @@
 # Webserver
 
-    pipenv sync
-    pipenv run python app.py
+    uv sync
+    uv run python app.py
 
 Visit http://localhost:8080/docs for the API explorer.
 
