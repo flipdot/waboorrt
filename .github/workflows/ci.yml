@@ -23,6 +23,6 @@ jobs:
         run: docker build -t waboorrt/${{ matrix.service }}-test ${{ matrix.service }}
       - name: Compile
         run: docker run --rm waboorrt/${{ matrix.service }}-test python -m compileall -q app.py
-      - name: Run tests (in the built image: deployed python and dependencies)
+      - name: "Run tests (in the built image: deployed python and dependencies)"
         if: matrix.tests
         run: docker run --rm waboorrt/${{ matrix.service }}-test nosetests -v
