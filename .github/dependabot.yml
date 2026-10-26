@@ -1,14 +1,14 @@
 version: 2
 updates:
-  - package-ecosystem: "pipenv"
+  - package-ecosystem: "pip"
     directory: "/gameserver"
     schedule:
       interval: "monthly"
-  - package-ecosystem: "pipenv"
+  - package-ecosystem: "pip"
     directory: "/scoreserver"
     schedule:
       interval: "monthly"
-  - package-ecosystem: "pipenv"
+  - package-ecosystem: "pip"
     directory: "/webserver"
     schedule:
       interval: "monthly"
