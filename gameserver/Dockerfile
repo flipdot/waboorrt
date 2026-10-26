@@ -1,15 +1,12 @@
 FROM python:3.8
 
-RUN pip install pipenv
-
 WORKDIR /app
 
-COPY Pipfile Pipfile.lock ./
+COPY requirements.txt ./
 
-RUN pipenv sync
+RUN pip install -r requirements.txt
 
 COPY ./ ./
 
 EXPOSE 80
-ENTRYPOINT ["pipenv", "run"]
 CMD ["python", "app.py"]

@@ -11,17 +11,14 @@ RUN npm run build
 
 FROM python:3.8
 
-RUN pip install pipenv
-
 WORKDIR /app
 
-COPY Pipfile Pipfile.lock ./
+COPY requirements.txt ./
 
-RUN pipenv sync
+RUN pip install -r requirements.txt
 
 COPY ./ ./
 COPY --from=frontend /app/dist static/webapp
 
 EXPOSE 80
-ENTRYPOINT ["pipenv", "run"]
 CMD ["./start.sh"]

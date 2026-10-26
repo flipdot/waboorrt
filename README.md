@@ -44,17 +44,17 @@ learn how to set it up.
 
 ## Development setup: gameserver
 
-Use pipenv (`pip install pipenv`).
+Use pip (ships with the `python` base image).
 
     cd gameserver/
     # install dependencies
-    pipenv sync
+    pip install -r requirements.txt
     # run tests
-    pipenv run nosetests
+    nosetests
     # format code
-    pipenv run black .
+    black .
     # check style
-    pipenv run flake8
+    flake8
 
 Build the "pyrandom" docker image:
 
