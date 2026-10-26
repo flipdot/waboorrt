@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - service: gameserver
+            tests: true
+          - service: scoreserver
+            tests: true
+          - service: webserver
+            tests: false
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build image (runs uv sync with UV_FROZEN=1 on the deployed python:3.8, fails if uv.lock is out of date)
+        run: docker build -t waboorrt/${{ matrix.service }}-test ${{ matrix.service }}
+      - name: Compile
+        run: docker run --rm waboorrt/${{ matrix.service }}-test python -m compileall -q app.py
+      - name: "Run tests (in the built image: deployed python and dependencies)"
+        if: matrix.tests
+        run: docker run --rm waboorrt/${{ matrix.service }}-test nosetests -v
